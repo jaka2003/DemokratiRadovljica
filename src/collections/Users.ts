@@ -6,7 +6,7 @@ export const ROLES = VLOGE
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  labels: { singular: 'Uporabnik / kandidat', plural: 'Uporabniki in kandidati' },
+  labels: { singular: 'Uporabnik sistema', plural: 'Uporabniki sistema' },
   auth: true,
   admin: {
     useAsTitle: 'ime',
