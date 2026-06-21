@@ -1,0 +1,47 @@
+@import 'tailwindcss';
+
+/*
+  Barvna paleta Demokrati Radovljica (spec. razdelek 1):
+  - temno modra (osnovna)
+  - turkizna (poudarek)
+  - bela
+  - svetlo siva / zelo svetla bež (ozadja kartic)
+*/
+@theme {
+  --color-navy: #0f004e;
+  --color-navy-800: #1b1064;
+  --color-navy-700: #2a1f7a;
+  --color-teal: #00bbc1;
+  --color-teal-600: #00a1a7;
+  --color-teal-700: #008288;
+  --color-cloud: #f4f6fa;
+  --color-sand: #faf8f3;
+  --color-line: #e7e9f1;
+  --color-muted: #5b5f73;
+
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --radius-card: 16px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Pripomoček: nežna senca kartic v minimalističnem slogu. */
+@utility shadow-card {
+  box-shadow: 0 1px 2px rgba(15, 0, 78, 0.04), 0 8px 24px rgba(15, 0, 78, 0.05);
+}
+
+@utility shadow-card-hover {
+  box-shadow: 0 2px 4px rgba(15, 0, 78, 0.06), 0 16px 40px rgba(15, 0, 78, 0.1);
+}

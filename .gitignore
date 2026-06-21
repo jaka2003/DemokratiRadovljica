@@ -1,0 +1,36 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# payload
+/src/payload-types.ts
+*.db
+*.db-journal
+/media
+
+# env – nikoli ne commitaj pravih ključev!
+.env
+.env.*
+!.env.production.example
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# typescript
+*.tsbuildinfo
+
+# zacasne datoteke
+tmp_*
