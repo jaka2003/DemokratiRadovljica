@@ -3,6 +3,7 @@ import { ArrowRight, MapPin } from 'lucide-react'
 import { Container } from '@/components/site/Container'
 import { Button } from '@/components/ui/Button'
 import { HERO } from '@/lib/site'
+import { HeroCarousel, type HeroSlide } from '@/components/home/HeroCarousel'
 
 export function Hero({
   naslov,
@@ -10,20 +11,16 @@ export function Hero({
   opis,
   poudarek,
   tagline,
-  fotoUrl,
-  fotoAlt,
-  fotoWidth,
-  fotoHeight,
+  slike = [],
+  intervalSekunde = 3,
 }: {
   naslov?: string
   podnaslov?: string
   opis?: string
   poudarek?: string
   tagline?: string
-  fotoUrl?: string
-  fotoAlt?: string
-  fotoWidth?: number
-  fotoHeight?: number
+  slike?: HeroSlide[]
+  intervalSekunde?: number
 } = {}) {
   const title = naslov || HERO.title
   const subtitle = podnaslov || HERO.subtitle
@@ -63,14 +60,17 @@ export function Hero({
 
           {/* Desno: grafika / fotografija (admin jo naloži v CMS) */}
           <div className="relative">
-            {fotoUrl ? (
-              // Naložena slika se pokaže v CELOTI (brez obrezovanja) – primerno za oblikovane plakate.
-              fotoWidth && fotoHeight ? (
+            {slike.length > 1 ? (
+              // Več slik → moderni carousel z nežnim prelivanjem.
+              <HeroCarousel slides={slike} intervalMs={intervalSekunde * 1000} />
+            ) : slike.length === 1 ? (
+              // Ena slika se pokaže v CELOTI (brez obrezovanja) – primerno za oblikovane plakate.
+              slike[0].width && slike[0].height ? (
                 <Image
-                  src={fotoUrl}
-                  alt={fotoAlt || 'Demokrati Radovljica'}
-                  width={fotoWidth}
-                  height={fotoHeight}
+                  src={slike[0].url}
+                  alt={slike[0].alt || 'Demokrati Radovljica'}
+                  width={slike[0].width}
+                  height={slike[0].height}
                   priority
                   className="h-auto w-full rounded-[var(--radius-card)] shadow-card"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -78,7 +78,7 @@ export function Hero({
               ) : (
                 // Brez podatka o velikosti: prikaži celoto znotraj okvirja (object-contain).
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-cloud shadow-card">
-                  <Image src={fotoUrl} alt={fotoAlt || 'Demokrati Radovljica'} fill priority className="object-contain" sizes="(max-width: 1024px) 100vw, 50vw" />
+                  <Image src={slike[0].url} alt={slike[0].alt || 'Demokrati Radovljica'} fill priority className="object-contain" sizes="(max-width: 1024px) 100vw, 50vw" />
                 </div>
               )
             ) : (

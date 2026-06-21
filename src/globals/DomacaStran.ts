@@ -58,10 +58,36 @@ export const DomacaStran: GlobalConfig = {
             },
             {
               name: 'heroFoto',
-              label: 'Fotografija Radovljice',
+              label: 'Glavna slika / grafika',
               type: 'upload',
               relationTo: 'media',
-              admin: { description: 'Naloži realno fotografijo Radovljice. Če ni naložena, se prikaže privzeto ozadje.' },
+              admin: {
+                description:
+                  'Prva slika v uvodnem bloku (grafika ali fotografija Radovljice). Če ni naložena, se prikaže privzeto ozadje.',
+              },
+            },
+            {
+              name: 'heroSlike',
+              label: 'Dodatne slike (samodejno menjavanje)',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              admin: {
+                description:
+                  'Neobvezno: naloži več slik. Če je skupaj več kot ena, se na domači strani nežno menjajo (carousel). Vrstni red lahko premešaš z vlečenjem; prva je vedno »Glavna slika« zgoraj.',
+              },
+            },
+            {
+              name: 'heroInterval',
+              label: 'Hitrost menjavanja (sekunde)',
+              type: 'number',
+              defaultValue: 3,
+              min: 2,
+              max: 15,
+              admin: {
+                description: 'Na koliko sekund se zamenja slika (velja le, če je nastavljenih več slik). Privzeto 3.',
+                step: 1,
+              },
             },
           ],
         },

@@ -11,7 +11,14 @@ export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const d = await getDomacaStran()
-  const foto = d?.heroFoto as { url?: string; alt?: string; width?: number; height?: number } | undefined
+  type Media = { url?: string; alt?: string; width?: number; height?: number }
+  const glavna = d?.heroFoto as Media | undefined
+  const dodatne = (d?.heroSlike as Media[] | undefined) || []
+  // Glavna slika je prva, nato dodatne; obdržimo le tiste z naslovom (url).
+  const slike = [glavna, ...dodatne]
+    .filter((m): m is Media => Boolean(m?.url))
+    .map((m) => ({ url: m.url as string, alt: m.alt, width: m.width, height: m.height }))
+  const intervalSekunde = (d?.heroInterval as number) || 3
   const koraki = (d?.koraki as { naslov?: string }[]) || []
 
   return (
@@ -22,10 +29,8 @@ export default async function HomePage() {
         opis={d?.heroOpis as string}
         poudarek={d?.heroPoudarek as string}
         tagline={d?.heroTagline as string}
-        fotoUrl={foto?.url}
-        fotoAlt={foto?.alt}
-        fotoWidth={foto?.width}
-        fotoHeight={foto?.height}
+        slike={slike}
+        intervalSekunde={intervalSekunde}
       />
       <QuickLinks />
       <Identity />
