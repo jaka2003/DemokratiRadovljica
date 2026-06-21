@@ -1,13 +1,30 @@
 import { Container } from '@/components/site/Container'
 import PobudeModul from '@/components/pobude/PobudeModul'
+import { ShareButtons } from '@/components/site/ShareButtons'
+import { getShareInfo } from '@/lib/share'
 
-export const metadata = {
-  title: 'Pobude in zemljevid',
-  description:
-    'Oddaj pobudo za svoj kraj v občini Radovljica. Odobrene pobude se anonimizirano prikažejo na interaktivnem zemljevidu.',
+export const dynamic = 'force-dynamic'
+
+const OPIS =
+  'Oddaj pobudo za svoj kraj v občini Radovljica. Odobrene pobude se anonimizirano prikažejo na interaktivnem zemljevidu.'
+
+export async function generateMetadata() {
+  const share = await getShareInfo('pobude')
+  const title = share.naslov || 'Pobude in zemljevid'
+  return {
+    title,
+    description: OPIS,
+    openGraph: {
+      title,
+      description: OPIS,
+      images: share.slikaUrl ? [{ url: share.slikaUrl }] : undefined,
+    },
+  }
 }
 
-export default function PobudePage() {
+export default async function PobudePage() {
+  const share = await getShareInfo('pobude')
+
   return (
     <section className="py-12 lg:py-16">
       <Container>
@@ -22,6 +39,9 @@ export default function PobudePage() {
             Predlagaj rešitev za svoj kraj – ceste, pločnike, parkirišča, razsvetljavo, igrišča in
             drugo. Klikni na zemljevid, označi lokacijo in oddaj pobudo.
           </p>
+          <div className="mt-5 flex justify-center">
+            <ShareButtons title={share.naslov || 'Pobude občanov – Demokrati Radovljica'} hashtags={share.hashtagi} />
+          </div>
         </div>
 
         <div className="mt-12">

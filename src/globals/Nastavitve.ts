@@ -109,6 +109,61 @@ export const Nastavitve: GlobalConfig = {
           ],
         },
         {
+          label: 'Deljenje na omrežjih',
+          description:
+            'Nastavitve za gumbe »Deli« na objavah. Privzete vrednosti veljajo povsod; po vrstah (novice, program, pobude) jih lahko prepišeš. Pusti prazno za privzeto.',
+          fields: [
+            {
+              name: 'delitevSlika',
+              label: 'Privzeta slika za deljenje (logo)',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description: 'Sličica, ki se prikaže, ko nekdo deli povezavo (priporočeno razmerje 1200×630).',
+              },
+            },
+            {
+              name: 'delitevHashtagi',
+              label: 'Privzeti hashtagi',
+              type: 'text',
+              admin: { description: 'Npr. #DemokratiRadovljica #LokalneVolitve2026' },
+            },
+            {
+              type: 'collapsible',
+              label: 'Novice',
+              admin: { initCollapsed: true, description: 'Prepiše privzeto za novice.' },
+              fields: [
+                { name: 'delitevNoviceSlika', label: 'Slika za deljenje', type: 'upload', relationTo: 'media' },
+                { name: 'delitevNoviceHashtagi', label: 'Hashtagi', type: 'text' },
+              ],
+            },
+            {
+              type: 'collapsible',
+              label: 'Program',
+              admin: { initCollapsed: true, description: 'Prepiše privzeto za program.' },
+              fields: [
+                { name: 'delitevProgramSlika', label: 'Slika za deljenje', type: 'upload', relationTo: 'media' },
+                { name: 'delitevProgramHashtagi', label: 'Hashtagi', type: 'text' },
+              ],
+            },
+            {
+              type: 'collapsible',
+              label: 'Pobude',
+              admin: { initCollapsed: true, description: 'Prepiše privzeto za stran Pobude.' },
+              fields: [
+                {
+                  name: 'delitevPobudeNaslov',
+                  label: 'Naslov za deljenje',
+                  type: 'text',
+                  admin: { description: 'Npr. »Oddaj pobudo za boljšo Radovljico«.' },
+                },
+                { name: 'delitevPobudeSlika', label: 'Slika za deljenje', type: 'upload', relationTo: 'media' },
+                { name: 'delitevPobudeHashtagi', label: 'Hashtagi', type: 'text' },
+              ],
+            },
+          ],
+        },
+        {
           label: 'Družbena omrežja',
           fields: [
             {

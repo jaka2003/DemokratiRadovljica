@@ -8,6 +8,8 @@ import { Icon } from '@/lib/icons'
 import type { IconName } from '@/lib/site'
 import { getPodrocjeBySlug, getPovezanePobude, getNoviceByPodrocje } from '@/lib/queries'
 import { NoviceMini } from '@/components/site/NoviceMini'
+import { ShareButtons } from '@/components/site/ShareButtons'
+import { getShareInfo } from '@/lib/share'
 import { statusInfo } from '@/lib/pobude'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +18,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const p = await getPodrocjeBySlug(slug)
   if (!p) return { title: 'Programsko področje' }
-  return { title: p.naslov, description: p.kratekOpis }
+  const share = await getShareInfo('program')
+  return {
+    title: p.naslov,
+    description: p.kratekOpis,
+    openGraph: {
+      title: p.naslov,
+      description: p.kratekOpis || undefined,
+      images: share.slikaUrl ? [{ url: share.slikaUrl }] : undefined,
+    },
+  }
 }
 
 export default async function PodrocjePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -27,6 +38,7 @@ export default async function PodrocjePage({ params }: { params: Promise<{ slug:
   const pobude = await getPovezanePobude(p.povezanaKategorija)
   const novice = await getNoviceByPodrocje(p.id)
   const fotografije = (p.fotografije ?? []).filter((f) => f.slika?.url)
+  const share = await getShareInfo('program')
 
   return (
     <section className="py-12 lg:py-16">
@@ -98,6 +110,11 @@ export default async function PodrocjePage({ params }: { params: Promise<{ slug:
 
         {/* Povezane objave */}
         <NoviceMini novice={novice} naslov="Povezane objave" />
+
+        {/* Deljenje */}
+        <div className="mt-10 border-t border-line pt-6">
+          <ShareButtons title={String(p.naslov)} hashtags={share.hashtagi} />
+        </div>
 
         {/* CTA */}
         <div className="mt-12 flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-navy p-8 text-white sm:flex-row sm:items-center sm:justify-between">

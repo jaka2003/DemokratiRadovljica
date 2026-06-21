@@ -3,14 +3,27 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { Container } from '@/components/site/Container'
+import { ShareButtons } from '@/components/site/ShareButtons'
 import { getNovicaBySlug } from '@/lib/queries'
+import { getShareInfo } from '@/lib/share'
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const n = await getNovicaBySlug(slug)
-  return { title: n?.naslov || 'Novica', description: n?.povzetek }
+  const share = await getShareInfo('novice')
+  const slika = (n?.slika as { url?: string })?.url || share.slikaUrl
+  return {
+    title: n?.naslov || 'Novica',
+    description: n?.povzetek,
+    openGraph: {
+      title: n?.naslov || 'Novica',
+      description: n?.povzetek || undefined,
+      type: 'article',
+      images: slika ? [{ url: slika }] : undefined,
+    },
+  }
 }
 
 function datum(d?: string) {
@@ -23,6 +36,7 @@ export default async function NovicaPage({ params }: { params: Promise<{ slug: s
   const { slug } = await params
   const n = await getNovicaBySlug(slug)
   if (!n) notFound()
+  const share = await getShareInfo('novice')
 
   return (
     <article className="py-12 lg:py-16">
@@ -42,6 +56,10 @@ export default async function NovicaPage({ params }: { params: Promise<{ slug: s
 
         {n.povzetek && <p className="mt-8 text-lg font-medium leading-relaxed text-navy/90">{n.povzetek}</p>}
         {n.vsebina && <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-navy/85">{n.vsebina}</div>}
+
+        <div className="mt-10 border-t border-line pt-6">
+          <ShareButtons title={String(n.naslov || 'Novica')} hashtags={share.hashtagi} />
+        </div>
       </Container>
     </article>
   )
