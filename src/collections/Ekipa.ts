@@ -18,7 +18,40 @@ export const Ekipa: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   defaultSort: 'vrstniRed',
+  hooks: {
+    beforeValidate: [
+      async ({ req, data }) => {
+        if (data?.uporabnik) {
+          try {
+            const u = (await req.payload.findByID({
+              collection: 'users',
+              id: data.uporabnik as string,
+              depth: 0,
+            })) as Record<string, unknown>
+            if (u) {
+              data.ime ||= u.ime
+              data.fotografija ||= u.fotografija
+              data.opis ||= u.opis
+            }
+          } catch {
+            /* neusodno */
+          }
+        }
+        return data
+      },
+    ],
+  },
   fields: [
+    {
+      name: 'uporabnik',
+      label: 'Izberi iz uporabnikov / kandidatov',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        description:
+          'Neobvezno: izberi osebo, da se ime, fotografija in opis samodejno izpolnijo (lahko jih urediš). Funkcijo vneseš ročno.',
+      },
+    },
     {
       type: 'row',
       fields: [

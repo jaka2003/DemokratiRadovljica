@@ -31,13 +31,45 @@ export const Svetniki: CollectionConfig = {
   defaultSort: 'vrstniRed',
   hooks: {
     beforeValidate: [
-      ({ data }) => {
-        if (data && !data.slug && data.imePriimek) data.slug = slugify(String(data.imePriimek))
+      async ({ req, data }) => {
+        if (!data) return data
+        // Samodejno izpolni iz izbranega uporabnika (samo prazna polja – lahko urejaš).
+        if (data.uporabnik) {
+          try {
+            const u = (await req.payload.findByID({
+              collection: 'users',
+              id: data.uporabnik as string,
+              depth: 0,
+            })) as Record<string, unknown>
+            if (u) {
+              data.imePriimek ||= u.ime
+              data.fotografija ||= u.fotografija
+              data.kraj ||= u.naslovKraj
+              data.poklic ||= u.aiPoklic
+              data.predstavitev ||= u.politicnaPredstavitev || u.opis
+              data.kratekOpis ||= u.opis
+              data.email ||= u.osebniEmail || u.email
+            }
+          } catch {
+            /* neusodno */
+          }
+        }
+        if (!data.slug && data.imePriimek) data.slug = slugify(String(data.imePriimek))
         return data
       },
     ],
   },
   fields: [
+    {
+      name: 'uporabnik',
+      label: 'Izberi iz uporabnikov / kandidatov',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        description:
+          'Neobvezno: izberi registriranega kandidata, da se ime, fotografija in predstavitev samodejno izpolnijo (lahko jih nato urediš). Sicer vneseš ročno spodaj.',
+      },
+    },
     {
       type: 'row',
       fields: [

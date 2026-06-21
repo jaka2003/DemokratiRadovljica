@@ -14,7 +14,42 @@ export const Kandidat: GlobalConfig = {
     read: () => true,
     update: ({ req }) => Boolean(req.user),
   },
+  hooks: {
+    beforeValidate: [
+      async ({ req, data }) => {
+        if (data?.uporabnik) {
+          try {
+            const u = (await req.payload.findByID({
+              collection: 'users',
+              id: data.uporabnik as string,
+              depth: 0,
+            })) as Record<string, unknown>
+            if (u) {
+              data.imePriimek ||= u.ime
+              data.fotografija ||= u.fotografija
+              data.kontaktEmail ||= u.osebniEmail || u.email
+              data.nagovor ||= u.politicnaPredstavitev || u.opis
+              data.izkusnje ||= u.aiIzkusnje
+            }
+          } catch {
+            /* neusodno */
+          }
+        }
+        return data
+      },
+    ],
+  },
   fields: [
+    {
+      name: 'uporabnik',
+      label: 'Izberi iz uporabnikov / kandidatov',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        description:
+          'Neobvezno: izberi osebo, da se ime, fotografija, nagovor in izkušnje samodejno izpolnijo (lahko jih urediš).',
+      },
+    },
     {
       name: 'objavljeno',
       label: 'Objavi stran kandidata',
