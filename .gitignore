@@ -34,3 +34,6 @@ yarn-error.log*
 
 # zacasne datoteke
 tmp_*
+
+# varnostne kopije baze
+/backups

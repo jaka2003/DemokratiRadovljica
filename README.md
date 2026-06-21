@@ -46,6 +46,23 @@ Aplikacija posluša na `APP_PORT` (privzeto 3000). Pred njo postavi reverse prox
 
 Postgres podatki in naloženi mediji se hranijo v Docker volumih (`db_data`, `media_data`).
 
+### Varnostne kopije baze
+
+Storitev `backup` v `docker-compose.yml` vsak dan samodejno naredi kopijo PostgreSQL v
+mapo `backups/` na strežniku (obdrži zadnjih 14 dni, gzip stisnjeno). Kopije **preživijo**
+tudi `docker compose down -v` (so na disku strežnika, ne v Docker volumu).
+
+```bash
+# Seznam kopij
+ls -lh backups/
+
+# Obnovitev iz kopije (PREPIŠE trenutno bazo!):
+gunzip -c backups/demokrati-2026-06-21_00-00.sql.gz | docker compose exec -T db psql -U demokrati -d demokrati
+```
+
+> Priporočilo: občasno kopiraj mapo `backups/` tudi izven strežnika (npr. `scp` na svoj računalnik
+> ali v oblak), da preživi tudi morebitno okvaro diska.
+
 ### Cloudflare + domena
 
 - Domeno (`demokratiradovljica.com` / `.info`) usmeri na IP strežnika (A zapis) prek Cloudflare.

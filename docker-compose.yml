@@ -67,6 +67,30 @@ services:
     profiles: ['tools']
     command: ['npx', 'payload', 'run', 'scripts/push-schema.ts']
 
+  # Samodejne dnevne varnostne kopije baze (shranjene v ./backups na strežniku).
+  # Obdrži zadnjih 14 dni; gzip stisnjen pg_dump z DROP-i za čisto obnovitev.
+  backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:-demokrati}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATABASE: ${POSTGRES_DB:-demokrati}
+      TZ: Europe/Ljubljana
+    volumes:
+      - ./backups:/backups
+    command: >
+      sh -c 'while true; do
+        f="/backups/demokrati-$$(date +%Y-%m-%d_%H-%M).sql.gz";
+        if pg_dump --clean --if-exists | gzip > "$$f"; then echo "Backup OK: $$f"; else echo "Backup NEUSPEH"; rm -f "$$f"; fi;
+        find /backups -name "demokrati-*.sql.gz" -mtime +14 -delete;
+        sleep 86400;
+      done'
+
   # Cloudflare Tunnel – varno objavi stran brez javnega IP-ja in odprtih vrat.
   cloudflared:
     image: cloudflare/cloudflared:latest
