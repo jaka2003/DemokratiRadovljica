@@ -44,7 +44,7 @@ export const SITE = {
 export const NAV: { label: string; href: string }[] = [
   { label: 'Domov', href: '/' },
   { label: 'Občina', href: '/obcina' },
-  { label: 'Kandidat/-ka', href: '/kandidat' },
+  { label: 'Lokalne volitve', href: '/lokalne-volitve' },
   { label: 'Program', href: '/program' },
   { label: 'Pobude in zemljevid', href: '/pobude' },
 ]
@@ -64,7 +64,7 @@ export const HERO = {
 export const QUICK_LINKS: { title: string; href: string; icon: IconName }[] = [
   { title: 'Demokrati Radovljica', href: '/demokrati', icon: 'users' },
   { title: 'Občina Radovljica', href: '/obcina', icon: 'building' },
-  { title: 'Kandidat/-ka za župana/-jo', href: '/kandidat', icon: 'user' },
+  { title: 'Lokalne volitve in kandidati', href: '/lokalne-volitve', icon: 'user' },
   { title: 'Program', href: '/program', icon: 'fileText' },
   { title: 'Pobude občanov in zemljevid', href: '/pobude', icon: 'mapPin' },
   { title: 'Interna prijava', href: '/admin', icon: 'lock' },

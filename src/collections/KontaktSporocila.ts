@@ -33,10 +33,12 @@ export const KontaktSporocila: CollectionConfig = {
       type: 'select',
       defaultValue: 'kandidat',
       options: [
-        { label: 'Stran kandidata', value: 'kandidat' },
+        { label: 'Stran kandidata za župana', value: 'kandidat' },
+        { label: 'Stran kandidata za svetnika', value: 'svetnik' },
         { label: 'Splošni kontakt', value: 'splosno' },
       ],
     },
+    { name: 'prejemnik', label: 'Namenjeno kandidatu', type: 'text', admin: { description: 'Ime kandidata, ki mu je sporočilo namenjeno (če velja).' } },
     { name: 'soglasjeGDPR', label: 'Soglasje GDPR', type: 'checkbox' },
   ],
 }

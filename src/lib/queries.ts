@@ -134,6 +134,42 @@ export async function getNastavitve() {
   return payload.findGlobal({ slug: 'nastavitve', depth: 0 }) as Promise<Record<string, unknown>>
 }
 
+export type Svetnik = {
+  id: string | number
+  imePriimek: string
+  slug: string
+  poklic?: string
+  kraj?: string
+  kratekOpis?: string
+  predstavitev?: string
+  email?: string
+  fotografija?: { url?: string; alt?: string }
+  poudarki?: { besedilo: string }[]
+}
+
+export async function getSvetniki(): Promise<Svetnik[]> {
+  const payload = await getPayload({ config })
+  const res = await payload.find({
+    collection: 'svetniki',
+    where: { objavljeno: { equals: true } },
+    sort: 'vrstniRed',
+    limit: 200,
+    depth: 1,
+  })
+  return res.docs as unknown as Svetnik[]
+}
+
+export async function getSvetnikBySlug(slug: string): Promise<Svetnik | null> {
+  const payload = await getPayload({ config })
+  const res = await payload.find({
+    collection: 'svetniki',
+    where: { and: [{ slug: { equals: slug } }, { objavljeno: { equals: true } }] },
+    limit: 1,
+    depth: 1,
+  })
+  return (res.docs[0] as unknown as Svetnik) ?? null
+}
+
 export async function getDomacaStran() {
   const payload = await getPayload({ config })
   return payload.findGlobal({ slug: 'domaca-stran', depth: 1 }) as Promise<Record<string, unknown>>

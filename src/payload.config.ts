@@ -23,6 +23,7 @@ import { SporocilaKandidatom } from './collections/SporocilaKandidatom'
 import { KontaktSporocila } from './collections/KontaktSporocila'
 import { Novice } from './collections/Novice'
 import { EmailDnevnik } from './collections/EmailDnevnik'
+import { Svetniki } from './collections/Svetniki'
 import { Nastavitve } from './globals/Nastavitve'
 import { Kandidat } from './globals/Kandidat'
 import { DomacaStran } from './globals/DomacaStran'
@@ -96,6 +97,7 @@ export default buildConfig({
     KontaktSporocila,
     Novice,
     EmailDnevnik,
+    Svetniki,
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,

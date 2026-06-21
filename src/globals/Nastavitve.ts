@@ -15,6 +15,21 @@ export const Nastavitve: GlobalConfig = {
   },
   fields: [
     {
+      name: 'tipVolitev',
+      label: 'Kako nastopate na lokalnih volitvah',
+      type: 'select',
+      required: true,
+      defaultValue: 'zupan_lista',
+      options: [
+        { label: 'Kandidat za župana + lista za občinski svet', value: 'zupan_lista' },
+        { label: 'Samo lista za občinski svet (brez kandidata za župana)', value: 'samo_svet' },
+      ],
+      admin: {
+        description:
+          'Določa stran »Lokalne volitve«: pri prvi možnosti se zgoraj prikaže kandidat za župana, pri drugi le kandidati za svetnike.',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {

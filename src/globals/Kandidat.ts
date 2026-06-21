@@ -4,11 +4,11 @@ import type { GlobalConfig } from 'payload'
 // Objavi se, ko je kandidat uradno predstavljen.
 export const Kandidat: GlobalConfig = {
   slug: 'kandidat',
-  label: 'Kandidat/-ka (javna stran)',
+  label: 'Kandidat za župana (javna stran)',
   admin: {
     group: 'Javna vsebina',
     description:
-      'Vsebina javne strani »Kandidat«. Dokler ni odkljukano »Objavi stran kandidata«, obiskovalci vidijo napoved »kmalu«. Ko je kandidat predstavljen, vnesi podatke in odkljukaj objavo.',
+      'Podatki kandidata za župana – prikažejo se na strani »Lokalne volitve« (zgornji blok) in na podstrani /lokalne-volitve/zupan. Dokler ni odkljukano »Objavi«, je kandidat skrit. Listo kandidatov za svetnike urejaš v rubriki »Kandidati za svetnike«.',
   },
   access: {
     read: () => true,

@@ -145,9 +145,11 @@ export const AdminDashboard = () => {
             <li style={liStyle}>{b('Novice')} — objaviš novico/obvestilo (»Ustvari nov«).</li>
             <li style={liStyle}>{b('Ekipa')} — člani, prikazani na strani »Demokrati Radovljica«.</li>
             <li style={liStyle}>
-              {b('Kandidat')} — vneseš podatke; ko obkljukaš »Objavi«, postane stran kandidata vidna.
+              {b('Lokalne volitve')}: v {b('Nastavitvah')} najprej izbereš »kandidat za župana + lista« ali »samo
+              občinski svet«. {b('Kandidat za župana')} (global) uredi in obkljukaj »Objavi«.
+              {b('Kandidati za svetnike')} — dodajaš člane liste (»Ustvari nov«); vsak dobi svojo podstran.
             </li>
-            <li style={liStyle}>{b('Nastavitve')} — kontakt, družbena omrežja, poslanstvo, vrednote.</li>
+            <li style={liStyle}>{b('Nastavitve')} — tip volitev, kontakt, družbena omrežja, poslanstvo, vrednote.</li>
             <li style={liStyle}>
               {b('Program')} in {b('Kraji')} — besedila so že vpisana; urejaš jih po želji.
             </li>

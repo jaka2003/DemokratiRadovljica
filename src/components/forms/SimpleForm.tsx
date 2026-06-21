@@ -14,6 +14,7 @@ export type Field = {
 export default function SimpleForm({
   action,
   fields,
+  hidden,
   submitLabel = 'Pošlji',
   gdprLabel = 'Soglašam z obdelavo osebnih podatkov.',
   successTitle = 'Hvala!',
@@ -21,6 +22,7 @@ export default function SimpleForm({
 }: {
   action: string
   fields: Field[]
+  hidden?: Record<string, string>
   submitLabel?: string
   gdprLabel?: string
   successTitle?: string
@@ -63,6 +65,8 @@ export default function SimpleForm({
 
   return (
     <form onSubmit={onSubmit} className="rounded-[var(--radius-card)] border border-line bg-white p-6 shadow-card sm:p-8">
+      {hidden &&
+        Object.entries(hidden).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
       <div className="grid gap-4 sm:grid-cols-2">
         {fields.map((f) => (
           <div key={f.name} className={f.full || f.type === 'textarea' ? 'sm:col-span-2' : ''}>
