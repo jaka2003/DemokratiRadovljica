@@ -62,8 +62,8 @@ export const AiGenerator = () => {
       </button>
       {done && (
         <span style={{ marginLeft: 12, color: '#008288' }}>
-          Izpolnjeno! Preglej polja »Kratka predstavitev«, »Področja sodelovanja« in »Kratka politična
-          predstavitev« zgoraj.
+          Izpolnjeno! Zapri ta razdelek in preglej polja »Kratka predstavitev«, »Področja sodelovanja«
+          in »Kratka politična predstavitev« spodaj.
         </span>
       )}
       {error && <p style={{ marginTop: 8, color: '#b00020' }}>{error}</p>}
