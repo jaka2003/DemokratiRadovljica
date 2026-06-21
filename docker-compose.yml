@@ -38,6 +38,8 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-}
       ADMIN_NOTIFY_EMAIL: ${ADMIN_NOTIFY_EMAIL:-}
+      # Reply-To na vseh odhodnih e-poštah (privzeto = ADMIN_NOTIFY_EMAIL)
+      REPLY_TO_EMAIL: ${REPLY_TO_EMAIL:-}
       # AI modul (Anthropic / Claude)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-opus-4-8}

@@ -6,6 +6,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import nodemailer from 'nodemailer'
 import { sl } from '@payloadcms/translations/languages/sl'
 import { en } from '@payloadcms/translations/languages/en'
 import sharp from 'sharp'
@@ -37,19 +38,26 @@ const databaseURI = process.env.DATABASE_URI || 'file:./demokrati.db'
 const usePostgres = databaseURI.startsWith('postgres')
 
 // E-pošta: če je nastavljen SMTP, uporabi nodemailer; sicer Payload zapiše sporočila v konzolo.
+// Odgovori na vsa odhodna sporočila gredo na ta naslov (pravi nabiralnik).
+const replyTo = process.env.REPLY_TO_EMAIL || process.env.ADMIN_NOTIFY_EMAIL || undefined
+
 const email = process.env.SMTP_HOST
   ? nodemailerAdapter({
       defaultFromAddress: process.env.SMTP_FROM || 'info@demokratiradovljica.com',
       defaultFromName: 'Demokrati Radovljica',
-      transportOptions: {
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: Number(process.env.SMTP_PORT) === 465,
-        auth:
-          process.env.SMTP_USER && process.env.SMTP_PASS
-            ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-            : undefined,
-      },
+      // Transporter z globalnimi privzetimi vrednostmi – Reply-To na vseh e-poštah.
+      transport: nodemailer.createTransport(
+        {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT || 587),
+          secure: Number(process.env.SMTP_PORT) === 465,
+          auth:
+            process.env.SMTP_USER && process.env.SMTP_PASS
+              ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+              : undefined,
+        },
+        replyTo ? { replyTo } : undefined,
+      ),
     })
   : undefined
 
