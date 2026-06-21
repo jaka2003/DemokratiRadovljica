@@ -18,18 +18,44 @@ export const DomacaStran: GlobalConfig = {
       tabs: [
         {
           label: 'Uvodni blok (hero)',
+          description: 'To je prvo, kar obiskovalec vidi na vrhu domače strani – velik naslov, opis in fotografija.',
           fields: [
-            { name: 'heroNaslov', label: 'Naslov', type: 'text', defaultValue: 'USPEŠNA RADOVLJICA 2026–2034' },
-            { name: 'heroPodnaslov', label: 'Podnaslov', type: 'text', defaultValue: 'Radovljica potrebuje novo razvojno ambicijo.' },
+            {
+              name: 'heroNaslov',
+              label: 'Naslov',
+              type: 'text',
+              defaultValue: 'USPEŠNA RADOVLJICA 2026–2034',
+              admin: { description: 'Velik glavni naslov na vrhu domače strani.' },
+            },
+            {
+              name: 'heroPodnaslov',
+              label: 'Podnaslov',
+              type: 'text',
+              defaultValue: 'Radovljica potrebuje novo razvojno ambicijo.',
+              admin: { description: 'Krepka vrstica pod naslovom.' },
+            },
             {
               name: 'heroOpis',
               label: 'Kratek opis',
               type: 'textarea',
               defaultValue:
                 'Program konkretnih rešitev, ki nastaja iz resničnih težav ljudi, krajev in vsakdanjega življenja v občini Radovljica.',
+              admin: { description: 'Nekaj stavkov pod podnaslovom.' },
             },
-            { name: 'heroPoudarek', label: 'Dodatni poudarek', type: 'text', defaultValue: 'Občina vseh krajev, vseh generacij in vseh ljudi.' },
-            { name: 'heroTagline', label: 'Slogan', type: 'text', defaultValue: 'Sodeluj. Predlagaj. Soustvarjaj.' },
+            {
+              name: 'heroPoudarek',
+              label: 'Dodatni poudarek',
+              type: 'text',
+              defaultValue: 'Občina vseh krajev, vseh generacij in vseh ljudi.',
+              admin: { description: 'Poudarjena misel nad gumboma.' },
+            },
+            {
+              name: 'heroTagline',
+              label: 'Slogan',
+              type: 'text',
+              defaultValue: 'Sodeluj. Predlagaj. Soustvarjaj.',
+              admin: { description: 'Turkizni slogan tik nad gumboma.' },
+            },
             {
               name: 'heroFoto',
               label: 'Fotografija Radovljice',

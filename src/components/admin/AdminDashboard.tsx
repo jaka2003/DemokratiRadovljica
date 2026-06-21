@@ -104,9 +104,64 @@ export const AdminDashboard = () => {
 
   const box: React.CSSProperties = { border: '1px solid #e7e9f1', borderRadius: 10, padding: '1rem' }
 
+  const liStyle: React.CSSProperties = { marginBottom: 6, lineHeight: 1.5 }
+  const b = (t: string) => <strong style={{ color: '#0f004e' }}>{t}</strong>
+
   return (
     <div style={{ margin: '0 0 2rem' }}>
       <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Nadzorna plošča kampanje</h2>
+
+      {/* Navodila za uporabo */}
+      <details
+        open
+        style={{ border: '1px solid #cfe8ea', background: '#f0fbfb', borderRadius: 10, padding: '0.75rem 1rem', marginBottom: 16 }}
+      >
+        <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#0f004e' }}>
+          📖 Kako urejam stran (klikni za navodila)
+        </summary>
+        <div style={{ fontSize: 13, color: '#33384a', marginTop: 10 }}>
+          <p style={{ marginBottom: 10 }}>
+            V levem meniju so rubrike razdeljene v skupine. Spodaj je, kaj kje urejaš. Vsako polje
+            ima pod sabo kratko razlago, gumb {b('Ustvari nov')} pa je desno zgoraj. Po urejanju vedno
+            klikni {b('Save')} (Shrani).
+          </p>
+
+          <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Vsak dan</p>
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            <li style={liStyle}>
+              {b('Pobude')} (skupina »Pobude in sporočila«) — pregleduješ pobude občanov. Klikni
+              pobudo → zavihek {b('Obravnava')} → za prikaz na zemljevidu obkljukaj »Prikaži na javnem
+              zemljevidu«.
+            </li>
+            <li style={liStyle}>
+              {b('Kontaktna sporočila')} in {b('Prijave za sodelovanje')} — samo za branje (vnašajo
+              jih obiskovalci).
+            </li>
+          </ul>
+
+          <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Vsebina strani (skupina »Javna vsebina«)</p>
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            <li style={liStyle}>{b('Domača stran')} — naslov, opis in fotografija na vrhu strani.</li>
+            <li style={liStyle}>{b('Novice')} — objaviš novico/obvestilo (»Ustvari nov«).</li>
+            <li style={liStyle}>{b('Ekipa')} — člani, prikazani na strani »Demokrati Radovljica«.</li>
+            <li style={liStyle}>
+              {b('Kandidat')} — vneseš podatke; ko obkljukaš »Objavi«, postane stran kandidata vidna.
+            </li>
+            <li style={liStyle}>{b('Nastavitve')} — kontakt, družbena omrežja, poslanstvo, vrednote.</li>
+            <li style={liStyle}>
+              {b('Program')} in {b('Kraji')} — besedila so že vpisana; urejaš jih po želji.
+            </li>
+          </ul>
+
+          <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Kandidati (skupina »Kandidati«)</p>
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            <li style={liStyle}>
+              {b('Uporabniki in kandidati')} — dodaš kandidata (»Ustvari nov«): e-pošta, geslo, izbereš
+              vlogo. Kandidat se nato prijavi in ureja samo svoj profil.
+            </li>
+          </ul>
+        </div>
+      </details>
 
       {/* Statistika */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
