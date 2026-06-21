@@ -16,8 +16,10 @@ export const Media: CollectionConfig = {
   },
   admin: {
     group: 'Sistem',
-    description:
-      'Vse naložene slike in datoteke (fotografije krajev, kandidatov, ekipe, pobud). Naložiš jih lahko tudi neposredno pri posameznem polju.',
+    // Skrito iz menija – slike se nalagajo neposredno pri poljih vsebine.
+    // (Upload polja še vedno delujejo; to skrije le ločen seznam medijev.)
+    hidden: true,
+    description: 'Vse naložene slike in datoteke. Nalagaš jih neposredno pri posameznem polju.',
   },
   upload: {
     staticDir: path.resolve(dirname, '../../media'),
