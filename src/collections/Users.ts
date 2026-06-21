@@ -73,8 +73,8 @@ export const Users: CollectionConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Profil',
-          description: 'Osnovni podatki kandidata – te lahko ureja kandidat sam.',
+          label: 'Profil in predstavitev',
+          description: 'Vsi podatki kandidata na enem mestu – osebni podatki, predstavitev in AI pomoč. Te lahko ureja kandidat sam.',
           fields: [
             { name: 'ime', label: 'Ime in priimek', type: 'text' },
             {
@@ -107,12 +107,14 @@ export const Users: CollectionConfig = {
               type: 'ui',
               admin: { components: { Field: '/components/admin/PotrebniDokumenti#PotrebniDokumenti' } },
             },
-          ],
-        },
-        {
-          label: 'AI predstavitev',
-          description: 'Vnesi osnovne podatke in generiraj predloge besedil (jih lahko urediš).',
-          fields: [
+            {
+              type: 'collapsible',
+              label: 'AI pomoč pri predstavitvi (neobvezno)',
+              admin: {
+                initCollapsed: true,
+                description: 'Vnesi osnovne podatke in z AI generiraj predloge besedil – jih lahko urediš.',
+              },
+              fields: [
             { name: 'aiPoklic', label: 'Poklic', type: 'text' },
             { name: 'aiIzkusnje', label: 'Izkušnje', type: 'textarea' },
             { name: 'aiPodrocja', label: 'Področja zanimanja', type: 'text' },
@@ -132,6 +134,8 @@ export const Users: CollectionConfig = {
             { name: 'genBiografija', label: 'Kratka biografija', type: 'textarea' },
             { name: 'genOdgovoriObcanom', label: 'Osnutek odgovorov na vprašanja občanov', type: 'textarea' },
             { name: 'genVideoNagovor', label: 'Osnutek nagovora za video', type: 'textarea' },
+              ],
+            },
           ],
         },
         {

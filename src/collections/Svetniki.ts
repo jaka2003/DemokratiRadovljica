@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { splitToList } from '../lib/prefill'
 
 const slugify = (s: string) =>
   s
@@ -46,9 +47,15 @@ export const Svetniki: CollectionConfig = {
               data.fotografija ||= u.fotografija
               data.kraj ||= u.naslovKraj
               data.poklic ||= u.aiPoklic
-              data.predstavitev ||= u.politicnaPredstavitev || u.opis
               data.kratekOpis ||= u.opis
+              data.predstavitev ||=
+                u.genSpletna || u.genDaljsaPredstavitev || u.politicnaPredstavitev || u.opis
               data.email ||= u.osebniEmail || u.email
+              // Poudarki iz glavnih sporočil / vrednot (če še ni vneseno).
+              if (!Array.isArray(data.poudarki) || data.poudarki.length === 0) {
+                const list = splitToList(u.aiSporocila || u.aiVrednote)
+                if (list.length) data.poudarki = list.map((besedilo) => ({ besedilo }))
+              }
             }
           } catch {
             /* neusodno */

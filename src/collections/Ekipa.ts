@@ -31,7 +31,8 @@ export const Ekipa: CollectionConfig = {
             if (u) {
               data.ime ||= u.ime
               data.fotografija ||= u.fotografija
-              data.opis ||= u.opis
+              data.funkcija ||= u.aiPoklic
+              data.opis ||= u.opis || u.politicnaPredstavitev
             }
           } catch {
             /* neusodno */

@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { splitToList } from '../lib/prefill'
 
 // Javna stran kandidata/-ke za župana/-jo (spec. razdelek 6).
 // Objavi se, ko je kandidat uradno predstavljen.
@@ -28,8 +29,14 @@ export const Kandidat: GlobalConfig = {
               data.imePriimek ||= u.ime
               data.fotografija ||= u.fotografija
               data.kontaktEmail ||= u.osebniEmail || u.email
-              data.nagovor ||= u.politicnaPredstavitev || u.opis
+              data.nagovor ||= u.genKratkaPredstavitev || u.politicnaPredstavitev || u.opis
               data.izkusnje ||= u.aiIzkusnje
+              data.pogledNaRazvoj ||= u.aiLokalneTeme || u.aiRazlog
+              // Vrednote iz osebnih vrednot (če še ni vneseno).
+              if (!Array.isArray(data.vrednote) || data.vrednote.length === 0) {
+                const list = splitToList(u.aiVrednote)
+                if (list.length) data.vrednote = list.map((label) => ({ label, ikona: 'shieldCheck' }))
+              }
             }
           } catch {
             /* neusodno */
