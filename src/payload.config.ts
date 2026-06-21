@@ -79,6 +79,7 @@ export default buildConfig({
     meta: {
       title: 'Demokrati Radovljica',
       titleSuffix: ' – Admin',
+      icons: [{ rel: 'icon', type: 'image/png', url: '/favicon.png' }],
     },
   },
   collections: [
