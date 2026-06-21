@@ -29,6 +29,8 @@ services:
       DATABASE_URI: postgres://${POSTGRES_USER:-demokrati}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-demokrati}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET:?nastavi PAYLOAD_SECRET v .env}
       NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL:-https://demokratiradovljica.com}
+      # Google Search Console potrditev (HTML meta metoda) – neobvezno
+      GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
       # E-pošta (SMTP)
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
