@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { KRAJI } from '@/lib/pobude'
+import { VLOGE } from '@/access/roles'
+
+type Prejemnik = { id: string | number; ime: string; email: string; vloga: string[] }
 
 const PREDLOGE: { label: string; subject: string; body: string }[] = [
   { label: '— Brez predloge —', subject: '', body: '' },
@@ -50,12 +52,58 @@ export const AdminDashboard = () => {
   const [allowed, setAllowed] = useState(true)
 
   // Množična e-pošta
-  const [filter, setFilter] = useState('vsi')
+  const [kategorije, setKategorije] = useState<string[]>([])
+  const [nacin, setNacin] = useState<'katera' | 'vse'>('katera')
+  const [prejemniki, setPrejemniki] = useState<Prejemnik[] | null>(null)
+  const [nalagam, setNalagam] = useState(false)
+  const [izbiraNacin, setIzbiraNacin] = useState<'vsi' | 'posamezni'>('vsi')
+  const [izbrani, setIzbrani] = useState<Set<string | number>>(new Set())
   const [subject, setSubject] = useState('')
   const [bodyText, setBodyText] = useState('')
   const [files, setFiles] = useState<FileList | null>(null)
   const [emailMsg, setEmailMsg] = useState('')
   const [sending, setSending] = useState(false)
+
+  // Ob spremembi kategorij/načina je seznam prejemnikov zastarel – ponastavi.
+  const ponastaviPrejemnike = () => {
+    setPrejemniki(null)
+    setIzbiraNacin('vsi')
+    setIzbrani(new Set())
+  }
+  const toggleKategorija = (v: string) => {
+    setKategorije((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]))
+    ponastaviPrejemnike()
+  }
+  const toggleIzbran = (id: string | number) =>
+    setIzbrani((prev) => {
+      const n = new Set(prev)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
+
+  const prikaziPrejemnike = async () => {
+    setNalagam(true)
+    setEmailMsg('')
+    try {
+      const res = await fetch('/interno/prejemniki', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kategorije, nacin }),
+      })
+      const json = await res.json()
+      if (json.ok) {
+        setPrejemniki(json.users)
+        setIzbrani(new Set(json.users.map((u: Prejemnik) => u.id))) // privzeto vsi izbrani
+        setIzbiraNacin('vsi')
+      } else setEmailMsg(json.error || 'Napaka pri nalaganju prejemnikov.')
+    } catch {
+      setEmailMsg('Povezava ni uspela.')
+    } finally {
+      setNalagam(false)
+    }
+  }
 
   useEffect(() => {
     fetch('/interno/dashboard-stats', { credentials: 'include' })
@@ -82,10 +130,16 @@ export const AdminDashboard = () => {
     setEmailMsg('')
     try {
       const fd = new FormData()
-      fd.set('filter', filter)
       fd.set('subject', subject)
       fd.set('body', bodyText)
       fd.set('test', String(test))
+      if (!test) {
+        if (izbiraNacin === 'posamezni') fd.set('userIds', JSON.stringify(Array.from(izbrani)))
+        else {
+          fd.set('kategorije', JSON.stringify(kategorije))
+          fd.set('nacin', nacin)
+        }
+      }
       if (files) for (const f of Array.from(files)) fd.append('priloge', f)
       const res = await fetch('/interno/poslji-email', {
         method: 'POST',
@@ -158,8 +212,8 @@ export const AdminDashboard = () => {
           <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Kandidati (skupina »Kandidati«)</p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             <li style={liStyle}>
-              {b('Uporabniki in kandidati')} — dodaš kandidata (»Ustvari nov«): e-pošta, geslo, izbereš
-              vlogo. Kandidat se nato prijavi in ureja samo svoj profil.
+              {b('Uporabniki sistema')} — dodaš uporabnika/kandidata (»Ustvari nov«): e-pošta, geslo,
+              izbereš eno ali več vlog (član, kandidat za svetnika …). Uporabnik se nato prijavi in ureja svoj profil.
             </li>
           </ul>
         </div>
@@ -186,19 +240,74 @@ export const AdminDashboard = () => {
         </div>
 
         <div style={box}>
-          <h3 style={{ fontWeight: 700, marginBottom: 8 }}>Pošlji e-pošto kandidatom</h3>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '100%', padding: 8, marginBottom: 8 }}>
-            <option value="vsi">Vsi kandidati</option>
-            <option value="brez_profila">Brez potrjenega profila</option>
-            <option value="brez_dokumentov">Brez naloženih dokumentov</option>
-            <optgroup label="Po kraju / volilnem območju">
-              {KRAJI.filter((k) => !k.startsWith('Drugo')).map((k) => (
-                <option key={k} value={`kraj:${k}`}>
-                  Kraj: {k}
-                </option>
-              ))}
-            </optgroup>
-          </select>
+          <h3 style={{ fontWeight: 700, marginBottom: 8 }}>Pošlji e-pošto</h3>
+
+          {/* 1) Kategorije prejemnikov */}
+          <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#0f004e', marginBottom: 6 }}>
+            1. Kategorije prejemnikov:
+          </label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginBottom: 6 }}>
+            {VLOGE.map((v) => (
+              <label key={v.value} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#33384a' }}>
+                <input type="checkbox" checked={kategorije.includes(v.value)} onChange={() => toggleKategorija(v.value)} />
+                {v.label}
+              </label>
+            ))}
+          </div>
+          <p style={{ fontSize: 12, color: '#5b5f73', marginBottom: 8 }}>Brez izbire = vsi uporabniki sistema.</p>
+
+          {/* Način ujemanja (le pri 2+ izbranih kategorijah) */}
+          {kategorije.length >= 2 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8, fontSize: 13 }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <input type="radio" name="nacin" checked={nacin === 'katera'} onChange={() => { setNacin('katera'); ponastaviPrejemnike() }} />
+                Katera koli izbrana
+              </label>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <input type="radio" name="nacin" checked={nacin === 'vse'} onChange={() => { setNacin('vse'); ponastaviPrejemnike() }} />
+                Vse hkrati (presek)
+              </label>
+            </div>
+          )}
+
+          {/* 2) Prikaži prejemnike */}
+          <button type="button" disabled={nalagam} onClick={prikaziPrejemnike} className="btn btn--style-secondary btn--size-small" style={{ marginBottom: 8 }}>
+            {nalagam ? 'Nalagam …' : '2. Prikaži prejemnike'}
+          </button>
+
+          {prejemniki && (
+            <div style={{ border: '1px solid #e7e9f1', borderRadius: 8, padding: 10, marginBottom: 10 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#0f004e', marginBottom: 6 }}>
+                Najdenih {prejemniki.length} prejemnikov.
+              </div>
+              {prejemniki.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+                    <input type="radio" name="izbira" checked={izbiraNacin === 'vsi'} onChange={() => setIzbiraNacin('vsi')} />
+                    Pošlji vsem ({prejemniki.length})
+                  </label>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+                    <input type="radio" name="izbira" checked={izbiraNacin === 'posamezni'} onChange={() => setIzbiraNacin('posamezni')} />
+                    Izberi posamezne
+                  </label>
+                </div>
+              )}
+              {izbiraNacin === 'posamezni' && (
+                <div style={{ maxHeight: 170, overflowY: 'auto', marginTop: 8, borderTop: '1px solid #eef0f5', paddingTop: 6 }}>
+                  {prejemniki.map((u) => (
+                    <label key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, padding: '2px 0' }}>
+                      <input type="checkbox" checked={izbrani.has(u.id)} onChange={() => toggleIzbran(u.id)} />
+                      <span style={{ color: '#0f004e' }}>{u.ime}</span>
+                      <span style={{ color: '#5b5f73' }}>· {u.email}</span>
+                    </label>
+                  ))}
+                  <div style={{ fontSize: 12, color: '#5b5f73', marginTop: 4 }}>Izbranih: {izbrani.size}</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 3) Vsebina sporočila */}
           <select
             defaultValue="0"
             onChange={(e) => {
@@ -238,12 +347,17 @@ export const AdminDashboard = () => {
             onChange={(e) => setFiles(e.target.files)}
             style={{ width: '100%', marginBottom: 8, fontSize: 13 }}
           />
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <button type="button" disabled={sending} onClick={() => sendEmail(true)} className="btn btn--style-secondary btn--size-small">
               Testno (meni)
             </button>
-            <button type="button" disabled={sending} onClick={() => sendEmail(false)} className="btn btn--style-primary btn--size-small">
-              Pošlji vsem izbranim
+            <button
+              type="button"
+              disabled={sending || (izbiraNacin === 'posamezni' && izbrani.size === 0)}
+              onClick={() => sendEmail(false)}
+              className="btn btn--style-primary btn--size-small"
+            >
+              {izbiraNacin === 'posamezni' ? `Pošlji izbranim (${izbrani.size})` : 'Pošlji'}
             </button>
             {emailMsg && <span style={{ fontSize: 12, color: '#008288' }}>{emailMsg}</span>}
           </div>

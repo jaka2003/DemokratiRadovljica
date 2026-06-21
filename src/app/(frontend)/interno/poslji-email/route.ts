@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { isAdmin, KANDIDAT_VLOGE } from '@/access/roles'
+import { isAdmin } from '@/access/roles'
 
 // Pošiljanje e-pošte kandidatom (spec. razdelek 11.2).
 export async function POST(req: Request) {
@@ -15,7 +15,6 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ ok: false, error: 'Neveljavna zahteva.' }, { status: 400 })
   }
-  const filter = String(form.get('filter') || 'vsi')
   const subject = String(form.get('subject') || '').trim()
   const html = String(form.get('body') || '').trim()
   const test = form.get('test') === 'true'
@@ -32,10 +31,35 @@ export async function POST(req: Request) {
     datoteke.map(async (f) => ({ filename: f.name, content: Buffer.from(await f.arrayBuffer()) })),
   )
 
-  const where: Record<string, unknown> = { vloga: { in: [...KANDIDAT_VLOGE] } }
-  if (filter === 'brez_profila') where.statusProfila = { not_equals: 'potrjen' }
-  else if (filter === 'brez_dokumentov') where.statusDokumentacije = { equals: 'ni_oddano' }
-  else if (filter.startsWith('kraj:')) where.naslovKraj = { equals: filter.slice(5) }
+  // Prejemniki: bodisi izrecno izbrani posamezniki (userIds), bodisi po kategorijah (vloge)
+  // z načinom ujemanja – »katera koli« (unija) ali »vse hkrati« (presek).
+  const userIdsRaw = String(form.get('userIds') || '').trim()
+  const kategorijeRaw = String(form.get('kategorije') || '').trim()
+  const nacin = form.get('nacin') === 'vse' ? 'vse' : 'katera'
+
+  let where: Record<string, unknown> = {}
+  let opisFilter = 'vsi uporabniki'
+  if (userIdsRaw) {
+    let ids: (string | number)[] = []
+    try {
+      ids = JSON.parse(userIdsRaw)
+    } catch {}
+    if (!ids.length) return NextResponse.json({ ok: false, error: 'Ni izbranih prejemnikov.' }, { status: 400 })
+    where = { id: { in: ids } }
+    opisFilter = `posamezni (${ids.length})`
+  } else {
+    let kategorije: string[] = []
+    try {
+      kategorije = JSON.parse(kategorijeRaw)
+    } catch {}
+    if (kategorije.length) {
+      where =
+        nacin === 'vse'
+          ? { and: kategorije.map((k) => ({ vloga: { in: [k] } })) }
+          : { vloga: { in: kategorije } }
+      opisFilter = `${kategorije.join(', ')} (${nacin === 'vse' ? 'vse hkrati' : 'katera koli'})`
+    }
+  }
 
   // Testno pošiljanje: samo administratorju.
   if (test) {
@@ -69,7 +93,7 @@ export async function POST(req: Request) {
   try {
     await payload.create({
       collection: 'email-dnevnik',
-      data: { zadeva: subject, filter, prejemnikov: sent, posiljatelj: user!.email, vsebina: html },
+      data: { zadeva: subject, filter: opisFilter, prejemnikov: sent, posiljatelj: user!.email, vsebina: html },
       overrideAccess: true,
     })
   } catch {}
