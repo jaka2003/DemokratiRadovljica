@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { Send, MapPin, CheckCircle2, Loader2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Send, MapPin, CheckCircle2, Loader2, Camera, ImagePlus, X } from 'lucide-react'
 import { POBUDA_KATEGORIJE, KRAJI } from '@/lib/pobude'
 
 type Status = 'idle' | 'sending' | 'ok' | 'error'
@@ -18,8 +18,32 @@ export default function PobudeForm({
   onClearDraft: () => void
 }) {
   const formRef = useRef<HTMLFormElement>(null)
+  const cameraRef = useRef<HTMLInputElement>(null)
+  const galleryRef = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
+  const [foto, setFoto] = useState<File | null>(null)
+  const [fotoPreview, setFotoPreview] = useState('')
+
+  // Počisti predogledni URL ob menjavi/odstranitvi/odhodu (prepreči puščanje pomnilnika).
+  useEffect(() => {
+    return () => {
+      if (fotoPreview) URL.revokeObjectURL(fotoPreview)
+    }
+  }, [fotoPreview])
+
+  function onFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setFoto(file)
+    setFotoPreview(URL.createObjectURL(file))
+  }
+  function removeFoto() {
+    setFoto(null)
+    setFotoPreview('')
+    if (cameraRef.current) cameraRef.current.value = ''
+    if (galleryRef.current) galleryRef.current.value = ''
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -35,6 +59,7 @@ export default function PobudeForm({
     const data = new FormData(form)
     data.set('lat', String(draft.lat))
     data.set('lng', String(draft.lng))
+    if (foto) data.set('foto', foto)
 
     setStatus('sending')
     try {
@@ -47,6 +72,7 @@ export default function PobudeForm({
       }
       setStatus('ok')
       form.reset()
+      removeFoto()
       onClearDraft()
     } catch {
       setStatus('error')
@@ -160,10 +186,57 @@ export default function PobudeForm({
         </div>
 
         <div>
-          <label className={labelCls} htmlFor="foto">
-            Fotografija (neobvezno)
-          </label>
-          <input id="foto" name="foto" type="file" accept="image/*" className={`${inputCls} file:mr-3 file:rounded-md file:border-0 file:bg-cloud file:px-3 file:py-1.5 file:text-navy`} />
+          <label className={labelCls}>Fotografija težave (neobvezno)</label>
+          <p className="mt-0.5 text-xs text-muted">
+            Problem lahko kar zdaj fotografiraš s telefonom ali naložiš obstoječo sliko.
+          </p>
+
+          {/* Skrita vnosa: kamera (zadnja) in galerija */}
+          <input
+            ref={cameraRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={onFotoChange}
+          />
+          <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={onFotoChange} />
+
+          {fotoPreview ? (
+            <div className="relative mt-2 inline-block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={fotoPreview}
+                alt="Predogled fotografije"
+                className="h-44 w-auto max-w-full rounded-lg border border-line object-contain bg-cloud"
+              />
+              <button
+                type="button"
+                onClick={removeFoto}
+                aria-label="Odstrani fotografijo"
+                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-navy text-white shadow transition-colors hover:bg-navy-700"
+              >
+                <X className="h-4 w-4" strokeWidth={2.2} />
+              </button>
+            </div>
+          ) : (
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => cameraRef.current?.click()}
+                className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-semibold text-navy shadow-sm transition-colors hover:border-teal hover:text-teal"
+              >
+                <Camera className="h-4 w-4" strokeWidth={2} /> Fotografiraj
+              </button>
+              <button
+                type="button"
+                onClick={() => galleryRef.current?.click()}
+                className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-semibold text-navy shadow-sm transition-colors hover:border-teal hover:text-teal"
+              >
+                <ImagePlus className="h-4 w-4" strokeWidth={2} /> Iz galerije
+              </button>
+            </div>
+          )}
         </div>
 
         <hr className="border-line" />
