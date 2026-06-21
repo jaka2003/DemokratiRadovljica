@@ -49,19 +49,22 @@ export const Users: CollectionConfig = {
         }
       },
     ],
-    // Zabeleži čas zadnje prijave.
+    // Zabeleži čas zadnje prijave (posebej, ZUNAJ prijavne transakcije,
+    // da ne pride do zaklepa vrstice na PostgreSQL).
     afterLogin: [
-      async ({ req, user }) => {
-        try {
-          await req.payload.update({
-            collection: 'users',
-            id: user.id,
-            data: { zadnjaPrijava: new Date().toISOString() },
-            overrideAccess: true,
-          })
-        } catch {
-          /* neusodno */
-        }
+      ({ req, user }) => {
+        setTimeout(() => {
+          req.payload
+            .update({
+              collection: 'users',
+              id: user.id,
+              data: { zadnjaPrijava: new Date().toISOString() },
+              overrideAccess: true,
+            })
+            .catch(() => {
+              /* neusodno */
+            })
+        }, 100)
       },
     ],
   },
