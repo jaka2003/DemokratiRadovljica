@@ -46,6 +46,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Občina', href: '/obcina' },
   { label: 'Lokalne volitve', href: '/lokalne-volitve' },
   { label: 'Program', href: '/program' },
+  { label: 'Mladi demokrati', href: '/mladi-demokrati' },
   { label: 'Pobude in zemljevid', href: '/pobude' },
 ]
 

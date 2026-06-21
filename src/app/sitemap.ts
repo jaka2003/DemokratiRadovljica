@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/lokalne-volitve`, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/lokalne-volitve/zupan`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/demokrati`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/mladi-demokrati`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/novice`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${base}/zasebnost`, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${base}/pogoji`, changeFrequency: 'yearly', priority: 0.2 },
