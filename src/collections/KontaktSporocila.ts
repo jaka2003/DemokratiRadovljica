@@ -12,7 +12,8 @@ export const KontaktSporocila: CollectionConfig = {
       'Sporočila iz kontaktnih obrazcev (npr. s strani kandidata). Samo za pregled – vnašajo jih obiskovalci.',
   },
   access: {
-    create: ({ req }) => Boolean(req.user),
+    // Sporočila oddajo obiskovalci prek kontaktnih obrazcev (overrideAccess) – ročno se ne ustvarjajo.
+    create: () => false,
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),

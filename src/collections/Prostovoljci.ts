@@ -12,8 +12,8 @@ export const Prostovoljci: CollectionConfig = {
       'Prijave občanov, ki se želijo pridružiti ekipi (oddane na strani »Demokrati Radovljica«). Samo za pregled – vnašajo jih obiskovalci.',
   },
   access: {
-    // Javna oddaja gre prek strežniške končne točke (overrideAccess).
-    create: ({ req }) => Boolean(req.user),
+    // Prijave oddajo obiskovalci prek javne strani (overrideAccess) – ročno se ne ustvarjajo.
+    create: () => false,
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),

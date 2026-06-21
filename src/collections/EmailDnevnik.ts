@@ -13,7 +13,8 @@ export const EmailDnevnik: CollectionConfig = {
   },
   access: {
     read: adminOnly,
-    create: adminOnly,
+    // Zapise ustvari sistem ob pošiljanju (overrideAccess) – ročno se ne ustvarjajo, samo bere.
+    create: () => false,
     update: () => false,
     delete: adminOnly,
   },

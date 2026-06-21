@@ -15,8 +15,8 @@ export const Pobude: CollectionConfig = {
       'Pobude, ki jih občani oddajo na strani »Pobude in zemljevid«. Tukaj jih pregledaš, nastaviš status in odločiš, ali se anonimizirano prikažejo na javnem zemljevidu (zavihek »Obravnava«).',
   },
   access: {
-    // Javno oddajo izvaja strežniška končna točka z overrideAccess; neposreden API je le za prijavljene.
-    create: ({ req }) => Boolean(req.user),
+    // Pobude oddajo občani prek javne strani (strežniška točka z overrideAccess) – ročno se ne ustvarjajo.
+    create: () => false,
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
