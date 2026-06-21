@@ -36,6 +36,12 @@ export const Dokumenti: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       access: { update: ({ req: { user } }) => isAdmin(user) },
+      admin: {
+        // Kandidat tega ne izbira – dokument se samodejno pripiše njemu.
+        // Polje vidi le administrator (za dodelitev dokumenta določenemu kandidatu).
+        condition: (_data, _sibling, { user }) => isAdmin(user),
+        description: 'Komu pripada dokument. Kandidatu se pripiše samodejno.',
+      },
     },
     { name: 'datoteka', label: 'Datoteka', type: 'upload', relationTo: 'media' },
     {
