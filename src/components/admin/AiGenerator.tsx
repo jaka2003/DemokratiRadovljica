@@ -39,13 +39,9 @@ export const AiGenerator = () => {
         return
       }
       const d = json.drafts
-      setField('genKratkaPredstavitev', d.kratkaPredstavitev ?? '')
-      setField('genDaljsaPredstavitev', d.daljsaPredstavitev ?? '')
-      setField('genSpletna', d.spletna ?? '')
-      setField('genFacebook', d.facebook ?? '')
-      setField('genBiografija', d.biografija ?? '')
-      setField('genOdgovoriObcanom', d.odgovoriObcanom ?? '')
-      setField('genVideoNagovor', d.videoNagovor ?? '')
+      setField('opis', d.kratkaPredstavitev ?? '')
+      setField('podrocjaSodelovanja', d.podrocjaSodelovanja ?? '')
+      setField('politicnaPredstavitev', d.politicnaPredstavitev ?? '')
       setDone(true)
     } catch {
       setError('Povezava ni uspela. Poskusi znova.')
@@ -64,7 +60,12 @@ export const AiGenerator = () => {
       >
         {loading ? 'Pripravljam predloge …' : '✨ Generiraj predloge z AI'}
       </button>
-      {done && <span style={{ marginLeft: 12, color: '#008288' }}>Predlogi pripravljeni – preglej in uredi spodaj.</span>}
+      {done && (
+        <span style={{ marginLeft: 12, color: '#008288' }}>
+          Izpolnjeno! Preglej polja »Kratka predstavitev«, »Področja sodelovanja« in »Kratka politična
+          predstavitev« zgoraj.
+        </span>
+      )}
       {error && <p style={{ marginTop: 8, color: '#b00020' }}>{error}</p>}
       <p style={{ marginTop: 8, fontSize: 12, color: '#5b5f73' }}>
         Predloge pripravi umetna inteligenca na podlagi zgornjih vnosov. Vedno jih pred objavo preglej in uredi.

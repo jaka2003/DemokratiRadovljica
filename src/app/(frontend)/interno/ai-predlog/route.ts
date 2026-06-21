@@ -10,26 +10,20 @@ const SCHEMA = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    kratkaPredstavitev: { type: 'string', description: 'Kratka predstavitev kandidata (2–3 stavki).' },
-    daljsaPredstavitev: { type: 'string', description: 'Daljša predstavitev kandidata (1–2 odstavka).' },
-    spletna: { type: 'string', description: 'Besedilo za spletno stran kandidata.' },
-    facebook: { type: 'string', description: 'Kratko, privlačno besedilo za Facebook objavo.' },
-    biografija: { type: 'string', description: 'Kratka biografija v tretji osebi.' },
-    odgovoriObcanom: {
+    kratkaPredstavitev: {
       type: 'string',
-      description: 'Osnutki odgovorov na tipična vprašanja občanov (3–4 vprašanja in odgovori).',
+      description: 'Kratka predstavitev kandidata – 2–3 stavki, prva oseba, naravna slovenščina.',
     },
-    videoNagovor: { type: 'string', description: 'Osnutek nagovora za video (govorjeno besedilo, ~30–45 sekund).' },
+    podrocjaSodelovanja: {
+      type: 'string',
+      description: 'Področja sodelovanja kandidata – kratek seznam (3–6 področij), ločen z vejicami.',
+    },
+    politicnaPredstavitev: {
+      type: 'string',
+      description: 'Kratka politična oziroma lokalna predstavitev – 1–2 odstavka, dostojanstveno in pozitivno.',
+    },
   },
-  required: [
-    'kratkaPredstavitev',
-    'daljsaPredstavitev',
-    'spletna',
-    'facebook',
-    'biografija',
-    'odgovoriObcanom',
-    'videoNagovor',
-  ],
+  required: ['kratkaPredstavitev', 'podrocjaSodelovanja', 'politicnaPredstavitev'],
 } as const
 
 export async function POST(req: Request) {
@@ -80,7 +74,10 @@ Vsako besedilo naj bo primerno za javno objavo in naj kandidat lahko še uredi.
 Podatki o kandidatu:
 ${podatki}
 
-Pripravi: kratko predstavitev, daljšo predstavitev, besedilo za spletno stran, besedilo za Facebook objavo, kratko biografijo, osnutke odgovorov na tipična vprašanja občanov ter osnutek nagovora za video.`
+Pripravi tri besedila:
+1. kratko predstavitev (2–3 stavki, prva oseba);
+2. področja sodelovanja (kratek seznam področij, ločen z vejicami);
+3. kratko politično oziroma lokalno predstavitev (1–2 odstavka).`
 
   try {
     const message = await client.messages.create({

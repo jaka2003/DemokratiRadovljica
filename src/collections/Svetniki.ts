@@ -48,8 +48,7 @@ export const Svetniki: CollectionConfig = {
               data.kraj ||= u.naslovKraj
               data.poklic ||= u.aiPoklic
               data.kratekOpis ||= u.opis
-              data.predstavitev ||=
-                u.genSpletna || u.genDaljsaPredstavitev || u.politicnaPredstavitev || u.opis
+              data.predstavitev ||= u.politicnaPredstavitev || u.opis
               data.email ||= u.osebniEmail || u.email
               // Poudarki iz glavnih sporočil / vrednot (če še ni vneseno).
               if (!Array.isArray(data.poudarki) || data.poudarki.length === 0) {

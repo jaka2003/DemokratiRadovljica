@@ -29,7 +29,7 @@ export const Kandidat: GlobalConfig = {
               data.imePriimek ||= u.ime
               data.fotografija ||= u.fotografija
               data.kontaktEmail ||= u.osebniEmail || u.email
-              data.nagovor ||= u.genKratkaPredstavitev || u.politicnaPredstavitev || u.opis
+              data.nagovor ||= u.politicnaPredstavitev || u.opis
               data.izkusnje ||= u.aiIzkusnje
               data.pogledNaRazvoj ||= u.aiLokalneTeme || u.aiRazlog
               // Vrednote iz osebnih vrednot (če še ni vneseno).
