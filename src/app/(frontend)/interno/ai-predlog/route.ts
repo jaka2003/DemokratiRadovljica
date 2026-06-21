@@ -84,7 +84,8 @@ Pripravi: kratko predstavitev, daljšo predstavitev, besedilo za spletno stran, 
 
   try {
     const message = await client.messages.create({
-      model: 'claude-opus-4-8',
+      // Privzeto Opus 4.8; preklopiš prek AI_MODEL (npr. claude-sonnet-4-6 ali claude-haiku-4-5).
+      model: process.env.AI_MODEL || 'claude-opus-4-8',
       max_tokens: 16000,
       system,
       output_config: { format: { type: 'json_schema', schema: SCHEMA } },
