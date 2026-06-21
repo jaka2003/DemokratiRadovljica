@@ -4,6 +4,7 @@ import { ArrowRight, User, Users } from 'lucide-react'
 import { Container } from '@/components/site/Container'
 import { Button } from '@/components/ui/Button'
 import { getNastavitve, getKandidat, getSvetniki } from '@/lib/queries'
+import { focalPos } from '@/lib/media'
 
 export const metadata = {
   title: 'Lokalne volitve 2026',
@@ -49,7 +50,7 @@ export default async function LokalneVolitvePage() {
               </div>
               <div className="relative order-first aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-cloud md:order-last">
                 {foto?.url ? (
-                  <Image src={foto.url} alt={foto.alt || String(kandidat.imePriimek || 'Kandidat')} fill className="object-cover" sizes="(max-width:768px) 100vw, 50vw" />
+                  <Image src={foto.url} alt={foto.alt || String(kandidat.imePriimek || 'Kandidat')} fill className="object-cover" style={{ objectPosition: focalPos(foto, '50% 25%') }} sizes="(max-width:768px) 100vw, 50vw" />
                 ) : (
                   <div className="flex h-full items-center justify-center text-navy/25">
                     <User className="h-20 w-20" strokeWidth={1.2} />
@@ -82,7 +83,7 @@ export default async function LokalneVolitvePage() {
                   >
                     <div className="relative aspect-[4/5] bg-cloud">
                       {sf?.url ? (
-                        <Image src={sf.url} alt={sf.alt || s.imePriimek} fill className="object-cover" sizes="(max-width:640px) 50vw, 25vw" />
+                        <Image src={sf.url} alt={sf.alt || s.imePriimek} fill className="object-cover" style={{ objectPosition: focalPos(sf, '50% 25%') }} sizes="(max-width:640px) 50vw, 25vw" />
                       ) : (
                         <div className="flex h-full items-center justify-center text-navy/20">
                           <User className="h-10 w-10" strokeWidth={1.3} />

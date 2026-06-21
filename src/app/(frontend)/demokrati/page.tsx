@@ -5,6 +5,7 @@ import { Icon } from '@/lib/icons'
 import type { IconName } from '@/lib/site'
 import SimpleForm from '@/components/forms/SimpleForm'
 import { getNastavitve, getEkipa } from '@/lib/queries'
+import { focalPos } from '@/lib/media'
 
 export const metadata = {
   title: 'Demokrati Radovljica',
@@ -81,7 +82,7 @@ export default async function DemokratiPage() {
                 <div key={c.id} className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-white shadow-card">
                   <div className="relative aspect-square bg-cloud">
                     {c.fotografija?.url ? (
-                      <Image src={c.fotografija.url} alt={c.fotografija.alt || c.ime} fill className="object-cover" sizes="(max-width:640px) 100vw, 33vw" />
+                      <Image src={c.fotografija.url} alt={c.fotografija.alt || c.ime} fill className="object-cover" style={{ objectPosition: focalPos(c.fotografija, '50% 25%') }} sizes="(max-width:640px) 100vw, 33vw" />
                     ) : (
                       <div className="flex h-full items-center justify-center text-navy/30">
                         <Users className="h-10 w-10" strokeWidth={1.5} />

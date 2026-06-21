@@ -12,6 +12,8 @@ export function Hero({
   tagline,
   fotoUrl,
   fotoAlt,
+  fotoWidth,
+  fotoHeight,
 }: {
   naslov?: string
   podnaslov?: string
@@ -20,6 +22,8 @@ export function Hero({
   tagline?: string
   fotoUrl?: string
   fotoAlt?: string
+  fotoWidth?: number
+  fotoHeight?: number
 } = {}) {
   const title = naslov || HERO.title
   const subtitle = podnaslov || HERO.subtitle
@@ -57,25 +61,39 @@ export function Hero({
             </div>
           </div>
 
-          {/* Desno: fotografija Radovljice (admin jo kasneje zamenja) */}
+          {/* Desno: grafika / fotografija (admin jo naloži v CMS) */}
           <div className="relative">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] shadow-card">
-              {fotoUrl ? (
-                <Image src={fotoUrl} alt={fotoAlt || 'Radovljica'} fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+            {fotoUrl ? (
+              // Naložena slika se pokaže v CELOTI (brez obrezovanja) – primerno za oblikovane plakate.
+              fotoWidth && fotoHeight ? (
+                <Image
+                  src={fotoUrl}
+                  alt={fotoAlt || 'Demokrati Radovljica'}
+                  width={fotoWidth}
+                  height={fotoHeight}
+                  priority
+                  className="h-auto w-full rounded-[var(--radius-card)] shadow-card"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               ) : (
-                <>
-                  {/* Nadomestna podoba – do nalaganja realne fotografije v CMS. */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-700 to-teal-700" />
-                  <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-10%,rgba(0,187,193,0.45),transparent_55%)]" />
-                </>
-              )}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
-                  <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
-                  Radovljica
+                // Brez podatka o velikosti: prikaži celoto znotraj okvirja (object-contain).
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-cloud shadow-card">
+                  <Image src={fotoUrl} alt={fotoAlt || 'Demokrati Radovljica'} fill priority className="object-contain" sizes="(max-width: 1024px) 100vw, 50vw" />
+                </div>
+              )
+            ) : (
+              // Nadomestna podoba – do nalaganja prave slike v CMS.
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] shadow-card">
+                <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-700 to-teal-700" />
+                <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-10%,rgba(0,187,193,0.45),transparent_55%)]" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
+                    <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
+                    Radovljica
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Container>

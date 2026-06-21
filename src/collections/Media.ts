@@ -23,8 +23,12 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: path.resolve(dirname, '../../media'),
+    // Fokusna točka: ob uploadu povlečeš točko (npr. obraz), okoli katere se slika obreže.
+    // Orodje za obrez omogoči ročni izrez za posamezno sliko, če je treba.
+    focalPoint: true,
+    crop: true,
     imageSizes: [
-      { name: 'thumbnail', width: 400, height: 300, position: 'centre' },
+      { name: 'thumbnail', width: 400, height: 400, position: 'centre' },
       { name: 'card', width: 768, height: 512, position: 'centre' },
       { name: 'hero', width: 1600, height: 1000, position: 'centre' },
     ],

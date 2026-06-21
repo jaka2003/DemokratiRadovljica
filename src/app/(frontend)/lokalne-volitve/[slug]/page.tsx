@@ -6,6 +6,7 @@ import { Container } from '@/components/site/Container'
 import { Button } from '@/components/ui/Button'
 import SimpleForm from '@/components/forms/SimpleForm'
 import { getSvetnikBySlug } from '@/lib/queries'
+import { focalPos } from '@/lib/media'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,7 +35,7 @@ export default async function SvetnikPage({ params }: { params: Promise<{ slug: 
         <div className="mt-6 grid items-start gap-8 md:grid-cols-[260px_1fr]">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] border border-line bg-cloud shadow-card">
             {foto?.url ? (
-              <Image src={foto.url} alt={foto.alt || s.imePriimek} fill priority className="object-cover" sizes="260px" />
+              <Image src={foto.url} alt={foto.alt || s.imePriimek} fill priority className="object-cover" style={{ objectPosition: focalPos(foto, '50% 25%') }} sizes="260px" />
             ) : (
               <div className="flex h-full items-center justify-center text-navy/25">
                 <User className="h-16 w-16" strokeWidth={1.3} />

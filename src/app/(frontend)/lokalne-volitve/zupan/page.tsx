@@ -9,6 +9,7 @@ import type { IconName } from '@/lib/site'
 import SimpleForm from '@/components/forms/SimpleForm'
 import { NoviceMini } from '@/components/site/NoviceMini'
 import { getKandidat, getNastavitve, getNoviceKandidat } from '@/lib/queries'
+import { focalPos } from '@/lib/media'
 
 export const metadata = { title: 'Kandidat za župana' }
 export const dynamic = 'force-dynamic'
@@ -54,7 +55,7 @@ export default async function ZupanPage() {
         <div className="mt-6 grid items-center gap-8 md:grid-cols-[280px_1fr]">
           <div className="relative aspect-square overflow-hidden rounded-[var(--radius-card)] border border-line bg-cloud shadow-card">
             {foto?.url ? (
-              <Image src={foto.url} alt={foto.alt || String(k.imePriimek || 'Kandidat')} fill priority className="object-cover" sizes="280px" />
+              <Image src={foto.url} alt={foto.alt || String(k.imePriimek || 'Kandidat')} fill priority className="object-cover" style={{ objectPosition: focalPos(foto, '50% 25%') }} sizes="280px" />
             ) : (
               <div className="flex h-full items-center justify-center text-navy/30">
                 <User className="h-16 w-16" strokeWidth={1.3} />

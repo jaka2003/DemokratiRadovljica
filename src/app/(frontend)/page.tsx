@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const d = await getDomacaStran()
-  const foto = d?.heroFoto as { url?: string; alt?: string } | undefined
+  const foto = d?.heroFoto as { url?: string; alt?: string; width?: number; height?: number } | undefined
   const koraki = (d?.koraki as { naslov?: string }[]) || []
 
   return (
@@ -24,6 +24,8 @@ export default async function HomePage() {
         tagline={d?.heroTagline as string}
         fotoUrl={foto?.url}
         fotoAlt={foto?.alt}
+        fotoWidth={foto?.width}
+        fotoHeight={foto?.height}
       />
       <QuickLinks />
       <Identity />
