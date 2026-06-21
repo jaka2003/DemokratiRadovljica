@@ -44,6 +44,25 @@ services:
     # ports:
     #   - '${APP_PORT:-3000}:3000'
 
+  # Enkraten korak: ustvari shemo v PostgreSQL + vpiše privzete podatke.
+  # Zaženeš ročno ob prvem deployu (in po dodajanju novih zbirk):
+  #   docker compose run --rm migrate
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    environment:
+      # development → Payload samodejno uskladi shemo (push) v Postgres
+      NODE_ENV: development
+      DATABASE_URI: postgres://${POSTGRES_USER:-demokrati}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-demokrati}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?nastavi PAYLOAD_SECRET v .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ['tools']
+    command: ['npx', 'payload', 'run', 'scripts/push-schema.ts']
+
   # Cloudflare Tunnel – varno objavi stran brez javnega IP-ja in odprtih vrat.
   cloudflared:
     image: cloudflare/cloudflared:latest

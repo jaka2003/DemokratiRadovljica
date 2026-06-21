@@ -103,6 +103,9 @@ export default buildConfig({
   },
   editor: lexicalEditor(),
   onInit: async (payload) => {
+    // Seedanje privzetih podatkov. Zavarovano, da nikoli ne sesuje zagona
+    // (npr. če shema še ni ustvarjena – takrat seedanje izvede migrate korak).
+    try {
     // Ob prazni bazi vpiši privzeta programska področja (admin jih nato ureja).
     const { totalDocs } = await payload.count({ collection: 'programska-podrocja' })
     if (totalDocs === 0) {
@@ -146,6 +149,11 @@ export default buildConfig({
         })
       }
       payload.logger.info(`Vpisanih ${KRAJ_DEFAULTS.length} krajev.`)
+    }
+    } catch (e) {
+      payload.logger.warn(
+        'onInit seedanje preskočeno (verjetno shema še ni ustvarjena): ' + (e as Error).message,
+      )
     }
   },
   secret: process.env.PAYLOAD_SECRET || '',
