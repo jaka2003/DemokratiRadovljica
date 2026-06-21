@@ -6,6 +6,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { kategorijaInfo, statusInfo } from '@/lib/pobude'
+import { ring, inObcina } from '@/lib/obcina'
 import boundaryData from '@/data/radovljica-boundary.json'
 
 export type JavnaPobuda = {
@@ -18,10 +19,7 @@ export type JavnaPobuda = {
   lng: number
 }
 
-// Meja občine: GeoJSON je [lng, lat] – Leaflet pa [lat, lng]. Pretvorimo zunanji obroč.
-const ring: [number, number][] = (boundaryData.coordinates[0] as [number, number][]).map(
-  ([lng, lat]) => [lat, lng],
-)
+// Meja občine (ring) in test znotraj/zunaj sta v skupnem modulu '@/lib/obcina'.
 const [minLng, minLat, maxLng, maxLat] = boundaryData.bbox as [number, number, number, number]
 const PAD = 0.015
 const BOUNDS = L.latLngBounds([minLat - PAD, minLng - PAD], [maxLat + PAD, maxLng + PAD])
@@ -33,18 +31,6 @@ const WORLD: [number, number][] = [
   [85, 180],
   [85, -180],
 ]
-
-// Točka v poligonu (ray casting) – za preprečitev klikov zunaj občine.
-function inObcina(lat: number, lng: number): boolean {
-  let inside = false
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    const [yi, xi] = ring[i]
-    const [yj, xj] = ring[j]
-    const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi
-    if (intersect) inside = !inside
-  }
-  return inside
-}
 
 function pinIcon(color: string, highlight = false) {
   const stroke = highlight ? '#0f004e' : '#ffffff'
@@ -75,13 +61,25 @@ function FitToObcina() {
   return null
 }
 
+// Ko uporabnik uporabi svojo lokacijo (GPS), zemljevid nežno odleti tja in približa.
+function FlyTo({ focus }: { focus: { lat: number; lng: number; key: number } | null }) {
+  const map = useMap()
+  useEffect(() => {
+    if (focus) map.flyTo([focus.lat, focus.lng], 16, { duration: 0.8 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.key])
+  return null
+}
+
 export default function PobudeMap({
   pobude,
   draft,
+  focus,
   onPick,
 }: {
   pobude: JavnaPobuda[]
   draft: { lat: number; lng: number } | null
+  focus?: { lat: number; lng: number; key: number } | null
   onPick: (lat: number, lng: number) => void
 }) {
   const draftIcon = useMemo(() => pinIcon('#00bbc1', true), [])
@@ -103,6 +101,7 @@ export default function PobudeMap({
       />
 
       <FitToObcina />
+      <FlyTo focus={focus ?? null} />
       <ClickHandler onPick={onPick} />
 
       {/* Maska: vse zunaj občine prekrito */}
