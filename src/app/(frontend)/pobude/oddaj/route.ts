@@ -53,13 +53,17 @@ export async function POST(req: Request) {
 
   const payload = await getPayload({ config })
 
-  // --- Neobvezna fotografija ---
-  let fotoId: string | number | undefined
-  const file = form.get('foto')
-  if (file && typeof file === 'object' && 'arrayBuffer' in file && (file as File).size > 0) {
-    const f = file as File
-    if (!f.type.startsWith('image/')) return err('Priložena datoteka mora biti slika.')
+  // --- Neobvezne fotografije (do 4) ---
+  const fotoIds: (string | number)[] = []
+  const files = form
+    .getAll('foto')
+    .filter((f): f is File => typeof f === 'object' && f !== null && 'arrayBuffer' in f && (f as File).size > 0)
+    .slice(0, 4)
+  for (const f of files) {
+    if (!f.type.startsWith('image/')) return err('Priložene datoteke morajo biti slike.')
     if (f.size > 8 * 1024 * 1024) return err('Slika je prevelika (največ 8 MB).')
+  }
+  for (const f of files) {
     try {
       const buffer = Buffer.from(await f.arrayBuffer())
       const media = await payload.create({
@@ -68,7 +72,7 @@ export async function POST(req: Request) {
         file: { data: buffer, mimetype: f.type, name: f.name || 'pobuda.jpg', size: f.size },
         overrideAccess: true,
       })
-      fotoId = media.id
+      fotoIds.push(media.id)
     } catch (e) {
       console.error('Napaka pri nalaganju slike:', e)
       // Slika ni ključna – nadaljujemo brez nje.
@@ -94,7 +98,7 @@ export async function POST(req: Request) {
         dovoliJavnoObjavo,
         status: 'nova',
         javnoObjavljeno: false,
-        ...(fotoId ? { foto: fotoId } : {}),
+        ...(fotoIds.length ? { foto: fotoIds } : {}),
       },
       overrideAccess: true,
     })

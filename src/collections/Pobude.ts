@@ -58,7 +58,15 @@ export const Pobude: CollectionConfig = {
                 { name: 'lng', label: 'Zemljepisna dolžina (lng)', type: 'number', admin: { width: '50%' } },
               ],
             },
-            { name: 'foto', label: 'Fotografija', type: 'upload', relationTo: 'media' },
+            {
+              name: 'foto',
+              label: 'Fotografije',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              maxRows: 4,
+              admin: { description: 'Do 4 fotografije težave (občan jih lahko priloži ob oddaji).' },
+            },
           ],
         },
         {

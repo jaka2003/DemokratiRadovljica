@@ -22,27 +22,41 @@ export default function PobudeForm({
   const galleryRef = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
-  const [foto, setFoto] = useState<File | null>(null)
-  const [fotoPreview, setFotoPreview] = useState('')
+  const [fotos, setFotos] = useState<{ file: File; url: string }[]>([])
+  const MAX_FOTO = 4
 
-  // Počisti predogledni URL ob menjavi/odstranitvi/odhodu (prepreči puščanje pomnilnika).
+  // Počisti predogledne URL-je ob odhodu s strani (prepreči puščanje pomnilnika).
+  const fotosRef = useRef<{ file: File; url: string }[]>([])
+  fotosRef.current = fotos
   useEffect(() => {
-    return () => {
-      if (fotoPreview) URL.revokeObjectURL(fotoPreview)
-    }
-  }, [fotoPreview])
+    return () => fotosRef.current.forEach((f) => URL.revokeObjectURL(f.url))
+  }, [])
 
-  function onFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setFoto(file)
-    setFotoPreview(URL.createObjectURL(file))
+  function addFiles(list: FileList | null) {
+    if (!list || list.length === 0) return
+    setFotos((prev) => {
+      const room = MAX_FOTO - prev.length
+      if (room <= 0) return prev
+      const incoming = Array.from(list)
+        .slice(0, room)
+        .map((file) => ({ file, url: URL.createObjectURL(file) }))
+      return [...prev, ...incoming]
+    })
   }
-  function removeFoto() {
-    setFoto(null)
-    setFotoPreview('')
-    if (cameraRef.current) cameraRef.current.value = ''
-    if (galleryRef.current) galleryRef.current.value = ''
+  function onFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    addFiles(e.target.files)
+    e.target.value = '' // dovoli ponovno izbiro iste datoteke
+  }
+  function removeFoto(i: number) {
+    setFotos((prev) => {
+      const f = prev[i]
+      if (f) URL.revokeObjectURL(f.url)
+      return prev.filter((_, idx) => idx !== i)
+    })
+  }
+  function clearFotos() {
+    fotosRef.current.forEach((f) => URL.revokeObjectURL(f.url))
+    setFotos([])
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -59,7 +73,7 @@ export default function PobudeForm({
     const data = new FormData(form)
     data.set('lat', String(draft.lat))
     data.set('lng', String(draft.lng))
-    if (foto) data.set('foto', foto)
+    fotos.forEach((f) => data.append('foto', f.file))
 
     setStatus('sending')
     try {
@@ -72,7 +86,7 @@ export default function PobudeForm({
       }
       setStatus('ok')
       form.reset()
-      removeFoto()
+      clearFotos()
       onClearDraft()
     } catch {
       setStatus('error')
@@ -186,12 +200,12 @@ export default function PobudeForm({
         </div>
 
         <div>
-          <label className={labelCls}>Fotografija težave (neobvezno)</label>
+          <label className={labelCls}>Fotografije težave (neobvezno)</label>
           <p className="mt-0.5 text-xs text-muted">
-            Problem lahko kar zdaj fotografiraš s telefonom ali naložiš obstoječo sliko.
+            Problem lahko kar zdaj fotografiraš s telefonom ali naložiš obstoječe slike (do {MAX_FOTO}).
           </p>
 
-          {/* Skrita vnosa: kamera (zadnja) in galerija */}
+          {/* Skrita vnosa: kamera (zadnja) in galerija (več hkrati) */}
           <input
             ref={cameraRef}
             type="file"
@@ -200,27 +214,36 @@ export default function PobudeForm({
             className="hidden"
             onChange={onFotoChange}
           />
-          <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={onFotoChange} />
+          <input
+            ref={galleryRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={onFotoChange}
+          />
 
-          {fotoPreview ? (
-            <div className="relative mt-2 inline-block">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={fotoPreview}
-                alt="Predogled fotografije"
-                className="h-44 w-auto max-w-full rounded-lg border border-line object-contain bg-cloud"
-              />
-              <button
-                type="button"
-                onClick={removeFoto}
-                aria-label="Odstrani fotografijo"
-                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-navy text-white shadow transition-colors hover:bg-navy-700"
-              >
-                <X className="h-4 w-4" strokeWidth={2.2} />
-              </button>
+          {fotos.length > 0 && (
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {fotos.map((f, i) => (
+                <div key={f.url} className="relative aspect-square overflow-hidden rounded-lg border border-line bg-cloud">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={f.url} alt={`Fotografija ${i + 1}`} className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeFoto(i)}
+                    aria-label={`Odstrani fotografijo ${i + 1}`}
+                    className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-navy/85 text-white shadow transition-colors hover:bg-navy"
+                  >
+                    <X className="h-3.5 w-3.5" strokeWidth={2.2} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="mt-2 flex flex-wrap gap-2">
+          )}
+
+          {fotos.length < MAX_FOTO && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => cameraRef.current?.click()}
@@ -235,6 +258,11 @@ export default function PobudeForm({
               >
                 <ImagePlus className="h-4 w-4" strokeWidth={2} /> Iz galerije
               </button>
+              {fotos.length > 0 && (
+                <span className="text-xs text-muted">
+                  {fotos.length}/{MAX_FOTO}
+                </span>
+              )}
             </div>
           )}
         </div>
