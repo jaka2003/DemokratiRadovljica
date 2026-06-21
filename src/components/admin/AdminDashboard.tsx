@@ -62,6 +62,7 @@ export const AdminDashboard = () => {
   const [bodyText, setBodyText] = useState('')
   const [files, setFiles] = useState<FileList | null>(null)
   const [emailMsg, setEmailMsg] = useState('')
+  const [emailOk, setEmailOk] = useState(false)
   const [sending, setSending] = useState(false)
 
   // Ob spremembi kategorij/načina je seznam prejemnikov zastarel – ponastavi.
@@ -125,20 +126,18 @@ export const AdminDashboard = () => {
 
   if (!allowed) return null
 
-  const sendEmail = async (test: boolean) => {
+  const sendEmail = async () => {
     setSending(true)
     setEmailMsg('')
+    setEmailOk(false)
     try {
       const fd = new FormData()
       fd.set('subject', subject)
       fd.set('body', bodyText)
-      fd.set('test', String(test))
-      if (!test) {
-        if (izbiraNacin === 'posamezni') fd.set('userIds', JSON.stringify(Array.from(izbrani)))
-        else {
-          fd.set('kategorije', JSON.stringify(kategorije))
-          fd.set('nacin', nacin)
-        }
+      if (izbiraNacin === 'posamezni') fd.set('userIds', JSON.stringify(Array.from(izbrani)))
+      else {
+        fd.set('kategorije', JSON.stringify(kategorije))
+        fd.set('nacin', nacin)
       }
       if (files) for (const f of Array.from(files)) fd.append('priloge', f)
       const res = await fetch('/interno/poslji-email', {
@@ -147,9 +146,15 @@ export const AdminDashboard = () => {
         body: fd,
       })
       const json = await res.json()
-      if (!res.ok || !json.ok) setEmailMsg(json.error || 'Napaka.')
-      else setEmailMsg(test ? 'Testno sporočilo poslano tebi.' : `Poslano ${json.sent} od ${json.total} prejemnikom.`)
+      if (!res.ok || !json.ok) {
+        setEmailOk(false)
+        setEmailMsg(json.error || 'Napaka pri pošiljanju.')
+      } else {
+        setEmailOk(true)
+        setEmailMsg(`✓ Poslano ${json.sent} ${json.sent === 1 ? 'prejemniku' : 'prejemnikom'}.`)
+      }
     } catch {
+      setEmailOk(false)
       setEmailMsg('Povezava ni uspela.')
     } finally {
       setSending(false)
@@ -157,6 +162,34 @@ export const AdminDashboard = () => {
   }
 
   const box: React.CSSProperties = { border: '1px solid #e7e9f1', borderRadius: 10, padding: '1rem' }
+  const inp: React.CSSProperties = {
+    width: '100%',
+    padding: '9px 11px',
+    marginBottom: 10,
+    borderRadius: 8,
+    border: '1px solid #e7e9f1',
+    fontSize: 13,
+    color: '#0f004e',
+    background: '#fff',
+    outline: 'none',
+  }
+  const sectionLabel: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 700,
+    color: '#0f004e',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: 8,
+  }
+  const seg = (active: boolean, accent = '#00bbc1'): React.CSSProperties => ({
+    padding: '6px 13px',
+    fontSize: 13,
+    cursor: 'pointer',
+    border: 'none',
+    background: active ? accent : '#fff',
+    color: active ? '#fff' : '#33384a',
+    fontWeight: active ? 600 : 500,
+  })
 
   const liStyle: React.CSSProperties = { marginBottom: 6, lineHeight: 1.5 }
   const b = (t: string) => <strong style={{ color: '#0f004e' }}>{t}</strong>
@@ -229,139 +262,179 @@ export const AdminDashboard = () => {
         ))}
       </div>
 
-      {/* Akcije */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 16, marginTop: 16 }}>
-        <div style={box}>
-          <h3 style={{ fontWeight: 700, marginBottom: 8 }}>Izvoz</h3>
-          <p style={{ fontSize: 12, color: '#5b5f73', marginBottom: 10 }}>Seznam kandidatov v CSV (Excel).</p>
-          <a href="/interno/kandidati-csv" className="btn btn--style-secondary btn--size-small" download>
-            ⬇ Izvozi kandidate (CSV)
-          </a>
+      {/* Izvoz */}
+      <div style={{ ...box, marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <h3 style={{ fontWeight: 700, margin: 0 }}>Izvoz kandidatov</h3>
+          <p style={{ fontSize: 12, color: '#5b5f73', margin: '4px 0 0' }}>Seznam kandidatov v CSV (Excel).</p>
         </div>
+        <a href="/interno/kandidati-csv" className="btn btn--style-secondary btn--size-small" download>
+          ⬇ Izvozi (CSV)
+        </a>
+      </div>
 
-        <div style={box}>
-          <h3 style={{ fontWeight: 700, marginBottom: 8 }}>Pošlji e-pošto</h3>
+      {/* Pošiljanje e-pošte */}
+      <div style={{ ...box, marginTop: 16, padding: '1.25rem 1.25rem 1.5rem' }}>
+        <h3 style={{ fontWeight: 700, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden>✉️</span> Pošlji e-pošto
+        </h3>
+        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '0 0 18px' }}>Izberi komu, napiši sporočilo in pošlji.</p>
 
-          {/* 1) Kategorije prejemnikov */}
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#0f004e', marginBottom: 6 }}>
-            1. Kategorije prejemnikov:
-          </label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginBottom: 6 }}>
-            {VLOGE.map((v) => (
-              <label key={v.value} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#33384a' }}>
-                <input type="checkbox" checked={kategorije.includes(v.value)} onChange={() => toggleKategorija(v.value)} />
+        {/* Korak 1 – komu */}
+        <div style={sectionLabel}>1 · Komu</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {VLOGE.map((v) => {
+            const on = kategorije.includes(v.value)
+            return (
+              <button
+                key={v.value}
+                type="button"
+                onClick={() => toggleKategorija(v.value)}
+                style={{
+                  padding: '6px 13px',
+                  borderRadius: 999,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  fontWeight: on ? 600 : 500,
+                  border: on ? '1px solid #00bbc1' : '1px solid #e7e9f1',
+                  background: on ? '#00bbc1' : '#fff',
+                  color: on ? '#fff' : '#33384a',
+                  transition: 'all .15s',
+                }}
+              >
                 {v.label}
-              </label>
-            ))}
-          </div>
-          <p style={{ fontSize: 12, color: '#5b5f73', marginBottom: 8 }}>Brez izbire = vsi uporabniki sistema.</p>
-
-          {/* Način ujemanja (le pri 2+ izbranih kategorijah) */}
-          {kategorije.length >= 2 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 8, fontSize: 13 }}>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <input type="radio" name="nacin" checked={nacin === 'katera'} onChange={() => { setNacin('katera'); ponastaviPrejemnike() }} />
-                Katera koli izbrana
-              </label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <input type="radio" name="nacin" checked={nacin === 'vse'} onChange={() => { setNacin('vse'); ponastaviPrejemnike() }} />
-                Vse hkrati (presek)
-              </label>
-            </div>
-          )}
-
-          {/* 2) Prikaži prejemnike */}
-          <button type="button" disabled={nalagam} onClick={prikaziPrejemnike} className="btn btn--style-secondary btn--size-small" style={{ marginBottom: 8 }}>
-            {nalagam ? 'Nalagam …' : '2. Prikaži prejemnike'}
-          </button>
-
-          {prejemniki && (
-            <div style={{ border: '1px solid #e7e9f1', borderRadius: 8, padding: 10, marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#0f004e', marginBottom: 6 }}>
-                Najdenih {prejemniki.length} prejemnikov.
-              </div>
-              {prejemniki.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-                    <input type="radio" name="izbira" checked={izbiraNacin === 'vsi'} onChange={() => setIzbiraNacin('vsi')} />
-                    Pošlji vsem ({prejemniki.length})
-                  </label>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-                    <input type="radio" name="izbira" checked={izbiraNacin === 'posamezni'} onChange={() => setIzbiraNacin('posamezni')} />
-                    Izberi posamezne
-                  </label>
-                </div>
-              )}
-              {izbiraNacin === 'posamezni' && (
-                <div style={{ maxHeight: 170, overflowY: 'auto', marginTop: 8, borderTop: '1px solid #eef0f5', paddingTop: 6 }}>
-                  {prejemniki.map((u) => (
-                    <label key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, padding: '2px 0' }}>
-                      <input type="checkbox" checked={izbrani.has(u.id)} onChange={() => toggleIzbran(u.id)} />
-                      <span style={{ color: '#0f004e' }}>{u.ime}</span>
-                      <span style={{ color: '#5b5f73' }}>· {u.email}</span>
-                    </label>
-                  ))}
-                  <div style={{ fontSize: 12, color: '#5b5f73', marginTop: 4 }}>Izbranih: {izbrani.size}</div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 3) Vsebina sporočila */}
-          <select
-            defaultValue="0"
-            onChange={(e) => {
-              const p = PREDLOGE[Number(e.target.value)]
-              if (p) {
-                setSubject(p.subject)
-                setBodyText(p.body)
-              }
-            }}
-            style={{ width: '100%', padding: 8, marginBottom: 8 }}
-          >
-            {PREDLOGE.map((p, i) => (
-              <option key={i} value={i}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-          <input
-            placeholder="Zadeva"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            style={{ width: '100%', padding: 8, marginBottom: 8 }}
-          />
-          <textarea
-            placeholder="Vsebina sporočila (HTML dovoljen)"
-            value={bodyText}
-            onChange={(e) => setBodyText(e.target.value)}
-            rows={4}
-            style={{ width: '100%', padding: 8, marginBottom: 8 }}
-          />
-          <label style={{ display: 'block', fontSize: 12, color: '#5b5f73', marginBottom: 4 }}>
-            Priloge (neobvezno, skupaj do 15 MB):
-          </label>
-          <input
-            type="file"
-            multiple
-            onChange={(e) => setFiles(e.target.files)}
-            style={{ width: '100%', marginBottom: 8, fontSize: 13 }}
-          />
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button type="button" disabled={sending} onClick={() => sendEmail(true)} className="btn btn--style-secondary btn--size-small">
-              Testno (meni)
-            </button>
-            <button
-              type="button"
-              disabled={sending || (izbiraNacin === 'posamezni' && izbrani.size === 0)}
-              onClick={() => sendEmail(false)}
-              className="btn btn--style-primary btn--size-small"
-            >
-              {izbiraNacin === 'posamezni' ? `Pošlji izbranim (${izbrani.size})` : 'Pošlji'}
-            </button>
-            {emailMsg && <span style={{ fontSize: 12, color: '#008288' }}>{emailMsg}</span>}
-          </div>
+              </button>
+            )
+          })}
         </div>
+
+        {/* Način ujemanja (le pri 2+ kategorijah) */}
+        {kategorije.length >= 2 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, fontSize: 13, flexWrap: 'wrap' }}>
+            <span style={{ color: '#5b5f73' }}>Ujema naj se z:</span>
+            <div style={{ display: 'inline-flex', border: '1px solid #e7e9f1', borderRadius: 8, overflow: 'hidden' }}>
+              <button type="button" onClick={() => { setNacin('katera'); ponastaviPrejemnike() }} style={seg(nacin === 'katera', '#0f004e')}>
+                katero koli kategorijo
+              </button>
+              <button type="button" onClick={() => { setNacin('vse'); ponastaviPrejemnike() }} style={seg(nacin === 'vse', '#0f004e')}>
+                vsemi hkrati
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Korak 2 – prejemniki */}
+        <div style={{ ...sectionLabel, marginTop: 20 }}>2 · Prejemniki</div>
+        <button type="button" disabled={nalagam} onClick={prikaziPrejemnike} className="btn btn--style-secondary btn--size-small">
+          {nalagam ? 'Nalagam …' : prejemniki ? '↻ Osveži prejemnike' : 'Prikaži prejemnike'}
+        </button>
+
+        {prejemniki && (
+          <div style={{ marginTop: 10, border: '1px solid #e7e9f1', borderRadius: 10, padding: 12, background: '#fbfcfe' }}>
+            <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0f004e', marginBottom: prejemniki.length ? 10 : 0 }}>
+              Ustreza {prejemniki.length} {prejemniki.length === 1 ? 'oseba' : 'oseb'}.
+            </div>
+            {prejemniki.length > 0 && (
+              <>
+                <div style={{ display: 'inline-flex', border: '1px solid #e7e9f1', borderRadius: 8, overflow: 'hidden' }}>
+                  <button type="button" onClick={() => setIzbiraNacin('vsi')} style={seg(izbiraNacin === 'vsi')}>
+                    Vsi ({prejemniki.length})
+                  </button>
+                  <button type="button" onClick={() => setIzbiraNacin('posamezni')} style={seg(izbiraNacin === 'posamezni')}>
+                    Posamezni
+                  </button>
+                </div>
+                {izbiraNacin === 'posamezni' && (
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ maxHeight: 190, overflowY: 'auto', border: '1px solid #eef0f5', borderRadius: 8, background: '#fff' }}>
+                      {prejemniki.map((u) => {
+                        const on = izbrani.has(u.id)
+                        return (
+                          <label
+                            key={u.id}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              fontSize: 13,
+                              padding: '7px 10px',
+                              borderBottom: '1px solid #f4f6fa',
+                              cursor: 'pointer',
+                              background: on ? '#f0fbfb' : '#fff',
+                            }}
+                          >
+                            <input type="checkbox" checked={on} onChange={() => toggleIzbran(u.id)} />
+                            <span style={{ color: '#0f004e', fontWeight: 500 }}>{u.ime}</span>
+                            <span style={{ color: '#5b5f73', marginLeft: 'auto' }}>{u.email}</span>
+                          </label>
+                        )
+                      })}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#5b5f73', marginTop: 6 }}>
+                      Izbranih: {izbrani.size} od {prejemniki.length}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Korak 3 – sporočilo */}
+        <div style={{ ...sectionLabel, marginTop: 20 }}>3 · Sporočilo</div>
+        <select
+          defaultValue="0"
+          onChange={(e) => {
+            const p = PREDLOGE[Number(e.target.value)]
+            if (p) {
+              setSubject(p.subject)
+              setBodyText(p.body)
+            }
+          }}
+          style={inp}
+        >
+          {PREDLOGE.map((p, i) => (
+            <option key={i} value={i}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <input placeholder="Zadeva" value={subject} onChange={(e) => setSubject(e.target.value)} style={inp} />
+        <textarea
+          placeholder="Vsebina sporočila (lahko vključuje HTML)"
+          value={bodyText}
+          onChange={(e) => setBodyText(e.target.value)}
+          rows={5}
+          style={{ ...inp, resize: 'vertical' }}
+        />
+        <label style={{ display: 'block', fontSize: 12, color: '#5b5f73', marginBottom: 5 }}>Priloge (neobvezno, skupaj do 15 MB):</label>
+        <input type="file" multiple onChange={(e) => setFiles(e.target.files)} style={{ width: '100%', marginBottom: 16, fontSize: 13 }} />
+
+        <button
+          type="button"
+          disabled={sending || (izbiraNacin === 'posamezni' && izbrani.size === 0)}
+          onClick={sendEmail}
+          className="btn btn--style-primary"
+        >
+          {sending ? 'Pošiljam …' : izbiraNacin === 'posamezni' ? `Pošlji ${izbrani.size} izbranim` : 'Pošlji sporočilo'}
+        </button>
+
+        {emailMsg && (
+          <div
+            style={{
+              marginTop: 14,
+              padding: '10px 14px',
+              borderRadius: 8,
+              fontSize: 13.5,
+              fontWeight: 600,
+              background: emailOk ? '#e8f8ee' : '#fdecee',
+              color: emailOk ? '#157a43' : '#b00020',
+              border: `1px solid ${emailOk ? '#bfe8cd' : '#f3c2c8'}`,
+            }}
+          >
+            {emailMsg}
+          </div>
+        )}
       </div>
 
       {/* Seznami zadnjih aktivnosti */}
