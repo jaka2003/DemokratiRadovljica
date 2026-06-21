@@ -308,20 +308,6 @@ export const AdminDashboard = () => {
           })}
         </div>
 
-        {/* Način ujemanja (le pri 2+ kategorijah) */}
-        {kategorije.length >= 2 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, fontSize: 13, flexWrap: 'wrap' }}>
-            <span style={{ color: '#5b5f73' }}>Ujema naj se z:</span>
-            <div style={{ display: 'inline-flex', border: '1px solid #e7e9f1', borderRadius: 8, overflow: 'hidden' }}>
-              <button type="button" onClick={() => { setNacin('katera'); ponastaviPrejemnike() }} style={seg(nacin === 'katera', '#0f004e')}>
-                katero koli kategorijo
-              </button>
-              <button type="button" onClick={() => { setNacin('vse'); ponastaviPrejemnike() }} style={seg(nacin === 'vse', '#0f004e')}>
-                vsemi hkrati
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Korak 2 – prejemniki */}
         <div style={{ ...sectionLabel, marginTop: 20 }}>2 · Prejemniki</div>
