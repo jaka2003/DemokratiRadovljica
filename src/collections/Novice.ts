@@ -37,7 +37,18 @@ export const Novice: CollectionConfig = {
     {
       type: 'row',
       fields: [
-        { name: 'datum', label: 'Datum objave', type: 'date', required: true, admin: { width: '50%' } },
+        {
+          name: 'datum',
+          label: 'Datum objave',
+          type: 'date',
+          required: true,
+          defaultValue: () => new Date().toISOString(),
+          admin: {
+            width: '50%',
+            date: { pickerAppearance: 'dayOnly', displayFormat: 'd. M. yyyy' },
+            description: 'Privzeto današnji datum – spremeni le, če želiš drug datum objave.',
+          },
+        },
         { name: 'slika', label: 'Naslovna slika', type: 'upload', relationTo: 'media', admin: { width: '50%' } },
       ],
     },
