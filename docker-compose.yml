@@ -6,6 +6,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-demokrati}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_DB: ${POSTGRES_DB:-demokrati}
+      TZ: Europe/Ljubljana
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,6 +25,7 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
+      TZ: Europe/Ljubljana
       DATABASE_URI: postgres://${POSTGRES_USER:-demokrati}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-demokrati}
       PAYLOAD_SECRET: ${PAYLOAD_SECRET:?nastavi PAYLOAD_SECRET v .env}
       NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL:-https://demokratiradovljica.com}

@@ -3,9 +3,12 @@
 # ---- Base ----
 FROM node:22-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1
+# Slovenski časovni pas (sicer kontejner teče v UTC → časi 2 uri narazen).
+ENV TZ=Europe/Ljubljana
 WORKDIR /app
 # sharp / native odvisnosti potrebujejo libc – slim (debian) je varnejši od alpine.
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
 # ---- Dependencies ----
