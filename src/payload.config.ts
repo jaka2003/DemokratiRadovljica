@@ -68,6 +68,8 @@ const db = usePostgres
 export default buildConfig({
   admin: {
     user: Users.slug,
+    // Admin vedno v svetli temi (prilagojene komponente uporabljajo svetle barve).
+    theme: 'light',
     importMap: {
       baseDir: path.resolve(dirname),
     },

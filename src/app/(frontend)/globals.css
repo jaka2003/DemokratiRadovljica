@@ -27,6 +27,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Stran je oblikovana svetlo – prepreči, da bi brskalnikov temni način obrnil barve. */
+  color-scheme: light;
 }
 
 body {
