@@ -33,13 +33,26 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-}
+      ADMIN_NOTIFY_EMAIL: ${ADMIN_NOTIFY_EMAIL:-}
       # AI modul (Anthropic / Claude)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-opus-4-8}
     volumes:
       - media_data:/app/media
-    ports:
-      - '${APP_PORT:-3000}:3000'
+    # Vrat ni treba odpirati navzven – do aplikacije pride Cloudflare Tunnel po notranji mreži.
+    # Če bi želel lokalni dostop brez tunela, odkomentiraj:
+    # ports:
+    #   - '${APP_PORT:-3000}:3000'
+
+  # Cloudflare Tunnel – varno objavi stran brez javnega IP-ja in odprtih vrat.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?nastavi TUNNEL_TOKEN v .env}
+    depends_on:
+      - app
 
 volumes:
   db_data:
