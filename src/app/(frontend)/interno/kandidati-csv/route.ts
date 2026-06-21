@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { isAdmin } from '@/access/roles'
+import { isAdmin, KANDIDAT_VLOGE } from '@/access/roles'
 
 // Izvoz seznama kandidatov v CSV (spec. razdelek 11.1).
 export async function GET(req: Request) {
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
   const res = await payload.find({
     collection: 'users',
-    where: { vloga: { equals: 'kandidat' } },
+    where: { vloga: { in: [...KANDIDAT_VLOGE] } },
     limit: 1000,
     depth: 0,
     overrideAccess: true,

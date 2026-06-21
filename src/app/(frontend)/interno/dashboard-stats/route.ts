@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { isAdmin } from '@/access/roles'
+import { isAdmin, KANDIDAT_VLOGE } from '@/access/roles'
 
 // Statistika za administrativno nadzorno ploščo (spec. razdelek 11).
 export async function GET(req: Request) {
@@ -14,9 +14,9 @@ export async function GET(req: Request) {
 
   const [kandidati, profilDokoncan, brezDokumentov, novePobude, odprtePobude, prostovoljci, sporocila] =
     await Promise.all([
-      count('users', { vloga: { equals: 'kandidat' } }),
-      count('users', { and: [{ vloga: { equals: 'kandidat' } }, { statusProfila: { equals: 'potrjen' } }] }),
-      count('users', { and: [{ vloga: { equals: 'kandidat' } }, { statusDokumentacije: { equals: 'ni_oddano' } }] }),
+      count('users', { vloga: { in: [...KANDIDAT_VLOGE] } }),
+      count('users', { and: [{ vloga: { in: [...KANDIDAT_VLOGE] } }, { statusProfila: { equals: 'potrjen' } }] }),
+      count('users', { and: [{ vloga: { in: [...KANDIDAT_VLOGE] } }, { statusDokumentacije: { equals: 'ni_oddano' } }] }),
       count('pobude', { status: { equals: 'nova' } }),
       count('pobude', { status: { in: ['nova', 'v_pregledu', 'ogled_terena'] } }),
       count('prostovoljci'),
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     ).docs as Record<string, unknown>[]
 
   const [zadnjiKandidati, zadnjePobude, zadnjaSporocila, cakajoceNaloge] = await Promise.all([
-    list('users', { vloga: { equals: 'kandidat' } }, '-createdAt'),
+    list('users', { vloga: { in: [...KANDIDAT_VLOGE] } }, '-createdAt'),
     list('pobude', undefined, '-createdAt'),
     list('kontakt-sporocila', undefined, '-createdAt'),
     list('naloge', { status: { not_equals: 'zakljucena' } }, '-createdAt'),

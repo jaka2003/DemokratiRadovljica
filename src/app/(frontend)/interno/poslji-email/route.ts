@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { isAdmin } from '@/access/roles'
+import { isAdmin, KANDIDAT_VLOGE } from '@/access/roles'
 
 // Pošiljanje e-pošte kandidatom (spec. razdelek 11.2).
 export async function POST(req: Request) {
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     datoteke.map(async (f) => ({ filename: f.name, content: Buffer.from(await f.arrayBuffer()) })),
   )
 
-  const where: Record<string, unknown> = { vloga: { equals: 'kandidat' } }
+  const where: Record<string, unknown> = { vloga: { in: [...KANDIDAT_VLOGE] } }
   if (filter === 'brez_profila') where.statusProfila = { not_equals: 'potrjen' }
   else if (filter === 'brez_dokumentov') where.statusDokumentacije = { equals: 'ni_oddano' }
   else if (filter.startsWith('kraj:')) where.naslovKraj = { equals: filter.slice(5) }

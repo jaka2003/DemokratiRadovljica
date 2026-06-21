@@ -67,7 +67,9 @@ services:
       db:
         condition: service_healthy
     profiles: ['tools']
-    command: ['npx', 'payload', 'run', 'scripts/push-schema.ts']
+    # "yes |" samodejno potrdi morebitno opozorilo pri uskladitvi sheme (neinteraktivno).
+    # Varovalo v onInit poskrbi, da administrator nikoli ne ostane brez vloge.
+    command: ['sh', '-c', 'yes | npx payload run scripts/push-schema.ts']
 
   # Samodejne dnevne varnostne kopije baze (shranjene v ./backups na strežniku).
   # Obdrži zadnjih 14 dni; gzip stisnjen pg_dump z DROP-i za čisto obnovitev.

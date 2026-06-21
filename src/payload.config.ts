@@ -163,6 +163,24 @@ export default buildConfig({
       }
       payload.logger.info(`Vpisanih ${KRAJ_DEFAULTS.length} krajev.`)
     }
+
+    // Varovalo: vedno mora obstajati vsaj en administrator. Če ga ni
+    // (npr. po spremembi polja »vloga« v večkratno), ga dodeli najstarejšemu
+    // uporabniku, da se admin ne zaklene iz sistema.
+    const uporabniki = await payload.count({ collection: 'users' })
+    if (uporabniki.totalDocs > 0) {
+      const admini = await payload.count({ collection: 'users', where: { vloga: { in: ['administrator'] } } })
+      if (admini.totalDocs === 0) {
+        const prvi = await payload.find({ collection: 'users', sort: 'createdAt', limit: 1, depth: 0 })
+        const u = prvi.docs[0] as { id: string | number; vloga?: unknown } | undefined
+        if (u) {
+          const obstojece = Array.isArray(u.vloga) ? (u.vloga as string[]) : u.vloga ? [String(u.vloga)] : []
+          const vloge = Array.from(new Set([...obstojece, 'administrator']))
+          await payload.update({ collection: 'users', id: u.id, data: { vloga: vloge }, overrideAccess: true })
+          payload.logger.info('Varovalo: administrator dodeljen najstarejšemu uporabniku.')
+        }
+      }
+    }
     } catch (e) {
       payload.logger.warn(
         'onInit seedanje preskočeno (verjetno shema še ni ustvarjena): ' + (e as Error).message,

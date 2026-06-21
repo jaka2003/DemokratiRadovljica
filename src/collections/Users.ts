@@ -1,15 +1,8 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin } from '../access/roles'
+import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin, VLOGE } from '../access/roles'
 
-// Uporabniške vloge (spec. razdelek 8).
-export const ROLES = [
-  { label: 'Administrator', value: 'administrator' },
-  { label: 'Koordinator kampanje', value: 'koordinator' },
-  { label: 'Urednik vsebin', value: 'urednik' },
-  { label: 'Kandidat', value: 'kandidat' },
-] as const
-
-const IKONE = ['users', 'rocket', 'eye', 'shieldCheck', 'heartHandshake', 'scale', 'flag', 'compass']
+// Uporabniške vloge / kategorije (uporabnik jih ima lahko več hkrati). Vir: '../access/roles'.
+export const ROLES = VLOGE
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -36,7 +29,7 @@ export const Users: CollectionConfig = {
         // Prvi ustvarjeni uporabnik je samodejno administrator.
         if (operation === 'create') {
           const { totalDocs } = await req.payload.count({ collection: 'users' })
-          if (totalDocs === 0) return { ...data, vloga: 'administrator' }
+          if (totalDocs === 0) return { ...data, vloga: ['administrator'] }
         }
         return data
       },
@@ -142,12 +135,17 @@ export const Users: CollectionConfig = {
           fields: [
             {
               name: 'vloga',
-              label: 'Vloga',
+              label: 'Vloge / kategorije (izbereš lahko več)',
               type: 'select',
+              hasMany: true,
               required: true,
-              defaultValue: 'kandidat',
+              defaultValue: ['clan'],
               options: [...ROLES],
               access: { update: adminFieldOnly },
+              admin: {
+                description:
+                  'Uporabnik ima lahko več vlog hkrati (npr. član + kandidat za svetnika). »Administrator« da poln dostop do sistema.',
+              },
             },
             {
               type: 'row',
