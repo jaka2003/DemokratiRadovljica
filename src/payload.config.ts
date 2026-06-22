@@ -26,6 +26,7 @@ import { Novice } from './collections/Novice'
 import { EmailDnevnik } from './collections/EmailDnevnik'
 import { Svetniki } from './collections/Svetniki'
 import { PlakatnaMesta } from './collections/PlakatnaMesta'
+import { Dogodki } from './collections/Dogodki'
 import { Nastavitve } from './globals/Nastavitve'
 import { Kandidat } from './globals/Kandidat'
 import { DomacaStran } from './globals/DomacaStran'
@@ -85,7 +86,7 @@ export default buildConfig({
     },
     components: {
       beforeDashboard: ['/components/admin/AdminDashboard#AdminDashboard'],
-      afterNavLinks: ['/components/admin/PlakatNavLink#PlakatNavLink'],
+      afterNavLinks: ['/components/admin/InternoNav#InternoNav'],
     },
     meta: {
       title: 'Demokrati Radovljica',
@@ -109,6 +110,7 @@ export default buildConfig({
     EmailDnevnik,
     Svetniki,
     PlakatnaMesta,
+    Dogodki,
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,
