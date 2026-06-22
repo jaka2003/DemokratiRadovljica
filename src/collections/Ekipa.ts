@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOrUrednik } from '../access/roles'
 
 // Člani lokalne ekipe Demokrati Radovljica (spec. razdelek 4).
 export const Ekipa: CollectionConfig = {
@@ -14,9 +14,9 @@ export const Ekipa: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: adminOnly,
-    update: adminOnly,
-    delete: adminOnly,
+    create: adminOrUrednik,
+    update: adminOrUrednik,
+    delete: adminOrUrednik,
   },
   defaultSort: 'vrstniRed',
   hooks: {

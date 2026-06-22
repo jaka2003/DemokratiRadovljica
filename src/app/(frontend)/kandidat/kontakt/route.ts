@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { jeSpam } from '@/lib/spam'
 
 // Kontaktni obrazec na strani kandidata (spec. razdelek 6).
 export async function POST(req: Request) {
@@ -11,6 +12,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'Neveljavna zahteva.' }, { status: 400 })
   }
   const g = (k: string) => String(form.get(k) ?? '').trim()
+  if (jeSpam(form)) return NextResponse.json({ ok: true }) // honeypot: tiha zavrnitev
   const imePriimek = g('imePriimek')
   const email = g('email')
   const telefon = g('telefon')

@@ -3,6 +3,7 @@ import type { Access, FieldAccess } from 'payload'
 // Vloge / kategorije uporabnika. Uporabnik jih ima lahko VEČ hkrati (polje je hasMany).
 export const VLOGE = [
   { label: 'Administrator', value: 'administrator' },
+  { label: 'Urednik vsebin', value: 'urednik' },
   { label: 'Član', value: 'clan' },
   { label: 'Nečlan', value: 'neclan' },
   { label: 'Mladi demokrat', value: 'mladi_demokrat' },
@@ -25,8 +26,13 @@ export const imaVlogo = (user: MaybeUser, vloga: string): boolean => {
 
 export const isAdmin = (user: MaybeUser): boolean => imaVlogo(user, 'administrator')
 
-// Zaenkrat ima poln dostop le administrator (po želji lahko dodamo še ekipo kampanje).
-export const isUrednik = isAdmin
+// Urednik vsebin: admin ali uporabnik z vlogo »urednik«. Sme urejati javno vsebino
+// (novice, program, lista, ekipa, kraji, domača stran), NE pa uporabnikov,
+// osebnih podatkov občanov ali sistemskih nastavitev.
+export const isUrednik = (user: MaybeUser): boolean => isAdmin(user) || imaVlogo(user, 'urednik')
+
+// Collection access: dostop administratorjem in urednikom vsebin.
+export const adminOrUrednik: Access = ({ req: { user } }) => isUrednik(user)
 
 // Collection access: administrator vidi vse, ostali samo svoje zapise.
 export const adminOrSelf: Access = ({ req: { user } }) => {

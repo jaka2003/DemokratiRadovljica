@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Send, MapPin, CheckCircle2, Loader2, Camera, ImagePlus, X } from 'lucide-react'
 import { POBUDA_KATEGORIJE, KRAJI } from '@/lib/pobude'
+import { Honeypot } from '@/components/forms/Honeypot'
 
 type Status = 'idle' | 'sending' | 'ok' | 'error'
 
@@ -124,6 +125,7 @@ export default function PobudeForm({
       onSubmit={handleSubmit}
       className="rounded-[var(--radius-card)] border border-line bg-white p-6 shadow-card sm:p-8"
     >
+      <Honeypot />
       <h3 className="text-xl font-bold text-navy">Oddaj pobudo</h3>
       <p className="mt-1 text-sm text-muted">Vsa polja z * so obvezna.</p>
 

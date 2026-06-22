@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { jeSpam } from '@/lib/spam'
 
 import { POBUDA_KATEGORIJE, KRAJI } from '@/lib/pobude'
 import { kategorijaInfo } from '@/lib/pobude'
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
   }
 
   const get = (k: string) => String(form.get(k) ?? '').trim()
+  if (jeSpam(form)) return NextResponse.json({ ok: true }) // honeypot: tiha zavrnitev
 
   const naslov = get('naslov')
   const kategorija = get('kategorija')

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOrUrednik } from '../access/roles'
 import { POBUDA_KATEGORIJE } from '../lib/pobude'
 
 // Izbor ikon, ki so na voljo administratorju.
@@ -38,9 +38,9 @@ export const ProgramskaPodrocja: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: adminOnly,
-    update: adminOnly,
-    delete: adminOnly,
+    create: adminOrUrednik,
+    update: adminOrUrednik,
+    delete: adminOrUrednik,
   },
   defaultSort: 'vrstniRed',
   fields: [

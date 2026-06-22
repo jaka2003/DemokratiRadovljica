@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOrUrednik } from '../access/roles'
 
 // Novice / aktualne objave (spec. razdelki 3.7, 4, 5, 6, 7).
 export const Novice: CollectionConfig = {
@@ -14,9 +14,9 @@ export const Novice: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: adminOnly,
-    update: adminOnly,
-    delete: adminOnly,
+    create: adminOrUrednik,
+    update: adminOrUrednik,
+    delete: adminOrUrednik,
   },
   defaultSort: '-datum',
   fields: [

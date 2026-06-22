@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2, Loader2, Send } from 'lucide-react'
+import { Honeypot } from '@/components/forms/Honeypot'
 
 export type Field = {
   name: string
@@ -65,6 +66,7 @@ export default function SimpleForm({
 
   return (
     <form onSubmit={onSubmit} className="rounded-[var(--radius-card)] border border-line bg-white p-6 shadow-card sm:p-8">
+      <Honeypot />
       {hidden &&
         Object.entries(hidden).map(([k, v]) => <input key={k} type="hidden" name={k} value={v} />)}
       <div className="grid gap-4 sm:grid-cols-2">
