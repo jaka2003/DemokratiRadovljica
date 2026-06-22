@@ -51,6 +51,42 @@ export const AdminDashboard = () => {
   const [seznami, setSeznami] = useState<Seznami | null>(null)
   const [allowed, setAllowed] = useState(true)
 
+  // Vabilo novemu uporabniku
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteIme, setInviteIme] = useState('')
+  const [inviteMsg, setInviteMsg] = useState('')
+  const [inviteOk, setInviteOk] = useState(false)
+  const [inviting, setInviting] = useState(false)
+
+  const povabi = async () => {
+    setInviting(true)
+    setInviteMsg('')
+    setInviteOk(false)
+    try {
+      const res = await fetch('/interno/povabi', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inviteEmail, ime: inviteIme }),
+      })
+      const json = await res.json()
+      if (json.ok) {
+        setInviteOk(true)
+        setInviteMsg(`✓ Vabilo poslano na ${inviteEmail}.`)
+        setInviteEmail('')
+        setInviteIme('')
+      } else {
+        setInviteOk(false)
+        setInviteMsg(json.error || 'Napaka pri pošiljanju vabila.')
+      }
+    } catch {
+      setInviteOk(false)
+      setInviteMsg('Povezava ni uspela.')
+    } finally {
+      setInviting(false)
+    }
+  }
+
   // Množična e-pošta
   const [kategorije, setKategorije] = useState<string[]>([])
   const [nacin, setNacin] = useState<'katera' | 'vse'>('katera')
@@ -245,8 +281,9 @@ export const AdminDashboard = () => {
           <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Kandidati (skupina »Kandidati«)</p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             <li style={liStyle}>
-              {b('Uporabniki sistema')} — dodaš uporabnika/kandidata (»Ustvari nov«): e-pošta, geslo,
-              izbereš eno ali več vlog (član, kandidat za svetnika …). Uporabnik se nato prijavi in ureja svoj profil.
+              {b('Uporabniki sistema')} — najlažje prek {b('»Povabi uporabnika«')} zgoraj: vneseš samo
+              e-naslov, oseba si sama nastavi geslo in dopolni profil. Ti ji nato določiš vlogo(e) v zavihku
+              »Status«. (Uporabnika lahko še vedno dodaš tudi ročno z »Ustvari nov«.)
             </li>
           </ul>
         </div>
@@ -260,6 +297,55 @@ export const AdminDashboard = () => {
             <div style={{ fontSize: 12, color: '#5b5f73' }}>{c.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* Povabi uporabnika */}
+      <div style={{ ...box, marginTop: 16 }}>
+        <h3 style={{ fontWeight: 700, margin: '0 0 2px' }}>Povabi uporabnika</h3>
+        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '0 0 12px' }}>
+          Vneseš samo e-naslov (in ime). Osebi pošljemo povezavo, kjer si sama nastavi geslo in dopolni profil.
+          Vlogo (kategorijo) ji nato določiš ti v »Uporabniki sistema«.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+          <input
+            type="email"
+            placeholder="e-naslov (obvezno)"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            style={{ ...inp, marginBottom: 0, width: 240, flex: '1 1 220px' }}
+          />
+          <input
+            type="text"
+            placeholder="ime (neobvezno)"
+            value={inviteIme}
+            onChange={(e) => setInviteIme(e.target.value)}
+            style={{ ...inp, marginBottom: 0, width: 180, flex: '1 1 160px' }}
+          />
+          <button
+            type="button"
+            disabled={inviting || !inviteEmail}
+            onClick={povabi}
+            className="btn btn--style-primary btn--size-small"
+          >
+            {inviting ? 'Pošiljam …' : '✉️ Pošlji vabilo'}
+          </button>
+        </div>
+        {inviteMsg && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: '8px 12px',
+              borderRadius: 8,
+              fontSize: 13,
+              fontWeight: 600,
+              background: inviteOk ? '#e8f8ee' : '#fdecee',
+              color: inviteOk ? '#157a43' : '#b00020',
+              border: `1px solid ${inviteOk ? '#bfe8cd' : '#f3c2c8'}`,
+            }}
+          >
+            {inviteMsg}
+          </div>
+        )}
       </div>
 
       {/* Izvoz */}
