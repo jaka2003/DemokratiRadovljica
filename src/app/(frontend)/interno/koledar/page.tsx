@@ -4,9 +4,12 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { Calendar, MapPin, Clock, Users } from 'lucide-react'
 import { Container } from '@/components/site/Container'
+import { VLOGE } from '@/access/roles'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Koledar kampanje' }
+
+const VLOGA_LABEL: Record<string, string> = Object.fromEntries(VLOGE.map((v) => [v.value, v.label]))
 
 const TIP: Record<string, { label: string; color: string }> = {
   sestanek: { label: 'Sestanek', color: '#0f004e' },
@@ -25,6 +28,7 @@ type Dogodek = {
   konec?: string | null
   lokacija?: string | null
   opis?: string | null
+  skupine?: string[] | null
   udelezenci?: ({ ime?: string; email?: string } | string | number)[] | null
 }
 
@@ -93,6 +97,8 @@ export default async function KoledarPage() {
                       ime?: string
                       email?: string
                     }[]
+                    const skupineLbl = (d.skupine || []).map((s) => VLOGA_LABEL[s] || s)
+                    const udelImena = udel.map((u) => u.ime || u.email).filter(Boolean) as string[]
                     return (
                       <div
                         key={d.id}
@@ -125,13 +131,22 @@ export default async function KoledarPage() {
                               <MapPin className="h-4 w-4 text-teal" strokeWidth={2} /> {d.lokacija}
                             </span>
                           )}
-                          {udel.length > 0 && (
-                            <span className="inline-flex items-center gap-1.5">
-                              <Users className="h-4 w-4 text-teal" strokeWidth={2} />
-                              {udel.map((u) => u.ime || u.email).filter(Boolean).join(', ')}
-                            </span>
-                          )}
                         </div>
+
+                        {(skupineLbl.length > 0 || udelImena.length > 0) && (
+                          <div className="mt-2 flex flex-wrap items-center gap-1.5 text-sm text-muted">
+                            <Users className="h-4 w-4 shrink-0 text-teal" strokeWidth={2} />
+                            {skupineLbl.map((s, i) => (
+                              <span
+                                key={`s-${i}`}
+                                className="rounded-full bg-teal/10 px-2 py-0.5 text-xs font-semibold text-teal-700"
+                              >
+                                {s}
+                              </span>
+                            ))}
+                            {udelImena.length > 0 && <span className="text-navy/80">{udelImena.join(', ')}</span>}
+                          </div>
+                        )}
 
                         {d.opis && <p className="mt-2 whitespace-pre-line text-sm text-navy/80">{d.opis}</p>}
                       </div>

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, VLOGE } from '../access/roles'
 
 export const DOGODEK_TIPI = [
   { label: 'Sestanek', value: 'sestanek' },
@@ -86,12 +86,22 @@ export const Dogodki: CollectionConfig = {
     { name: 'lokacija', label: 'Lokacija', type: 'text' },
     { name: 'opis', label: 'Opis / opombe', type: 'textarea' },
     {
+      name: 'skupine',
+      label: 'Skupine udeležencev',
+      type: 'select',
+      hasMany: true,
+      options: VLOGE.map((v) => ({ label: v.label, value: v.value })),
+      admin: {
+        description: 'Dodaj cele skupine – vse osebe iz izbranih kategorij (npr. vsi člani, vsi mladi demokrati).',
+      },
+    },
+    {
       name: 'udelezenci',
-      label: 'Udeleženci (neobvezno)',
+      label: 'Posamezni udeleženci',
       type: 'relationship',
       relationTo: 'users',
       hasMany: true,
-      admin: { description: 'Izberi člane ekipe, ki naj se dogodka udeležijo.' },
+      admin: { description: 'Poleg skupin – dodaj točno določene osebe.' },
     },
   ],
 }
