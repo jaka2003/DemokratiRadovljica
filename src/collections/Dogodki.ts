@@ -103,5 +103,10 @@ export const Dogodki: CollectionConfig = {
       hasMany: true,
       admin: { description: 'Poleg skupin – dodaj točno določene osebe.' },
     },
+    {
+      name: 'posljiVabilo',
+      type: 'ui',
+      admin: { components: { Field: '/components/admin/PosljiVabilo#PosljiVabilo' } },
+    },
   ],
 }
