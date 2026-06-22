@@ -76,11 +76,13 @@ export default function PobudeMap({
   draft,
   focus,
   onPick,
+  draftLabel = 'Lokacija tvoje pobude (povleci za premik)',
 }: {
   pobude: JavnaPobuda[]
   draft: { lat: number; lng: number } | null
   focus?: { lat: number; lng: number; key: number } | null
   onPick: (lat: number, lng: number) => void
+  draftLabel?: string
 }) {
   const draftIcon = useMemo(() => pinIcon('#00bbc1', true), [])
 
@@ -151,7 +153,7 @@ export default function PobudeMap({
             },
           }}
         >
-          <Popup>Lokacija tvoje pobude (povleci za premik)</Popup>
+          <Popup>{draftLabel}</Popup>
         </Marker>
       )}
     </MapContainer>
