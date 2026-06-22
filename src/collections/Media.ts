@@ -32,7 +32,7 @@ export const Media: CollectionConfig = {
       { name: 'card', width: 768, height: 512, position: 'centre' },
       { name: 'hero', width: 1600, height: 1000, position: 'centre' },
     ],
-    mimeTypes: ['image/*'],
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'],
   },
   fields: [
     {

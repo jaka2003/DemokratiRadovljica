@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 import { POBUDA_KATEGORIJE, POBUDA_STATUSI, KRAJI } from '../lib/pobude'
 
 // Pobude občanov (spec. 3.6 in 11.3).
@@ -17,9 +18,9 @@ export const Pobude: CollectionConfig = {
   access: {
     // Pobude oddajo občani prek javne strani (strežniška točka z overrideAccess) – ročno se ne ustvarjajo.
     create: () => false,
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    read: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   fields: [
     {

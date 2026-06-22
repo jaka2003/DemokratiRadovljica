@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 
 // Prijave za sodelovanje (spec. razdelek 4 – možnost prijave za sodelovanje).
 export const Prostovoljci: CollectionConfig = {
@@ -14,9 +15,9 @@ export const Prostovoljci: CollectionConfig = {
   access: {
     // Prijave oddajo obiskovalci prek javne strani (overrideAccess) – ročno se ne ustvarjajo.
     create: () => false,
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    read: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   fields: [
     { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true },

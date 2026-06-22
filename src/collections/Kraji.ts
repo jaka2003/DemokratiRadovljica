@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 
 // Kraji občine Radovljica (spec. razdelek 5) – urejivo v administraciji.
 export const Kraji: CollectionConfig = {
@@ -13,9 +14,9 @@ export const Kraji: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    create: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   defaultSort: 'vrstniRed',
   fields: [

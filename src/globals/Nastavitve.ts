@@ -12,7 +12,7 @@ export const Nastavitve: GlobalConfig = {
   },
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: ({ req: { user } }) => isAdmin(user),
   },
   fields: [
     {

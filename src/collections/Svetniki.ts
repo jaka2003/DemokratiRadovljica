@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 import { splitToList } from '../lib/prefill'
 
 const slugify = (s: string) =>
@@ -25,9 +26,9 @@ export const Svetniki: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    create: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   defaultSort: 'vrstniRed',
   hooks: {

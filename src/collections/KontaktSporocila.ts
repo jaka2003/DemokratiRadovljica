@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 
 // Sporočila iz kontaktnih obrazcev (kandidat, splošni kontakt).
 export const KontaktSporocila: CollectionConfig = {
@@ -14,9 +15,9 @@ export const KontaktSporocila: CollectionConfig = {
   access: {
     // Sporočila oddajo obiskovalci prek kontaktnih obrazcev (overrideAccess) – ročno se ne ustvarjajo.
     create: () => false,
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    read: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
   },
   fields: [
     { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true },

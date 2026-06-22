@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 import { splitToList } from '../lib/prefill'
 
 // Javna stran kandidata/-ke za župana/-jo (spec. razdelek 6).
@@ -13,7 +14,7 @@ export const Kandidat: GlobalConfig = {
   },
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: adminOnly,
   },
   hooks: {
     beforeValidate: [

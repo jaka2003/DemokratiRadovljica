@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { adminOnly } from '../access/roles'
 
 // Vsebina domače strani, urejljiva v adminu (spec. 3.1 fotografija, 3.4 koraki).
 export const DomacaStran: GlobalConfig = {
@@ -10,7 +11,7 @@ export const DomacaStran: GlobalConfig = {
   },
   access: {
     read: () => true,
-    update: ({ req }) => Boolean(req.user),
+    update: adminOnly,
   },
   fields: [
     {
