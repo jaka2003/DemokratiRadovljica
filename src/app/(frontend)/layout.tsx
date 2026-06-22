@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { cookies, headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { createHash } from 'crypto'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 import './globals.css'
 import { Header } from '@/components/site/Header'
 import { Footer } from '@/components/site/Footer'
+import { getNastavitve } from '@/lib/queries'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -74,7 +80,28 @@ const organizationJsonLd = {
   areaServed: { '@type': 'AdministrativeArea', name: 'Občina Radovljica' },
 }
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  // Predkampanjski zaklep: če je vklopljen, neprijavljene obiskovalce brez gesla
+  // preusmerimo na vstopni zaslon (/zaklenjeno), da se stran sploh ne izriše.
+  const n = (await getNastavitve()) as Record<string, unknown>
+  const zaklenjeno = Boolean(n.zaklenjeno) && Boolean(n.zaklenjenoGeslo)
+  if (zaklenjeno) {
+    const token = (await cookies()).get('vstop')?.value
+    const pricakovan = createHash('sha256').update(String(n.zaklenjenoGeslo)).digest('hex')
+    let dovoljeno = token === pricakovan
+    if (!dovoljeno) {
+      // Prijavljeni (admin/kandidat) vidijo stran tudi brez gesla.
+      try {
+        const payload = await getPayload({ config })
+        const { user } = await payload.auth({ headers: await headers() })
+        dovoljeno = Boolean(user)
+      } catch {
+        /* neusodno */
+      }
+    }
+    if (!dovoljeno) redirect('/zaklenjeno')
+  }
+
   return (
     <html lang="sl" className={inter.variable}>
       <body className="flex min-h-screen flex-col font-sans">

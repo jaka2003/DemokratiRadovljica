@@ -33,6 +33,44 @@ export const Nastavitve: GlobalConfig = {
       type: 'tabs',
       tabs: [
         {
+          label: 'Zaklep strani',
+          description:
+            'Predkampanjski način: javna stran je zaklenjena z geslom, dokler je ne odkleneš ob začetku kampanje. Prijavljeni (admin in kandidati) jo vidijo vedno.',
+          fields: [
+            {
+              name: 'zaklenjeno',
+              label: 'Zakleni javno stran (predkampanjski način)',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Ko je obkljukano, obiskovalci vidijo vstopni zaslon z geslom namesto strani. Odkljukaj ob začetku kampanje, da stran odpreš za vse.',
+              },
+            },
+            {
+              name: 'zaklenjenoGeslo',
+              label: 'Geslo za vstop',
+              type: 'text',
+              admin: {
+                description: 'Geslo, ki ga deliš ekipi/zaupnim za predogled. Obvezno, kadar je stran zaklenjena.',
+              },
+            },
+            {
+              name: 'zaklenjenoNaslov',
+              label: 'Naslov na vstopnem zaslonu',
+              type: 'text',
+              defaultValue: 'Kmalu odpiramo.',
+            },
+            {
+              name: 'zaklenjenoBesedilo',
+              label: 'Besedilo na vstopnem zaslonu',
+              type: 'textarea',
+              defaultValue:
+                'Stran Demokrati Radovljica je v pripravi. Vstop je trenutno mogoč le z geslom. Hvala za razumevanje.',
+            },
+          ],
+        },
+        {
           label: 'Demokrati Radovljica',
           fields: [
             {
