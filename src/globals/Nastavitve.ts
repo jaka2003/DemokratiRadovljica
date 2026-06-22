@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { isAdmin } from '../access/roles'
 
 // Globalne nastavitve strani – kontakt, družbena omrežja, poslanstvo, vrednote.
 export const Nastavitve: GlobalConfig = {
@@ -51,6 +52,11 @@ export const Nastavitve: GlobalConfig = {
               name: 'zaklenjenoGeslo',
               label: 'Geslo za vstop',
               type: 'text',
+              // Geslo nikoli ne sme priti v javni API – beremo ga le strežniško (overrideAccess).
+              access: {
+                read: ({ req: { user } }) => isAdmin(user),
+                update: ({ req: { user } }) => isAdmin(user),
+              },
               admin: {
                 description: 'Geslo, ki ga deliš ekipi/zaupnim za predogled. Obvezno, kadar je stran zaklenjena.',
               },
