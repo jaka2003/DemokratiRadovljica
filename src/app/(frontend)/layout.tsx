@@ -80,27 +80,34 @@ const organizationJsonLd = {
   areaServed: { '@type': 'AdministrativeArea', name: 'Občina Radovljica' },
 }
 
+// Javne strani se vedno izrišejo dinamično (preverba zaklepa per-zahtevo;
+// med gradnjo se ne prednalagajo – takrat baza še ni dosegljiva).
+export const dynamic = 'force-dynamic'
+
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   // Predkampanjski zaklep: če je vklopljen, neprijavljene obiskovalce brez gesla
   // preusmerimo na vstopni zaslon (/zaklenjeno), da se stran sploh ne izriše.
-  const n = (await getNastavitve()) as Record<string, unknown>
-  const zaklenjeno = Boolean(n.zaklenjeno) && Boolean(n.zaklenjenoGeslo)
-  if (zaklenjeno) {
-    const token = (await cookies()).get('vstop')?.value
-    const pricakovan = createHash('sha256').update(String(n.zaklenjenoGeslo)).digest('hex')
-    let dovoljeno = token === pricakovan
-    if (!dovoljeno) {
-      // Prijavljeni (admin/kandidat) vidijo stran tudi brez gesla.
-      try {
+  // Preverbo ovijemo v try/catch (ob nedosegljivi bazi ne zaklepamo);
+  // redirect() mora ostati ZUNAJ try/catch (notranje deluje prek izjeme).
+  let zakleni = false
+  try {
+    const n = (await getNastavitve()) as Record<string, unknown>
+    if (Boolean(n.zaklenjeno) && Boolean(n.zaklenjenoGeslo)) {
+      const token = (await cookies()).get('vstop')?.value
+      const pricakovan = createHash('sha256').update(String(n.zaklenjenoGeslo)).digest('hex')
+      let dovoljeno = token === pricakovan
+      if (!dovoljeno) {
+        // Prijavljeni (admin/kandidat) vidijo stran tudi brez gesla.
         const payload = await getPayload({ config })
         const { user } = await payload.auth({ headers: await headers() })
         dovoljeno = Boolean(user)
-      } catch {
-        /* neusodno */
       }
+      zakleni = !dovoljeno
     }
-    if (!dovoljeno) redirect('/zaklenjeno')
+  } catch {
+    zakleni = false
   }
+  if (zakleni) redirect('/zaklenjeno')
 
   return (
     <html lang="sl" className={inter.variable}>
