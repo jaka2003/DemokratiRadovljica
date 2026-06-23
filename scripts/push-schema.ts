@@ -26,6 +26,17 @@ if (uri.startsWith('postgres')) {
       await client.query(`DROP TABLE IF EXISTS "users_vloga"`)
       console.log('Priprava: odstranjen star stolpec users.vloga (prehod na večkratno polje).')
     }
+
+    // Odstranjena zbirka "sporocila-kandidatom": vnaprej počisti ostanke (FK, stolpec, tabela),
+    // sicer push pade na DROP CONSTRAINT (drizzle ga generira brez IF EXISTS). Idempotentno.
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_sporocila_kandidatom_fk"`,
+    )
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP COLUMN IF EXISTS "sporocila_kandidatom_id" CASCADE`,
+    )
+    await client.query(`DROP TABLE IF EXISTS "sporocila_kandidatom" CASCADE`)
+
     await client.end()
   } catch (e) {
     console.warn('Priprava vloga (pred push) preskočena: ' + (e as Error).message)
