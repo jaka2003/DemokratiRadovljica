@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Polygon, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { kategorijaInfo, statusInfo } from '@/lib/pobude'
 import { ring, inObcina } from '@/lib/obcina'
+import { Lightbox } from '@/components/site/Lightbox'
 import boundaryData from '@/data/radovljica-boundary.json'
 
 export type JavnaPobuda = {
@@ -17,8 +18,7 @@ export type JavnaPobuda = {
   status: string
   lat: number
   lng: number
-  fotoUrl?: string
-  fotoStevilo?: number
+  fotoUrls?: string[]
 }
 
 // Splošna točka (npr. predlagano plakatno mesto) – prikaže se kot pin s svojo barvo.
@@ -29,22 +29,21 @@ export type MestoTocka = {
   statusLabel?: string
   lat: number
   lng: number
-  fotoUrl?: string
-  fotoStevilo?: number
+  fotoUrls?: string[]
 }
 
-// Predogled fotografije v oblačku (z značko +N, če je slik več).
-function FotoPredogled({ url, alt, stevilo }: { url?: string; alt: string; stevilo?: number }) {
-  if (!url) return null
+// Predogled fotografije v oblačku (klik poveča vse slike). Značka +N, če je slik več.
+function FotoPredogled({ slike, alt, onOpen }: { slike?: string[]; alt: string; onOpen: (slike: string[]) => void }) {
+  if (!slike || slike.length === 0) return null
   return (
-    <div style={{ position: 'relative', marginBottom: 6 }}>
+    <div style={{ position: 'relative', marginBottom: 6, cursor: 'zoom-in' }} onClick={() => onOpen(slike)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={url}
+        src={slike[0]}
         alt={alt}
         style={{ width: '100%', maxWidth: 230, height: 130, objectFit: 'cover', borderRadius: 8, display: 'block' }}
       />
-      {stevilo && stevilo > 1 ? (
+      {slike.length > 1 ? (
         <span
           style={{
             position: 'absolute',
@@ -58,7 +57,7 @@ function FotoPredogled({ url, alt, stevilo }: { url?: string; alt: string; stevi
             borderRadius: 999,
           }}
         >
-          +{stevilo - 1}
+          +{slike.length - 1}
         </span>
       ) : null}
     </div>
@@ -68,7 +67,8 @@ function FotoPredogled({ url, alt, stevilo }: { url?: string; alt: string; stevi
 // Meja občine (ring) in test znotraj/zunaj sta v skupnem modulu '@/lib/obcina'.
 const [minLng, minLat, maxLng, maxLat] = boundaryData.bbox as [number, number, number, number]
 const PAD = 0.015
-const BOUNDS = L.latLngBounds([minLat - PAD, minLng - PAD], [maxLat + PAD, maxLng + PAD])
+// Dodaten prostor na vrhu (sever), da se oblaček ob kliku lahko samodejno premakne v vidno polje.
+const BOUNDS = L.latLngBounds([minLat - PAD, minLng - PAD], [maxLat + 0.05, maxLng + PAD])
 
 // Velik zunanji pravokotnik (maska) z luknjo v obliki občine – vse zunaj prekrije.
 const WORLD: [number, number][] = [
@@ -134,8 +134,11 @@ export default function PobudeMap({
 }) {
   const draftIcon = useMemo(() => pinIcon('#00bbc1', true), [])
   const mestoIcon = useMemo(() => pinIcon('#0f004e'), [])
+  const [lightbox, setLightbox] = useState<{ slike: string[]; i: number } | null>(null)
+  const odpriFoto = (slike: string[]) => setLightbox({ slike, i: 0 })
 
   return (
+    <>
     <MapContainer
       bounds={L.latLngBounds(ring)}
       maxBounds={BOUNDS}
@@ -173,9 +176,9 @@ export default function PobudeMap({
         const kat = kategorijaInfo(p.kategorija)
         return (
           <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(kat.color)}>
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[20, 90] as never} autoPanPaddingBottomRight={[20, 20] as never}>
               <div className="text-sm" style={{ minWidth: 170 }}>
-                <FotoPredogled url={p.fotoUrl} alt={p.naslov} stevilo={p.fotoStevilo} />
+                <FotoPredogled slike={p.fotoUrls} alt={p.naslov} onOpen={odpriFoto} />
                 <div className="font-semibold text-[#0f004e]">{p.naslov}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs">
                   <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: kat.color }} />
@@ -191,9 +194,9 @@ export default function PobudeMap({
       {/* Predlagana plakatna mesta */}
       {mesta.map((m) => (
         <Marker key={`m-${m.id}`} position={[m.lat, m.lng]} icon={mestoIcon}>
-          <Popup>
+          <Popup autoPanPaddingTopLeft={[20, 90] as never} autoPanPaddingBottomRight={[20, 20] as never}>
             <div className="text-sm" style={{ minWidth: 170 }}>
-              <FotoPredogled url={m.fotoUrl} alt={m.naslov} stevilo={m.fotoStevilo} />
+              <FotoPredogled slike={m.fotoUrls} alt={m.naslov} onOpen={odpriFoto} />
               <div className="font-semibold text-[#0f004e]">{m.naslov}</div>
               {(m.kraj || m.statusLabel) && (
                 <div className="mt-1 text-xs text-[#5b5f73]">
@@ -226,5 +229,15 @@ export default function PobudeMap({
         </Marker>
       )}
     </MapContainer>
+
+    {lightbox && (
+      <Lightbox
+        slike={lightbox.slike}
+        index={lightbox.i}
+        onIndex={(i) => setLightbox((l) => (l ? { ...l, i } : l))}
+        onClose={() => setLightbox(null)}
+      />
+    )}
+    </>
   )
 }

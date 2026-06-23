@@ -21,7 +21,7 @@ export async function GET(req: Request) {
   const label = (v: unknown) => PLAKAT_STATUSI.find((s) => s.value === v)?.label
   const mesta = res.docs.map((d: Record<string, unknown>) => {
     const arr = Array.isArray(d.foto) ? (d.foto as { url?: string }[]) : []
-    const prva = arr.find((f) => f && typeof f === 'object' && f.url)
+    const fotoUrls = arr.map((f) => f?.url).filter(Boolean) as string[]
     return {
       id: d.id,
       naslov: d.naslov,
@@ -29,8 +29,7 @@ export async function GET(req: Request) {
       statusLabel: label(d.status),
       lat: d.lat,
       lng: d.lng,
-      fotoUrl: prva?.url || undefined,
-      fotoStevilo: arr.length,
+      fotoUrls,
     }
   })
 

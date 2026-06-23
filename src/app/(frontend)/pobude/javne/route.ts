@@ -24,7 +24,7 @@ export async function GET() {
 
   const pobude = result.docs.map((d) => {
     const fotoArr = Array.isArray(d.foto) ? (d.foto as { url?: string }[]) : []
-    const prva = fotoArr.find((f) => f && typeof f === 'object' && f.url)
+    const fotoUrls = fotoArr.map((f) => f?.url).filter(Boolean) as string[]
     return {
       id: d.id,
       naslov: d.naslov,
@@ -33,8 +33,7 @@ export async function GET() {
       status: d.status,
       lat: d.lat,
       lng: d.lng,
-      fotoUrl: prva?.url || undefined,
-      fotoStevilo: fotoArr.length,
+      fotoUrls,
     }
   })
 
