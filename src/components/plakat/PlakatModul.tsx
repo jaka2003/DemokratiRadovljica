@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Loader2, LocateFixed, Camera, ImagePlus, X, Send, CheckCircle2, MapPin } from 'lucide-react'
 
-import type { JavnaPobuda } from '@/components/pobude/PobudeMap'
+import type { JavnaPobuda, MestoTocka } from '@/components/pobude/PobudeMap'
 import { KRAJI, nearestKraj } from '@/lib/pobude'
 import { inObcina } from '@/lib/obcina'
 
@@ -32,6 +32,20 @@ export default function PlakatModul() {
   const [fotos, setFotos] = useState<{ file: File; url: string }[]>([])
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
+  const [mesta, setMesta] = useState<MestoTocka[]>([])
+
+  // Naloži že oddana plakatna mesta za prikaz na zemljevidu (ob vstopu in po oddaji).
+  const naloziMesta = useCallback(() => {
+    fetch('/interno/plakat/seznam', { cache: 'no-store', credentials: 'include' })
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d.mesta)) setMesta(d.mesta)
+      })
+      .catch(() => {})
+  }, [])
+  useEffect(() => {
+    naloziMesta()
+  }, [naloziMesta])
 
   const cameraRef = useRef<HTMLInputElement>(null)
   const galleryRef = useRef<HTMLInputElement>(null)
@@ -124,6 +138,7 @@ export default function PlakatModul() {
       setKraj('')
       setDraft(null)
       clearFotos()
+      naloziMesta()
     } catch {
       setStatus('error')
       setMessage('Povezava ni uspela. Preveri internet in poskusi znova.')
@@ -156,7 +171,7 @@ export default function PlakatModul() {
       {/* Zemljevid + GPS */}
       <div className="lg:sticky lg:top-20">
         <div className="overflow-hidden rounded-[var(--radius-card)] border border-line shadow-card">
-          <PobudeMap pobude={[] as JavnaPobuda[]} draft={draft} focus={focus} onPick={onPick} draftLabel="Predlagana lokacija plakata (povleci za premik)" />
+          <PobudeMap pobude={[] as JavnaPobuda[]} mesta={mesta} draft={draft} focus={focus} onPick={onPick} draftLabel="Predlagana lokacija plakata (povleci za premik)" />
         </div>
         <button
           type="button"
@@ -175,6 +190,12 @@ export default function PlakatModul() {
         )}
         {geo === 'napaka' && (
           <p className="mt-2 text-xs text-amber-700">Lokacije ni bilo mogoče pridobiti. Označi točko na zemljevidu ročno.</p>
+        )}
+        {mesta.length > 0 && (
+          <p className="mt-3 text-xs text-muted">
+            <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ backgroundColor: '#0f004e' }} />
+            Temni pini so že oddana mesta ({mesta.length}) — klikni nanje za fotografijo in podatke.
+          </p>
         )}
       </div>
 

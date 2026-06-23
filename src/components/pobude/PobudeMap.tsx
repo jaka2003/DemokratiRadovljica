@@ -21,6 +21,50 @@ export type JavnaPobuda = {
   fotoStevilo?: number
 }
 
+// Splošna točka (npr. predlagano plakatno mesto) – prikaže se kot pin s svojo barvo.
+export type MestoTocka = {
+  id: string | number
+  naslov: string
+  kraj?: string
+  statusLabel?: string
+  lat: number
+  lng: number
+  fotoUrl?: string
+  fotoStevilo?: number
+}
+
+// Predogled fotografije v oblačku (z značko +N, če je slik več).
+function FotoPredogled({ url, alt, stevilo }: { url?: string; alt: string; stevilo?: number }) {
+  if (!url) return null
+  return (
+    <div style={{ position: 'relative', marginBottom: 6 }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt={alt}
+        style={{ width: '100%', maxWidth: 230, height: 130, objectFit: 'cover', borderRadius: 8, display: 'block' }}
+      />
+      {stevilo && stevilo > 1 ? (
+        <span
+          style={{
+            position: 'absolute',
+            right: 6,
+            bottom: 6,
+            background: 'rgba(15,0,78,0.82)',
+            color: '#fff',
+            fontSize: 11,
+            fontWeight: 600,
+            padding: '1px 7px',
+            borderRadius: 999,
+          }}
+        >
+          +{stevilo - 1}
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
 // Meja občine (ring) in test znotraj/zunaj sta v skupnem modulu '@/lib/obcina'.
 const [minLng, minLat, maxLng, maxLat] = boundaryData.bbox as [number, number, number, number]
 const PAD = 0.015
@@ -78,15 +122,18 @@ export default function PobudeMap({
   draft,
   focus,
   onPick,
+  mesta = [],
   draftLabel = 'Lokacija tvoje pobude (povleci za premik)',
 }: {
   pobude: JavnaPobuda[]
   draft: { lat: number; lng: number } | null
   focus?: { lat: number; lng: number; key: number } | null
   onPick: (lat: number, lng: number) => void
+  mesta?: MestoTocka[]
   draftLabel?: string
 }) {
   const draftIcon = useMemo(() => pinIcon('#00bbc1', true), [])
+  const mestoIcon = useMemo(() => pinIcon('#0f004e'), [])
 
   return (
     <MapContainer
@@ -128,33 +175,7 @@ export default function PobudeMap({
           <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(kat.color)}>
             <Popup>
               <div className="text-sm" style={{ minWidth: 170 }}>
-                {p.fotoUrl && (
-                  <div style={{ position: 'relative', marginBottom: 6 }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={p.fotoUrl}
-                      alt={p.naslov}
-                      style={{ width: '100%', maxWidth: 230, height: 130, objectFit: 'cover', borderRadius: 8, display: 'block' }}
-                    />
-                    {p.fotoStevilo && p.fotoStevilo > 1 ? (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          right: 6,
-                          bottom: 6,
-                          background: 'rgba(15,0,78,0.82)',
-                          color: '#fff',
-                          fontSize: 11,
-                          fontWeight: 600,
-                          padding: '1px 7px',
-                          borderRadius: 999,
-                        }}
-                      >
-                        +{p.fotoStevilo - 1}
-                      </span>
-                    ) : null}
-                  </div>
-                )}
+                <FotoPredogled url={p.fotoUrl} alt={p.naslov} stevilo={p.fotoStevilo} />
                 <div className="font-semibold text-[#0f004e]">{p.naslov}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs">
                   <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: kat.color }} />
@@ -166,6 +187,25 @@ export default function PobudeMap({
           </Marker>
         )
       })}
+
+      {/* Predlagana plakatna mesta */}
+      {mesta.map((m) => (
+        <Marker key={`m-${m.id}`} position={[m.lat, m.lng]} icon={mestoIcon}>
+          <Popup>
+            <div className="text-sm" style={{ minWidth: 170 }}>
+              <FotoPredogled url={m.fotoUrl} alt={m.naslov} stevilo={m.fotoStevilo} />
+              <div className="font-semibold text-[#0f004e]">{m.naslov}</div>
+              {(m.kraj || m.statusLabel) && (
+                <div className="mt-1 text-xs text-[#5b5f73]">
+                  {m.kraj || ''}
+                  {m.kraj && m.statusLabel ? ' · ' : ''}
+                  {m.statusLabel ? `Status: ${m.statusLabel}` : ''}
+                </div>
+              )}
+            </div>
+          </Popup>
+        </Marker>
+      ))}
 
       {/* Lokacija nove pobude (osnutek) */}
       {draft && (
