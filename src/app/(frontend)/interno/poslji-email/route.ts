@@ -37,14 +37,20 @@ export async function POST(req: Request) {
   const kategorijeRaw = String(form.get('kategorije') || '').trim()
   const nacin = form.get('nacin') === 'vse' ? 'vse' : 'katera'
 
-  let where: Record<string, unknown> = {}
+  // Ročni dodatni e-naslovi (osebe, ki niso uporabniki aplikacije).
+  const rocni = String(form.get('dodatniEmaili') || '')
+    .split(/[\s,;]+/)
+    .map((e) => e.trim().toLowerCase())
+    .filter((e) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))
+
+  // where = null pomeni »ne dodajaj uporabnikov« (npr. samo ročni naslovi).
+  let where: Record<string, unknown> | null = null
   let opisFilter = 'vsi uporabniki'
   if (userIdsRaw) {
     let ids: (string | number)[] = []
     try {
       ids = JSON.parse(userIdsRaw)
     } catch {}
-    if (!ids.length) return NextResponse.json({ ok: false, error: 'Ni izbranih prejemnikov.' }, { status: 400 })
     where = { id: { in: ids } }
     opisFilter = `posamezni (${ids.length})`
   } else {
@@ -58,8 +64,15 @@ export async function POST(req: Request) {
           ? { and: kategorije.map((k) => ({ vloga: { in: [k] } })) }
           : { vloga: { in: kategorije } }
       opisFilter = `${kategorije.join(', ')} (${nacin === 'vse' ? 'vse hkrati' : 'katera koli'})`
+    } else if (rocni.length) {
+      // Brez kategorij, a so ročni naslovi → pošlji SAMO njim (ne vsem uporabnikom).
+      where = null
+      opisFilter = 'samo dodatni naslovi'
+    } else {
+      where = {} // brez izbire in brez ročnih = vsi uporabniki (kot doslej)
     }
   }
+  if (rocni.length && opisFilter !== 'samo dodatni naslovi') opisFilter += ` + ${rocni.length} dodatnih`
 
   // Testno pošiljanje: samo administratorju.
   if (test) {
@@ -72,8 +85,22 @@ export async function POST(req: Request) {
     }
   }
 
-  const res = await payload.find({ collection: 'users', where: where as never, limit: 1000, depth: 0, overrideAccess: true })
-  const prejemniki = res.docs.map((d: Record<string, unknown>) => String(d.email)).filter(Boolean)
+  const emails = new Set<string>()
+  if (where) {
+    const res = await payload.find({ collection: 'users', where: where as never, limit: 1000, depth: 0, overrideAccess: true })
+    for (const d of res.docs as Record<string, unknown>[]) {
+      const e = String(d.email || '').trim().toLowerCase()
+      if (e) emails.add(e)
+    }
+  }
+  for (const e of rocni) emails.add(e)
+  const prejemniki = [...emails]
+  if (!prejemniki.length) {
+    return NextResponse.json(
+      { ok: false, error: 'Ni prejemnikov – izberi kategorije/osebe ali vpiši dodatne e-naslove.' },
+      { status: 400 },
+    )
+  }
 
   // GDPR: vsako sporočilo vsebuje možnost odjave.
   const base = process.env.NEXT_PUBLIC_SERVER_URL || ''

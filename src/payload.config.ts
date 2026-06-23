@@ -20,7 +20,6 @@ import { Ekipa } from './collections/Ekipa'
 import { Prostovoljci } from './collections/Prostovoljci'
 import { Dokumenti } from './collections/Dokumenti'
 import { Naloge } from './collections/Naloge'
-import { SporocilaKandidatom } from './collections/SporocilaKandidatom'
 import { KontaktSporocila } from './collections/KontaktSporocila'
 import { Novice } from './collections/Novice'
 import { EmailDnevnik } from './collections/EmailDnevnik'
@@ -104,7 +103,6 @@ export default buildConfig({
     Prostovoljci,
     Dokumenti,
     Naloge,
-    SporocilaKandidatom,
     KontaktSporocila,
     Novice,
     EmailDnevnik,

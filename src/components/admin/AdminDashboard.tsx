@@ -96,6 +96,7 @@ export const AdminDashboard = () => {
   const [izbrani, setIzbrani] = useState<Set<string | number>>(new Set())
   const [subject, setSubject] = useState('')
   const [bodyText, setBodyText] = useState('')
+  const [dodatniEmaili, setDodatniEmaili] = useState('')
   const [files, setFiles] = useState<FileList | null>(null)
   const [emailMsg, setEmailMsg] = useState('')
   const [emailOk, setEmailOk] = useState(false)
@@ -170,6 +171,7 @@ export const AdminDashboard = () => {
       const fd = new FormData()
       fd.set('subject', subject)
       fd.set('body', bodyText)
+      fd.set('dodatniEmaili', dodatniEmaili)
       if (izbiraNacin === 'posamezni') fd.set('userIds', JSON.stringify(Array.from(izbrani)))
       else {
         fd.set('kategorije', JSON.stringify(kategorije))
@@ -453,7 +455,21 @@ export const AdminDashboard = () => {
         )}
 
         {/* Korak 3 – sporočilo */}
-        <div style={{ ...sectionLabel, marginTop: 20 }}>3 · Sporočilo</div>
+        {/* Dodatni e-naslovi (osebe, ki niso uporabniki) */}
+        <div style={{ ...sectionLabel, marginTop: 20 }}>Dodatni e-naslovi (neobvezno)</div>
+        <textarea
+          value={dodatniEmaili}
+          onChange={(e) => setDodatniEmaili(e.target.value)}
+          placeholder="ime@primer.si, drugi@primer.si …"
+          rows={2}
+          style={{ ...inp, resize: 'vertical', marginBottom: 4 }}
+        />
+        <p style={{ fontSize: 12, color: '#5b5f73', margin: '0 0 4px' }}>
+          Za osebe, ki niso uporabniki aplikacije. Loči z vejico ali novo vrsto. Doda se k izbranim prejemnikom
+          (če ne izbereš nikogar zgoraj, gre samo na te naslove).
+        </p>
+
+        <div style={{ ...sectionLabel, marginTop: 18 }}>Sporočilo</div>
         <select
           defaultValue="0"
           onChange={(e) => {
@@ -484,7 +500,7 @@ export const AdminDashboard = () => {
 
         <button
           type="button"
-          disabled={sending || (izbiraNacin === 'posamezni' && izbrani.size === 0)}
+          disabled={sending || (izbiraNacin === 'posamezni' && izbrani.size === 0 && !dodatniEmaili.trim())}
           onClick={sendEmail}
           className="btn btn--style-primary"
         >
