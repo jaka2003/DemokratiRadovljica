@@ -67,8 +67,7 @@ function FotoPredogled({ slike, alt, onOpen }: { slike?: string[]; alt: string; 
 // Meja občine (ring) in test znotraj/zunaj sta v skupnem modulu '@/lib/obcina'.
 const [minLng, minLat, maxLng, maxLat] = boundaryData.bbox as [number, number, number, number]
 const PAD = 0.015
-// Dodaten prostor na vrhu (sever), da se oblaček ob kliku lahko samodejno premakne v vidno polje.
-const BOUNDS = L.latLngBounds([minLat - PAD, minLng - PAD], [maxLat + 0.05, maxLng + PAD])
+const BOUNDS = L.latLngBounds([minLat - PAD, minLng - PAD], [maxLat + PAD, maxLng + PAD])
 
 // Velik zunanji pravokotnik (maska) z luknjo v obliki občine – vse zunaj prekrije.
 const WORLD: [number, number][] = [
@@ -176,7 +175,7 @@ export default function PobudeMap({
         const kat = kategorijaInfo(p.kategorija)
         return (
           <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(kat.color)}>
-            <Popup autoPanPaddingTopLeft={[20, 90] as never} autoPanPaddingBottomRight={[20, 20] as never}>
+            <Popup>
               <div className="text-sm" style={{ minWidth: 170 }}>
                 <FotoPredogled slike={p.fotoUrls} alt={p.naslov} onOpen={odpriFoto} />
                 <div className="font-semibold text-[#0f004e]">{p.naslov}</div>
@@ -194,7 +193,7 @@ export default function PobudeMap({
       {/* Predlagana plakatna mesta */}
       {mesta.map((m) => (
         <Marker key={`m-${m.id}`} position={[m.lat, m.lng]} icon={mestoIcon}>
-          <Popup autoPanPaddingTopLeft={[20, 90] as never} autoPanPaddingBottomRight={[20, 20] as never}>
+          <Popup>
             <div className="text-sm" style={{ minWidth: 170 }}>
               <FotoPredogled slike={m.fotoUrls} alt={m.naslov} onOpen={odpriFoto} />
               <div className="font-semibold text-[#0f004e]">{m.naslov}</div>
