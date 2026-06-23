@@ -7,10 +7,10 @@ export const Prostovoljci: CollectionConfig = {
   labels: { singular: 'Prijava za sodelovanje', plural: 'Prijave za sodelovanje' },
   admin: {
     useAsTitle: 'imePriimek',
-    defaultColumns: ['imePriimek', 'email', 'kraj', 'createdAt'],
+    defaultColumns: ['imePriimek', 'email', 'kraj', 'status', 'createdAt'],
     group: 'Pobude in sporočila',
     description:
-      'Prijave občanov, ki se želijo pridružiti ekipi (oddane na strani »Demokrati Radovljica«). Samo za pregled – vnašajo jih obiskovalci.',
+      'Prijave občanov, ki se želijo pridružiti ekipi (oddane na strani »Demokrati Radovljica«). Vsebino vnašajo obiskovalci; ti nastaviš »Status«, da sledite obravnavi.',
   },
   access: {
     // Prijave oddajo obiskovalci prek javne strani (overrideAccess) – ročno se ne ustvarjajo.
@@ -20,6 +20,24 @@ export const Prostovoljci: CollectionConfig = {
     delete: adminOnly,
   },
   fields: [
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'status',
+          label: 'Status (obravnava)',
+          type: 'select',
+          defaultValue: 'novo',
+          options: [
+            { label: 'Novo', value: 'novo' },
+            { label: 'V obravnavi', value: 'v_obravnavi' },
+            { label: 'Kontaktiran', value: 'kontaktiran' },
+            { label: 'Zaključeno', value: 'zakljuceno' },
+          ],
+          admin: { width: '50%', description: 'Sledi, kako daleč je obravnava prijave.' },
+        },
+      ],
+    },
     { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true },
     {
       type: 'row',
@@ -31,6 +49,7 @@ export const Prostovoljci: CollectionConfig = {
     { name: 'kraj', label: 'Kraj', type: 'text' },
     { name: 'podrocja', label: 'Področja zanimanja', type: 'text' },
     { name: 'sporocilo', label: 'Sporočilo', type: 'textarea' },
+    { name: 'notranjeOpombe', label: 'Notranje opombe', type: 'textarea', admin: { description: 'Za interno sledenje (npr. kdaj kontaktiran, dogovor).' } },
     { name: 'soglasjeGDPR', label: 'Soglasje za obdelavo osebnih podatkov', type: 'checkbox', required: true },
   ],
 }
