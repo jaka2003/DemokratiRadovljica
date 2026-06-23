@@ -17,6 +17,8 @@ export type JavnaPobuda = {
   status: string
   lat: number
   lng: number
+  fotoUrl?: string
+  fotoStevilo?: number
 }
 
 // Meja občine (ring) in test znotraj/zunaj sta v skupnem modulu '@/lib/obcina'.
@@ -125,7 +127,34 @@ export default function PobudeMap({
         return (
           <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(kat.color)}>
             <Popup>
-              <div className="text-sm">
+              <div className="text-sm" style={{ minWidth: 170 }}>
+                {p.fotoUrl && (
+                  <div style={{ position: 'relative', marginBottom: 6 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.fotoUrl}
+                      alt={p.naslov}
+                      style={{ width: '100%', maxWidth: 230, height: 130, objectFit: 'cover', borderRadius: 8, display: 'block' }}
+                    />
+                    {p.fotoStevilo && p.fotoStevilo > 1 ? (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          right: 6,
+                          bottom: 6,
+                          background: 'rgba(15,0,78,0.82)',
+                          color: '#fff',
+                          fontSize: 11,
+                          fontWeight: 600,
+                          padding: '1px 7px',
+                          borderRadius: 999,
+                        }}
+                      >
+                        +{p.fotoStevilo - 1}
+                      </span>
+                    ) : null}
+                  </div>
+                )}
                 <div className="font-semibold text-[#0f004e]">{p.naslov}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs">
                   <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: kat.color }} />

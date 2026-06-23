@@ -18,19 +18,25 @@ export async function GET() {
       ],
     },
     limit: 500,
-    depth: 0,
+    depth: 1, // napolni fotografije (media), da lahko vrnemo URL prve slike
     overrideAccess: true,
   })
 
-  const pobude = result.docs.map((d) => ({
-    id: d.id,
-    naslov: d.naslov,
-    kategorija: d.kategorija,
-    kraj: d.kraj,
-    status: d.status,
-    lat: d.lat,
-    lng: d.lng,
-  }))
+  const pobude = result.docs.map((d) => {
+    const fotoArr = Array.isArray(d.foto) ? (d.foto as { url?: string }[]) : []
+    const prva = fotoArr.find((f) => f && typeof f === 'object' && f.url)
+    return {
+      id: d.id,
+      naslov: d.naslov,
+      kategorija: d.kategorija,
+      kraj: d.kraj,
+      status: d.status,
+      lat: d.lat,
+      lng: d.lng,
+      fotoUrl: prva?.url || undefined,
+      fotoStevilo: fotoArr.length,
+    }
+  })
 
   return NextResponse.json(
     { pobude },
