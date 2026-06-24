@@ -20,6 +20,22 @@ export const Seje: CollectionConfig = {
     update: adminOnly,
     delete: adminOnly,
   },
+  hooks: {
+    // Ob izbrisu seje pobrišemo še pripadajoče glasove, sicer baza izbris prepreči (povezava).
+    beforeDelete: [
+      async ({ req, id }) => {
+        try {
+          await req.payload.delete({
+            collection: 'glasovi',
+            where: { seja: { equals: id } },
+            overrideAccess: true,
+          })
+        } catch (e) {
+          console.error('Napaka pri brisanju glasov seje:', e)
+        }
+      },
+    ],
+  },
   fields: [
     {
       type: 'tabs',
