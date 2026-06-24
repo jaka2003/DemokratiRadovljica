@@ -44,10 +44,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'Neveljavna točka.' }, { status: 400 })
   }
 
+  // Uporabi kanonični ID iz naložene seje (pravi tip – število na SQLite/Postgres),
+  // ne niza iz odjemalca, sicer Payload zavrne povezavo (»polje Seja je neveljavno«).
+  const sejaRef = seja.id
+  const uporabnikRef = user.id
+
   const obstoj = await payload.count({
     collection: 'glasovi',
     where: {
-      and: [{ seja: { equals: sejaId } }, { tockaId: { equals: tockaId } }, { uporabnik: { equals: user.id } }],
+      and: [{ seja: { equals: sejaRef } }, { tockaId: { equals: tockaId } }, { uporabnik: { equals: uporabnikRef } }],
     },
   })
   if (obstoj.totalDocs > 0) {
@@ -57,12 +62,15 @@ export async function POST(req: Request) {
   try {
     await payload.create({
       collection: 'glasovi',
-      data: { seja: sejaId, tockaId, uporabnik: user.id, glas, glasovanoOb: new Date().toISOString() },
+      data: { seja: sejaRef, tockaId, uporabnik: uporabnikRef, glas, glasovanoOb: new Date().toISOString() },
       overrideAccess: true,
     })
   } catch (e) {
     console.error('Napaka pri shranjevanju glasu:', e)
-    return NextResponse.json({ ok: false, error: 'Glasu ni bilo mogoče shraniti.' }, { status: 500 })
+    return NextResponse.json(
+      { ok: false, error: 'Glasu ni bilo mogoče shraniti.', detail: (e as Error).message },
+      { status: 500 },
+    )
   }
 
   const status = await morebitenZakljucek(payload, seja, udelezenci)
