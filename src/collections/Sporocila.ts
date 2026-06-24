@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOnly } from '../access/roles'
+import { desifriraj, sifriraj } from '../lib/sifriranje'
 
 // Sporočila internega klepeta ekipe (sobe + zasebno). Ustvarjajo se prek interne strani
 // »/interno/klepet« (z avtorizacijo glede na dostop do sobe / pogovora). V adminu jih
@@ -50,6 +51,17 @@ export const Sporocila: CollectionConfig = {
       admin: { readOnly: true },
     },
     { name: 'pogovor', label: 'Ključ pogovora', type: 'text', index: true, admin: { readOnly: true } },
-    { name: 'besedilo', label: 'Besedilo', type: 'textarea', required: true, admin: { readOnly: true } },
+    {
+      name: 'besedilo',
+      label: 'Besedilo',
+      type: 'textarea',
+      required: true,
+      admin: { readOnly: true },
+      // Šifriranje v bazi: shranimo zašifrirano, ob branju (tudi v adminu za moderacijo) dešifriramo.
+      hooks: {
+        beforeChange: [({ value }) => (typeof value === 'string' ? sifriraj(value) : value)],
+        afterRead: [({ value }) => (typeof value === 'string' ? desifriraj(value) : value)],
+      },
+    },
   ],
 }
