@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isAdmin } from '../access/roles'
+import { ikonaOptions } from '../lib/ikone'
 
 // Globalne nastavitve strani – kontakt, družbena omrežja, poslanstvo, vrednote.
 export const Nastavitve: GlobalConfig = {
@@ -118,9 +119,7 @@ export const Nastavitve: GlobalConfig = {
                   label: 'Ikona',
                   type: 'select',
                   defaultValue: 'shieldCheck',
-                  options: ['users', 'rocket', 'eye', 'shieldCheck', 'heartHandshake', 'scale', 'flag', 'compass'].map(
-                    (i) => ({ label: i, value: i }),
-                  ),
+                  options: ikonaOptions(['users', 'rocket', 'eye', 'shieldCheck', 'heartHandshake', 'scale', 'flag', 'compass']),
                 },
               ],
             },

@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { adminOrUrednik } from '../access/roles'
 import { splitToList } from '../lib/prefill'
+import { ikonaOptions } from '../lib/ikone'
 
 // Javna stran kandidata/-ke za župana/-jo (spec. razdelek 6).
 // Objavi se, ko je kandidat uradno predstavljen.
@@ -88,10 +89,7 @@ export const Kandidat: GlobalConfig = {
           label: 'Ikona',
           type: 'select',
           defaultValue: 'shieldCheck',
-          options: ['users', 'rocket', 'eye', 'shieldCheck', 'heartHandshake', 'scale', 'flag', 'compass'].map((i) => ({
-            label: i,
-            value: i,
-          })),
+          options: ikonaOptions(['users', 'rocket', 'eye', 'shieldCheck', 'heartHandshake', 'scale', 'flag', 'compass']),
         },
       ],
     },

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrUrednik } from '../access/roles'
+import { slugify } from '../lib/slug'
 
 // Novice / aktualne objave (spec. razdelki 3.7, 4, 5, 6, 7).
 export const Novice: CollectionConfig = {
@@ -19,6 +20,14 @@ export const Novice: CollectionConfig = {
     delete: adminOrUrednik,
   },
   defaultSort: '-datum',
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data && !data.slug && data.naslov) data.slug = slugify(data.naslov)
+        return data
+      },
+    ],
+  },
   fields: [
     {
       type: 'row',
@@ -29,11 +38,12 @@ export const Novice: CollectionConfig = {
     },
     {
       name: 'slug',
-      label: 'URL (slug)',
+      label: 'Spletni naslov (samodejno)',
       type: 'text',
-      required: true,
       unique: true,
-      admin: { description: 'Naslov v povezavi, brez šumnikov in presledkov.' },
+      admin: {
+        description: 'Pusti prazno – ustvari se samodejno iz naslova. (Del povezave do novice.)',
+      },
     },
     {
       type: 'row',

@@ -280,7 +280,7 @@ export const AdminDashboard = () => {
             </li>
           </ul>
 
-          <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Kandidati (skupina »Kandidati«)</p>
+          <p style={{ fontWeight: 700, margin: '10px 0 4px' }}>Uporabniki (skupina »Uporabniki in kandidati«)</p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             <li style={liStyle}>
               {b('Uporabniki sistema')} — najlažje prek {b('»Povabi uporabnika«')} zgoraj: vneseš samo

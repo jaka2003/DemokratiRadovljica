@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrUrednik } from '../access/roles'
 import { POBUDA_KATEGORIJE } from '../lib/pobude'
+import { ikonaOptions } from '../lib/ikone'
+import { slugify } from '../lib/slug'
 
 // Izbor ikon, ki so na voljo administratorju.
 const IKONE = [
@@ -31,7 +33,7 @@ export const ProgramskaPodrocja: CollectionConfig = {
   labels: { singular: 'Programsko področje', plural: 'Programska področja' },
   admin: {
     useAsTitle: 'naslov',
-    defaultColumns: ['naslov', 'slug', 'objavljeno', 'vrstniRed'],
+    defaultColumns: ['naslov', 'objavljeno', 'vrstniRed'],
     group: 'Javna vsebina',
     description:
       'Področja programa, prikazana na javni strani »Program«. Vsako področje ima svojo podstran (uvod, ukrepi, fotografije). Uredi besedila, vrstni red ali skrij področje (odkljukaj »Objavljeno«).',
@@ -43,6 +45,14 @@ export const ProgramskaPodrocja: CollectionConfig = {
     delete: adminOrUrednik,
   },
   defaultSort: 'vrstniRed',
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data && !data.slug && data.naslov) data.slug = slugify(data.naslov)
+        return data
+      },
+    ],
+  },
   fields: [
     {
       type: 'row',
@@ -53,7 +63,7 @@ export const ProgramskaPodrocja: CollectionConfig = {
           label: 'Vrstni red',
           type: 'number',
           defaultValue: 100,
-          admin: { width: '20%' },
+          admin: { width: '20%', description: 'Manjša številka = višje na seznamu.' },
         },
         {
           name: 'objavljeno',
@@ -66,11 +76,12 @@ export const ProgramskaPodrocja: CollectionConfig = {
     },
     {
       name: 'slug',
-      label: 'URL (slug)',
+      label: 'Spletni naslov (samodejno)',
       type: 'text',
-      required: true,
       unique: true,
-      admin: { description: 'Naslov v povezavi, npr. "promet-in-plocniki". Brez šumnikov in presledkov.' },
+      admin: {
+        description: 'Pusti prazno – ustvari se samodejno iz naslova. (Del povezave do strani.)',
+      },
     },
     {
       type: 'row',
@@ -80,8 +91,8 @@ export const ProgramskaPodrocja: CollectionConfig = {
           label: 'Ikona',
           type: 'select',
           defaultValue: 'fileText',
-          options: IKONE.map((i) => ({ label: i, value: i })),
-          admin: { width: '50%' },
+          options: ikonaOptions(IKONE),
+          admin: { width: '50%', description: 'Sličica ob naslovu področja.' },
         },
         {
           name: 'povezanaKategorija',

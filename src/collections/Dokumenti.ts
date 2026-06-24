@@ -8,7 +8,7 @@ export const Dokumenti: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status'],
-    group: 'Kandidati',
+    group: 'Uporabniki in kandidati',
     description: 'Dokumenti kandidatov (npr. soglasja, potrdila). Kandidat vidi in nalaga samo svoje.',
   },
   access: {

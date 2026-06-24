@@ -8,7 +8,7 @@ export const EmailDnevnik: CollectionConfig = {
   admin: {
     useAsTitle: 'zadeva',
     defaultColumns: ['zadeva', 'filter', 'prejemnikov', 'createdAt'],
-    group: 'Kandidati',
+    group: 'Uporabniki in kandidati',
     description: 'Evidenca množičnih e-poštnih sporočil, poslanih kandidatom (zadeva, izbira prejemnikov, število, datum).',
   },
   access: {
@@ -19,10 +19,10 @@ export const EmailDnevnik: CollectionConfig = {
     delete: adminOnly,
   },
   fields: [
-    { name: 'zadeva', label: 'Zadeva', type: 'text' },
-    { name: 'filter', label: 'Izbira prejemnikov', type: 'text' },
-    { name: 'prejemnikov', label: 'Število prejemnikov', type: 'number' },
-    { name: 'posiljatelj', label: 'Pošiljatelj', type: 'text' },
-    { name: 'vsebina', label: 'Vsebina', type: 'textarea' },
+    { name: 'zadeva', label: 'Zadeva', type: 'text', admin: { readOnly: true } },
+    { name: 'filter', label: 'Izbira prejemnikov', type: 'text', admin: { readOnly: true } },
+    { name: 'prejemnikov', label: 'Število prejemnikov', type: 'number', admin: { readOnly: true } },
+    { name: 'posiljatelj', label: 'Pošiljatelj', type: 'text', admin: { readOnly: true } },
+    { name: 'vsebina', label: 'Vsebina', type: 'textarea', admin: { readOnly: true } },
   ],
 }

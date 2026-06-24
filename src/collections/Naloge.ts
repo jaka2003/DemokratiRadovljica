@@ -8,7 +8,7 @@ export const Naloge: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status', 'rok'],
-    group: 'Kandidati',
+    group: 'Uporabniki in kandidati',
     description: 'Naloge, ki jih dodeliš kandidatu. Kandidat vidi svoje naloge in lahko spremeni status.',
   },
   access: {
