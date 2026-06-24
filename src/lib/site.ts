@@ -48,6 +48,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Program', href: '/program' },
   { label: 'Mladi demokrati', href: '/mladi-demokrati' },
   { label: 'Pobude in zemljevid', href: '/pobude' },
+  { label: 'Vprašanja', href: '/vprasanja' },
 ]
 
 export const HERO = {

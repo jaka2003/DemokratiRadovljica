@@ -13,6 +13,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pobude } from './collections/Pobude'
+import { Vprasanja } from './collections/Vprasanja'
 import { ProgramskaPodrocja } from './collections/ProgramskaPodrocja'
 import { Kraji } from './collections/Kraji'
 import { Ekipa } from './collections/Ekipa'
@@ -100,6 +101,7 @@ export default buildConfig({
     Users,
     Media,
     Pobude,
+    Vprasanja,
     ProgramskaPodrocja,
     Kraji,
     Ekipa,
