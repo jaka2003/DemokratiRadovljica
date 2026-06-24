@@ -70,7 +70,7 @@ export const ProgramskaPodrocja: CollectionConfig = {
           label: 'Objavljeno',
           type: 'checkbox',
           defaultValue: true,
-          admin: { width: '20%' },
+          admin: { width: '20%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } },
         },
       ],
     },

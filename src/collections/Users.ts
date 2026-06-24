@@ -10,7 +10,7 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: 'ime',
-    defaultColumns: ['ime', 'email', 'vloga', 'statusProfila', 'javnoPrikazan'],
+    defaultColumns: ['ime', 'email', 'vloga', 'statusProfila'],
     group: 'Uporabniki in kandidati',
     description:
       'Vsi uporabniki sistema in kandidati. Tukaj dodaš kandidata, mu določiš vlogo in pregleduješ profil. Kandidat se prijavi z e-pošto in geslom ter ureja samo svoj profil. Statusna polja (zavihek »Status«) ureja le administrator.',

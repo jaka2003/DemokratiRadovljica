@@ -8,7 +8,6 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import nodemailer from 'nodemailer'
 import { sl } from '@payloadcms/translations/languages/sl'
-import { en } from '@payloadcms/translations/languages/en'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
@@ -112,9 +111,10 @@ export default buildConfig({
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,
-  // Slovenski vmesnik administracije.
+  // Vmesnik administracije VEDNO v slovenščini (brez angleščine, da Payload
+  // ne preklopi glede na jezik brskalnika).
   i18n: {
-    supportedLanguages: { sl, en },
+    supportedLanguages: { sl },
     fallbackLanguage: 'sl',
   },
   editor: lexicalEditor(),

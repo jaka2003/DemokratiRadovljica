@@ -33,7 +33,7 @@ export const Novice: CollectionConfig = {
       type: 'row',
       fields: [
         { name: 'naslov', label: 'Naslov', type: 'text', required: true, admin: { width: '70%' } },
-        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '30%' } },
+        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '30%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } } },
       ],
     },
     {

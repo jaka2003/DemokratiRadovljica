@@ -82,7 +82,7 @@ export const Svetniki: CollectionConfig = {
       fields: [
         { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true, admin: { width: '60%' } },
         { name: 'vrstniRed', label: 'Vrstni red', type: 'number', defaultValue: 100, admin: { width: '20%', description: 'Manjša številka = višje na seznamu.' } },
-        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '20%' } },
+        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '20%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } } },
       ],
     },
     {

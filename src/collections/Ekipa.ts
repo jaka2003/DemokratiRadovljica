@@ -67,7 +67,7 @@ export const Ekipa: CollectionConfig = {
       type: 'row',
       fields: [
         { name: 'vrstniRed', label: 'Vrstni red', type: 'number', defaultValue: 100, admin: { width: '50%', description: 'Manjša številka = višje na seznamu.' } },
-        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '50%' } },
+        { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '50%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } } },
       ],
     },
   ],
