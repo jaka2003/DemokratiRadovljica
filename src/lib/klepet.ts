@@ -53,3 +53,16 @@ export const sobeZaUporabnika = (vloge: unknown, jeAdmin = false): Soba[] =>
 // Kanonični ključ pogovora med dvema uporabnikoma (neodvisen od vrstnega reda pošiljatelj/prejemnik).
 export const pogovorKljuc = (a: string | number, b: string | number): string =>
   [Number(a), Number(b)].sort((x, y) => x - y).join(':')
+
+// ─── Lastne (custom) skupine iz baze ──────────────────────────────────────
+// Sporočila lastnih skupin hranimo z »soba« ključem »db:<id>«, da jih ločimo od fiksnih sob.
+export const customKljuc = (id: string | number): string => `db:${id}`
+
+// Iz ključa »db:<id>« vrne številko skupine; za fiksne sobe vrne null.
+export const customId = (kljuc: string): number | null => {
+  if (!kljuc || !kljuc.startsWith('db:')) return null
+  const n = Number(kljuc.slice(3))
+  return Number.isFinite(n) && n > 0 ? n : null
+}
+
+export const jeCustomSoba = (kljuc: string): boolean => customId(kljuc) != null

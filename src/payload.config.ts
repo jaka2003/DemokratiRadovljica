@@ -28,6 +28,7 @@ import { Dogodki } from './collections/Dogodki'
 import { Seje } from './collections/Seje'
 import { Glasovi } from './collections/Glasovi'
 import { Sporocila } from './collections/Sporocila'
+import { KlepetSkupine } from './collections/KlepetSkupine'
 import { Nastavitve } from './globals/Nastavitve'
 import { Kandidat } from './globals/Kandidat'
 import { DomacaStran } from './globals/DomacaStran'
@@ -114,6 +115,7 @@ export default buildConfig({
     Seje,
     Glasovi,
     Sporocila,
+    KlepetSkupine,
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,

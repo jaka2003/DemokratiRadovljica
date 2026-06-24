@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { isAdmin } from '@/access/roles'
-import { imaDostopDoSobe, pogovorKljuc } from '@/lib/klepet'
-import { imeUporabnika } from '@/lib/klepet-server'
+import { pogovorKljuc } from '@/lib/klepet'
+import { imaDostopDoSobeServer, imeUporabnika } from '@/lib/klepet-server'
 
 // Pošlji sporočilo v sobo ({ soba, besedilo }) ali zasebno ({ prejemnik, besedilo }).
 export async function POST(req: Request) {
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const admin = isAdmin(user)
   let data: Record<string, unknown>
   if (soba) {
-    if (!imaDostopDoSobe((user as { vloga?: unknown }).vloga, soba, admin)) {
+    if (!(await imaDostopDoSobeServer(payload, user as { id: string | number; vloga?: unknown }, admin, soba))) {
       return NextResponse.json({ ok: false, error: 'Nimate dostopa do te sobe.' }, { status: 403 })
     }
     data = { vrsta: 'soba', soba, avtor: user.id, besedilo }

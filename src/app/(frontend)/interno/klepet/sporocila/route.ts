@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { isAdmin } from '@/access/roles'
-import { imaDostopDoSobe, pogovorKljuc } from '@/lib/klepet'
-import { imenaUporabnikov } from '@/lib/klepet-server'
+import { pogovorKljuc } from '@/lib/klepet'
+import { imaDostopDoSobeServer, imenaUporabnikov } from '@/lib/klepet-server'
 
 // Sporočila izbrane sobe (?soba=kljuc) ali zasebnega pogovora (?pogovor=idDrugega).
 // Vrne zadnjih 150 sporočil, urejenih od najstarejšega proti najnovejšemu.
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
   let where: Record<string, unknown>
   if (soba) {
-    if (!imaDostopDoSobe((user as { vloga?: unknown }).vloga, soba, admin)) {
+    if (!(await imaDostopDoSobeServer(payload, user as { id: string | number; vloga?: unknown }, admin, soba))) {
       return NextResponse.json({ ok: false, error: 'Nimate dostopa do te sobe.' }, { status: 403 })
     }
     where = { and: [{ vrsta: { equals: 'soba' } }, { soba: { equals: soba } }] }

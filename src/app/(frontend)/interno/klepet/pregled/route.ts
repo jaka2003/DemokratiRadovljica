@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { isAdmin } from '@/access/roles'
-import { sobeZaUporabnika } from '@/lib/klepet'
-import { imeUporabnika } from '@/lib/klepet-server'
+import { dostopneSobe, imeUporabnika } from '@/lib/klepet-server'
 
 // Pregled za stransko vrstico klepeta: sobe (z zadnjim sporočilom), zasebni pogovori in
 // seznam uporabnikov za nov pogovor. Uporablja se tudi za značko neprebranih v meniju.
@@ -13,9 +12,9 @@ export async function GET(req: Request) {
   if (!user) return NextResponse.json({ ok: false, error: 'Potrebna je prijava.' }, { status: 401 })
 
   const admin = isAdmin(user)
-  const sobeSeznam = sobeZaUporabnika((user as { vloga?: unknown }).vloga, admin)
+  const sobeSeznam = await dostopneSobe(payload, user as { id: string | number; vloga?: unknown }, admin)
 
-  // Zadnje sporočilo za vsako sobo.
+  // Zadnje sporočilo za vsako sobo (fiksno ali lastno skupino).
   const sobe = await Promise.all(
     sobeSeznam.map(async (s) => {
       const r = await payload.find({
