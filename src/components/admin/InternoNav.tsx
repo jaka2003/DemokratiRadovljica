@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { KlepetNavLink } from './KlepetNavLink'
 
 // Interne povezave v stranskem meniju administracije (vidne vsem prijavljenim).
 const POVEZAVE = [
@@ -10,6 +11,7 @@ const POVEZAVE = [
 export const InternoNav = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, margin: '6px 0' }}>
+      <KlepetNavLink />
       {POVEZAVE.map((p) => (
         <Link
           key={p.href}
