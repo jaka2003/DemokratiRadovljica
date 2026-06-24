@@ -236,9 +236,8 @@ export const AdminDashboard = () => {
     <div style={{ margin: '0 0 2rem' }}>
       <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Nadzorna plošča kampanje</h2>
 
-      {/* Navodila za uporabo */}
+      {/* Navodila za uporabo – privzeto zaprto, odpre se ob kliku. */}
       <details
-        open
         style={{ border: '1px solid #cfe8ea', background: '#f0fbfb', borderRadius: 10, padding: '0.75rem 1rem', marginBottom: 16 }}
       >
         <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#0f004e' }}>
