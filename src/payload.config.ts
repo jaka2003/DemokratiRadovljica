@@ -25,6 +25,8 @@ import { EmailDnevnik } from './collections/EmailDnevnik'
 import { Svetniki } from './collections/Svetniki'
 import { PlakatnaMesta } from './collections/PlakatnaMesta'
 import { Dogodki } from './collections/Dogodki'
+import { Seje } from './collections/Seje'
+import { Glasovi } from './collections/Glasovi'
 import { Nastavitve } from './globals/Nastavitve'
 import { Kandidat } from './globals/Kandidat'
 import { DomacaStran } from './globals/DomacaStran'
@@ -108,6 +110,8 @@ export default buildConfig({
     Svetniki,
     PlakatnaMesta,
     Dogodki,
+    Seje,
+    Glasovi,
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,

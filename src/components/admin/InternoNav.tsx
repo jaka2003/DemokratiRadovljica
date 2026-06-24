@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 // Interne povezave v stranskem meniju administracije (vidne vsem prijavljenim).
 const POVEZAVE = [
+  { href: '/interno/seje', ikona: '🗳️', label: 'Dopisne seje (glasovanje)' },
   { href: '/interno/koledar', ikona: '📅', label: 'Koledar' },
   { href: '/interno/plakat', ikona: '📍', label: 'Predlagaj plakatno mesto' },
 ]
