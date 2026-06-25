@@ -79,10 +79,15 @@ export const Svetniki: CollectionConfig = {
       },
     },
     {
+      name: 'svetnikAutofill',
+      type: 'ui',
+      admin: { components: { Field: '/components/admin/SvetnikAutofill#SvetnikAutofill' } },
+    },
+    {
       type: 'row',
       fields: [
         { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true, admin: { width: '60%' } },
-        { name: 'vrstniRed', label: 'Vrstni red', type: 'number', defaultValue: 100, admin: { width: '20%', description: 'Manjša številka = višje na seznamu.' } },
+        { name: 'vrstniRed', label: 'Vrstni red', type: 'number', defaultValue: 100, admin: { width: '20%', description: 'Mesto na listi: manjša številka = višje (1 = prvi kandidat).' } },
         { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '20%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } } },
       ],
     },
@@ -100,7 +105,7 @@ export const Svetniki: CollectionConfig = {
           name: 'volilnaEnota',
           label: 'Volilna enota',
           type: 'text',
-          admin: { width: '50%', description: 'Npr. »Volilna enota 1«. Za razvrstitev in preverjanje liste.' },
+          admin: { width: '50%', description: 'V kateri volilni enoti kandidira (npr. »Volilna enota 1«). Po njej validator preverja listo in spolne kvote.' },
         },
       ],
     },
