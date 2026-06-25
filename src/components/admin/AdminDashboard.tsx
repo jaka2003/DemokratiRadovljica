@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { VLOGE } from '@/access/roles'
+import { useAuth } from '@payloadcms/ui'
+import { VLOGE, isAdmin, isKandidat } from '@/access/roles'
+import { KandidatPlosca } from './KandidatPlosca'
+import { ClanPlosca } from './ClanPlosca'
 
 type Prejemnik = { id: string | number; ime: string; email: string; vloga: string[] }
 
@@ -46,7 +49,7 @@ type Seznami = {
   cakajoceNaloge: { naslov: string; status: string }[]
 }
 
-export const AdminDashboard = () => {
+const AdminPlosca = () => {
   const [stats, setStats] = useState<Stats | null>(null)
   const [seznami, setSeznami] = useState<Seznami | null>(null)
   const [allowed, setAllowed] = useState(true)
@@ -579,4 +582,14 @@ export const AdminDashboard = () => {
       )}
     </div>
   )
+}
+
+// Nadzorna plošča je odvisna od vloge: administrator vidi celotno upravljanje kampanje,
+// kandidat svoj profil/naloge/dogodke, ostali (člani, podporniki) prijazen članski portal.
+export const AdminDashboard = () => {
+  const { user } = useAuth()
+  if (!user) return null
+  if (isAdmin(user)) return <AdminPlosca />
+  if (isKandidat(user)) return <KandidatPlosca />
+  return <ClanPlosca />
 }

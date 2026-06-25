@@ -26,6 +26,9 @@ export const imaVlogo = (user: MaybeUser, vloga: string): boolean => {
 
 export const isAdmin = (user: MaybeUser): boolean => imaVlogo(user, 'administrator')
 
+// Ali je uporabnik kandidat (za svetnika ali za župana).
+export const isKandidat = (user: MaybeUser): boolean => KANDIDAT_VLOGE.some((v) => imaVlogo(user, v))
+
 // Urednik vsebin: admin ali uporabnik z vlogo »urednik«. Sme urejati javno vsebino
 // (novice, program, lista, ekipa, kraji, domača stran), NE pa uporabnikov,
 // osebnih podatkov občanov ali sistemskih nastavitev.
