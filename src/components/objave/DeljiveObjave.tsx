@@ -25,8 +25,8 @@ const PLATFORMA: Record<string, string> = {
 export function DeljiveObjave({ objave }: { objave: Objava[] }) {
   const [kopirano, setKopirano] = useState<string>('')
 
-  const kopiraj = async (kljuc: string, besedilo: string, hashtagi: string) => {
-    const tekst = hashtagi ? `${besedilo}\n\n${hashtagi}` : besedilo
+  const kopiraj = async (kljuc: string, besedilo: string, hashtagi: string, povezava: string) => {
+    const tekst = [besedilo, hashtagi, povezava].filter(Boolean).join('\n\n')
     try {
       await navigator.clipboard.writeText(tekst)
       setKopirano(kljuc)
@@ -36,8 +36,10 @@ export function DeljiveObjave({ objave }: { objave: Objava[] }) {
     }
   }
 
-  const odpriFb = (povezava: string) => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(povezava)}`, '_blank', 'noopener')
+  // Odpre navaden Facebook (kjer član ustvari objavo: prilepi besedilo + pripne sliko).
+  // FB »sharer« namenoma ne uporabljamo – deli samo povezavo in pogosto javi napako.
+  const odpriFb = () => {
+    window.open('https://www.facebook.com/', '_blank', 'noopener')
   }
 
   const gumb = 'inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-opacity hover:opacity-90'
@@ -69,7 +71,7 @@ export function DeljiveObjave({ objave }: { objave: Objava[] }) {
             <div className="mt-4 flex flex-wrap gap-2 border-t border-line pt-3">
               <button
                 type="button"
-                onClick={() => kopiraj(`d-${o.id}`, o.besedilo, o.hashtagi)}
+                onClick={() => kopiraj(`d-${o.id}`, o.besedilo, o.hashtagi, o.povezava)}
                 className={`${gumb} bg-navy text-white`}
               >
                 {kopirano === `d-${o.id}` ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
@@ -79,7 +81,7 @@ export function DeljiveObjave({ objave }: { objave: Objava[] }) {
               {o.besediloKratko && (
                 <button
                   type="button"
-                  onClick={() => kopiraj(`k-${o.id}`, o.besediloKratko, o.hashtagi)}
+                  onClick={() => kopiraj(`k-${o.id}`, o.besediloKratko, o.hashtagi, o.povezava)}
                   className={`${gumb} bg-cloud text-navy`}
                 >
                   {kopirano === `k-${o.id}` ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
@@ -93,11 +95,13 @@ export function DeljiveObjave({ objave }: { objave: Objava[] }) {
                 </a>
               )}
 
-              <button type="button" onClick={() => odpriFb(o.povezava)} className={`${gumb} bg-[#1877f2] text-white`}>
+              <button type="button" onClick={odpriFb} className={`${gumb} bg-[#1877f2] text-white`}>
                 <Facebook className="h-3.5 w-3.5" /> Odpri Facebook
               </button>
             </div>
-            <p className="mt-2 text-[11px] text-muted">Na Facebooku besedilo prilepiš (Ctrl+V), sliko pa pripneš.</p>
+            <p className="mt-2 text-[11px] text-muted">
+              Postopek: <strong>Kopiraj besedilo</strong> → <strong>Prenesi sliko</strong> → <strong>Odpri Facebook</strong> → prilepi (Ctrl+V) in pripni sliko.
+            </p>
           </div>
         </article>
       ))}
