@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { isKandidat } from '@/access/roles'
+import { kandidatNapredek } from '@/lib/onboarding'
 
 // Osebna nadzorna plošča prijavljenega uporabnika (kandidat / član):
 // napredek profila, moje naloge, prihajajoči dogodki in zadnje novice.
@@ -18,22 +19,10 @@ export async function GET(req: Request) {
     overrideAccess: true,
   })) as Record<string, unknown>
 
-  const ima = (v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null && v !== false)
   const kandidat = isKandidat(user)
 
   // --- Napredek profila (onboarding) ---
-  const koraki = [
-    { kljuc: 'osnovno', label: 'Osnovni podatki in kontakt', done: ima(u.ime) && (ima(u.telefon) || ima(u.osebniEmail)) },
-    { kljuc: 'foto', label: 'Fotografija', done: ima(u.fotografija) },
-    { kljuc: 'predstavitev', label: 'Kratka predstavitev', done: ima(u.opis) },
-    { kljuc: 'podrocja', label: 'Področja sodelovanja', done: ima(u.podrocjaSodelovanja) },
-    { kljuc: 'zivljenjepis', label: 'Življenjepis (dokument)', done: ima(u.zivljenjepis) },
-    { kljuc: 'dokumentacija', label: 'Zahtevani dokumenti oddani', done: u.statusDokumentacije === 'popolno' },
-  ]
-  const stevilo = koraki.length
-  const opravljeno = koraki.filter((k) => k.done).length
-  const odstotek = Math.round((opravljeno / stevilo) * 100)
-  const naslednje = koraki.find((k) => !k.done) || null
+  const { koraki, opravljeno, stevilo, odstotek, naslednje } = kandidatNapredek(u)
 
   // --- Moje naloge (odprte) ---
   const nalogeRes = await payload.find({

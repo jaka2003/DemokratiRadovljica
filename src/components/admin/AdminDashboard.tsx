@@ -332,6 +332,7 @@ const AdminPlosca = () => {
         <div style={sectionLabel}>Hitri ukrepi</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {[
+            { t: '👥 Pregled kandidatov', href: '/interno/kandidati-pregled' },
             { t: '➕ Dodaj kandidata', href: '/admin/collections/users/create' },
             { t: '📰 Objavi novico', href: '/admin/collections/novice/create' },
             { t: '📅 Ustvari dogodek', href: '/admin/collections/dogodki/create' },
