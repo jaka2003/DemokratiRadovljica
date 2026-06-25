@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrUrednik } from '../access/roles'
 import { splitToList } from '../lib/prefill'
+import { SPOL_OPCIJE } from '../lib/liste'
 
 const slugify = (s: string) =>
   s
@@ -19,7 +20,7 @@ export const Svetniki: CollectionConfig = {
   labels: { singular: 'Kandidat za svetnika', plural: 'Kandidati za svetnike (lista)' },
   admin: {
     useAsTitle: 'imePriimek',
-    defaultColumns: ['imePriimek', 'poklic', 'kraj', 'objavljeno', 'vrstniRed'],
+    defaultColumns: ['imePriimek', 'volilnaEnota', 'spol', 'objavljeno', 'vrstniRed'],
     group: 'Javna vsebina',
     description:
       'Kandidati za občinski svet, prikazani na strani »Lokalne volitve«. Klik na kandidata odpre njegovo podstran s predstavitvijo in obrazcem za sporočilo.',
@@ -83,6 +84,24 @@ export const Svetniki: CollectionConfig = {
         { name: 'imePriimek', label: 'Ime in priimek', type: 'text', required: true, admin: { width: '60%' } },
         { name: 'vrstniRed', label: 'Vrstni red', type: 'number', defaultValue: 100, admin: { width: '20%', description: 'Manjša številka = višje na seznamu.' } },
         { name: 'objavljeno', label: 'Objavljeno', type: 'checkbox', defaultValue: true, admin: { width: '20%', components: { Cell: '/components/admin/DaNeCell#DaNeCell' } } },
+      ],
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'spol',
+          label: 'Spol',
+          type: 'select',
+          options: [...SPOL_OPCIJE],
+          admin: { width: '50%', description: 'Potrebno za preverjanje spolnih kvot na listi (ZLV).' },
+        },
+        {
+          name: 'volilnaEnota',
+          label: 'Volilna enota',
+          type: 'text',
+          admin: { width: '50%', description: 'Npr. »Volilna enota 1«. Za razvrstitev in preverjanje liste.' },
+        },
       ],
     },
     {
