@@ -3,7 +3,6 @@ import { KlepetNavLink } from './KlepetNavLink'
 
 // Interne povezave v stranskem meniju administracije (vidne vsem prijavljenim).
 const POVEZAVE = [
-  { href: '/interno/objave', ikona: '📣', label: 'Deli objave' },
   { href: '/interno/seje', ikona: '🗳️', label: 'Dopisne seje (glasovanje)' },
   { href: '/interno/koledar', ikona: '📅', label: 'Koledar' },
   { href: '/interno/plakat', ikona: '📍', label: 'Predlagaj plakatno mesto' },

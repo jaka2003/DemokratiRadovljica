@@ -30,7 +30,6 @@ import { Seje } from './collections/Seje'
 import { Glasovi } from './collections/Glasovi'
 import { Sporocila } from './collections/Sporocila'
 import { KlepetSkupine } from './collections/KlepetSkupine'
-import { Objave } from './collections/Objave'
 import { Nastavitve } from './globals/Nastavitve'
 import { Kandidat } from './globals/Kandidat'
 import { DomacaStran } from './globals/DomacaStran'
@@ -119,7 +118,6 @@ export default buildConfig({
     Glasovi,
     Sporocila,
     KlepetSkupine,
-    Objave,
   ],
   globals: [Nastavitve, Kandidat, DomacaStran],
   email,

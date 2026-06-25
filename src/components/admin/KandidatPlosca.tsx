@@ -173,7 +173,6 @@ export const KandidatPlosca = () => {
       {/* Hitre povezave */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
         {povezava(profilUrl, '👤', 'Moj profil in dokumenti', 'Uredi podatke, fotografijo, dokumente')}
-        {povezava('/interno/objave', '📣', 'Deli objave', 'Pripravljene objave za omrežja')}
         {povezava('/interno/koledar', '📅', 'Koledar dogodkov', 'Sestanki, slikanja, debate')}
         {povezava('/interno/klepet', '💬', 'Klepet ekipe', 'Pogovor z ekipo in vodstvom')}
         {povezava('/interno/seje', '🗳️', 'Dopisne seje', 'Glasovanje o sklepih')}

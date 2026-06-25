@@ -104,7 +104,6 @@ export const ClanPlosca = () => {
         Kako lahko pomagam
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-        {povezava('/interno/objave', '📣', 'Deli objave', 'Pripravljene objave za družbena omrežja')}
         {povezava('/pobude', '📍', 'Predlagaj pobudo', 'Opozori na težavo ali predlagaj rešitev', true)}
         {povezava('/interno/koledar', '📅', 'Koledar dogodkov', 'Poglej, kje se dogaja')}
         {povezava('/interno/klepet', '💬', 'Klepet ekipe', 'Pogovor z ekipo')}
