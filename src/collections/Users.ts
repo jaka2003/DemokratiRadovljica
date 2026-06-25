@@ -1,8 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin, VLOGE } from '../access/roles'
+import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin, isKandidat, VLOGE } from '../access/roles'
 
 // Uporabniške vloge / kategorije (uporabnik jih ima lahko več hkrati). Vir: '../access/roles'.
 export const ROLES = VLOGE
+
+// Prva (onboarding) naloga, ki jo kandidat samodejno dobi ob dodelitvi kandidatske vloge.
+const ONBOARDING_NALOGA_NASLOV = 'Dopolni svoj kandidatni profil'
+const ONBOARDING_NALOGA_OPIS =
+  'Pozdravljeni! Za začetek dopolnite svoj kandidatni profil: osnovni podatki in kontakt, fotografija, kratka predstavitev, področja sodelovanja, življenjepis in zahtevani dokumenti. Vse uredite v zavihku »Profil in predstavitev«.'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -100,6 +105,35 @@ export const Users: CollectionConfig = {
             console.error('Pozdravna e-pošta ni bila poslana:', e)
           }
         }, 200)
+        return doc
+      },
+      // Ob dodelitvi kandidatske vloge samodejno ustvari prvo nalogo: dopolni profil.
+      // Zavarovano proti podvajanju (preverimo, ali naloga s tem naslovom že obstaja).
+      ({ req, doc }) => {
+        if (!isKandidat(doc as { vloga?: unknown })) return doc
+        const d = doc as { id: string | number }
+        setTimeout(async () => {
+          try {
+            const obstoj = await req.payload.count({
+              collection: 'naloge',
+              where: { and: [{ kandidat: { equals: d.id } }, { naslov: { equals: ONBOARDING_NALOGA_NASLOV } }] },
+              overrideAccess: true,
+            })
+            if (obstoj.totalDocs > 0) return
+            await req.payload.create({
+              collection: 'naloge',
+              data: {
+                naslov: ONBOARDING_NALOGA_NASLOV,
+                kandidat: d.id,
+                status: 'odprta',
+                opis: ONBOARDING_NALOGA_OPIS,
+              },
+              overrideAccess: true,
+            })
+          } catch (e) {
+            console.error('Onboarding naloga ni bila ustvarjena:', e)
+          }
+        }, 250)
         return doc
       },
     ],
