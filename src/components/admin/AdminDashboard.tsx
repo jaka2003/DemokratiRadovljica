@@ -26,8 +26,11 @@ type Stats = {
   kandidati: number
   profilDokoncan: number
   brezDokumentov: number
+  kandidatiBrezFoto: number
+  kandidatiBrezOpisa: number
   novePobude: number
   odprtePobude: number
+  neodgovorjenaVprasanja: number
   prostovoljci: number
   sporocila: number
 }
@@ -47,6 +50,7 @@ type Seznami = {
   zadnjePobude: { naslov: string; kraj: string; status: string }[]
   zadnjaSporocila: { ime: string; vir: string }[]
   cakajoceNaloge: { naslov: string; status: string }[]
+  prihajajociDogodki: { naslov: string; zacetek: string; lokacija: string }[]
 }
 
 const AdminPlosca = () => {
@@ -293,6 +297,54 @@ const AdminPlosca = () => {
         </div>
       </details>
 
+      {/* Opozorila – potreben ukrep */}
+      {stats &&
+        (() => {
+          const opozorila = [
+            stats.brezDokumentov && { t: `${stats.brezDokumentov} kandidatov brez oddanih dokumentov`, href: '/admin/collections/users' },
+            stats.kandidatiBrezFoto && { t: `${stats.kandidatiBrezFoto} kandidatov brez fotografije`, href: '/admin/collections/users' },
+            stats.kandidatiBrezOpisa && { t: `${stats.kandidatiBrezOpisa} kandidatov brez predstavitve`, href: '/admin/collections/users' },
+            stats.novePobude && { t: `${stats.novePobude} novih pobud čaka na pregled`, href: '/admin/collections/pobude' },
+            stats.neodgovorjenaVprasanja && { t: `${stats.neodgovorjenaVprasanja} vprašanj občanov čaka na odgovor`, href: '/admin/collections/vprasanja' },
+          ].filter(Boolean) as { t: string; href: string }[]
+          if (!opozorila.length) return null
+          return (
+            <div style={{ ...box, marginBottom: 16, borderColor: '#ffd9a6', background: '#fff8ee' }}>
+              <p style={{ fontWeight: 700, color: '#0f004e', margin: '0 0 8px' }}>⚠️ Potreben ukrep</p>
+              <div style={{ display: 'grid', gap: 4 }}>
+                {opozorila.map((o, i) => (
+                  <a
+                    key={i}
+                    href={o.href}
+                    style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 13, color: '#0f004e', textDecoration: 'none', padding: '5px 0', borderBottom: '1px solid #f3ead9' }}
+                  >
+                    <span>{o.t}</span>
+                    <span style={{ color: '#b8860b', whiteSpace: 'nowrap' }}>Poglej →</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
+
+      {/* Hitri ukrepi */}
+      <div style={{ ...box, marginBottom: 16 }}>
+        <div style={sectionLabel}>Hitri ukrepi</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {[
+            { t: '➕ Dodaj kandidata', href: '/admin/collections/users/create' },
+            { t: '📰 Objavi novico', href: '/admin/collections/novice/create' },
+            { t: '📅 Ustvari dogodek', href: '/admin/collections/dogodki/create' },
+            { t: '💬 Pošlji obvestilo', href: '/interno/klepet' },
+            { t: '⬇ Izvozi kandidate', href: '/interno/kandidati-csv' },
+          ].map((q) => (
+            <a key={q.href} href={q.href} className="btn btn--style-secondary btn--size-small" style={{ textDecoration: 'none' }}>
+              {q.t}
+            </a>
+          ))}
+        </div>
+      </div>
+
       {/* Statistika */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
         {CARDS.map((c) => (
@@ -303,10 +355,10 @@ const AdminPlosca = () => {
         ))}
       </div>
 
-      {/* Povabi uporabnika */}
-      <div style={{ ...box, marginTop: 16 }}>
-        <h3 style={{ fontWeight: 700, margin: '0 0 2px' }}>Povabi uporabnika</h3>
-        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '0 0 12px' }}>
+      {/* Povabi uporabnika (zložljivo) */}
+      <details style={{ ...box, marginTop: 16 }}>
+        <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#0f004e' }}>➕ Povabi uporabnika</summary>
+        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '10px 0 12px' }}>
           Vneseš samo e-naslov (in ime). Osebi pošljemo povezavo, kjer si sama nastavi geslo in dopolni profil.
           Vlogo (kategorijo) ji nato določiš ti v »Uporabniki sistema«.
         </p>
@@ -350,7 +402,7 @@ const AdminPlosca = () => {
             {inviteMsg}
           </div>
         )}
-      </div>
+      </details>
 
       {/* Izvoz */}
       <div style={{ ...box, marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
@@ -363,12 +415,12 @@ const AdminPlosca = () => {
         </a>
       </div>
 
-      {/* Pošiljanje e-pošte */}
-      <div style={{ ...box, marginTop: 16, padding: '1.25rem 1.25rem 1.5rem' }}>
-        <h3 style={{ fontWeight: 700, margin: '0 0 2px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span aria-hidden>✉️</span> Pošlji e-pošto
-        </h3>
-        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '0 0 18px' }}>Izberi komu, napiši sporočilo in pošlji.</p>
+      {/* Pošiljanje e-pošte (zložljivo) */}
+      <details style={{ ...box, marginTop: 16, padding: '1.25rem 1.25rem 1.5rem' }}>
+        <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#0f004e', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden>✉️</span> Pošlji e-pošto (klikni za odpiranje)
+        </summary>
+        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '12px 0 18px' }}>Izberi komu, napiši sporočilo in pošlji.</p>
 
         {/* Korak 1 – komu */}
         <div style={sectionLabel}>1 · Komu</div>
@@ -525,7 +577,7 @@ const AdminPlosca = () => {
             {emailMsg}
           </div>
         )}
-      </div>
+      </details>
 
       {/* Seznami zadnjih aktivnosti */}
       {seznami && (
@@ -576,6 +628,24 @@ const AdminPlosca = () => {
               ))
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni nalog.</p>
+            )}
+          </div>
+          <div style={box}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Naslednji dogodki</h3>
+            {seznami.prihajajociDogodki.length ? (
+              seznami.prihajajociDogodki.map((dg, i) => (
+                <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
+                  {dg.naslov}
+                  {dg.zacetek && (
+                    <span style={{ color: '#5b5f73' }}>
+                      {' · '}
+                      {new Date(dg.zacetek).toLocaleDateString('sl-SI', { day: 'numeric', month: 'short' })}
+                    </span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni dogodkov.</p>
             )}
           </div>
         </div>
