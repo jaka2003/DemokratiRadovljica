@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin, isKandidat, VLOGE } from '../access/roles'
+import { posljiPozdrav } from '../lib/pozdrav'
 
 // Uporabniške vloge / kategorije (uporabnik jih ima lahko več hkrati). Vir: '../access/roles'.
 export const ROLES = VLOGE
@@ -65,10 +66,25 @@ export const Users: CollectionConfig = {
         }, 100)
       },
     ],
-    // Pozdravno e-pošto pošljemo ROČNO prek gumba na zapisu uporabnika (ne več samodejno).
-    // Glej lib/pozdrav.ts, /interno/poslji-pozdrav in komponento PozdravniMail.
-    // Povabilo prek »Povabi uporabnika« jo pošlje takoj (v /interno/povabi).
     afterChange: [
+      // Ob ustvarjenju uporabnika SAMODEJNO pošljemo pozdravno e-pošto (povezava za nastavitev
+      // gesla in dopolnitev profila). Odloženo (setTimeout) ZUNAJ transakcije, da ne pride do
+      // zaklepa vrstice na PostgreSQL. Preskočimo prvega (bootstrap) in že obveščene uporabnike.
+      ({ req, operation, doc }) => {
+        if (operation !== 'create') return doc
+        const d = doc as { id: string | number; email?: string; pozdravPoslanOb?: string }
+        if (!d.email || d.pozdravPoslanOb) return doc
+        setTimeout(async () => {
+          try {
+            const { totalDocs } = await req.payload.count({ collection: 'users' })
+            if (totalDocs <= 1) return
+            await posljiPozdrav(req.payload, d.id)
+          } catch (e) {
+            console.error('Pozdravno sporočilo ni bilo poslano:', e)
+          }
+        }, 200)
+        return doc
+      },
       // Ob dodelitvi kandidatske vloge samodejno ustvari prvo nalogo: dopolni profil.
       // Zavarovano proti podvajanju (preverimo, ali naloga s tem naslovom že obstaja).
       ({ req, doc }) => {
@@ -173,9 +189,9 @@ export const Users: CollectionConfig = {
           label: 'Status (interno)',
           fields: [
             {
-              name: 'pozdravniMail',
+              name: 'uporabnikuEmail',
               type: 'ui',
-              admin: { components: { Field: '/components/admin/PozdravniMail#PozdravniMail' } },
+              admin: { components: { Field: '/components/admin/UporabnikuEmail#UporabnikuEmail' } },
             },
             {
               name: 'pozdravPoslanOb',

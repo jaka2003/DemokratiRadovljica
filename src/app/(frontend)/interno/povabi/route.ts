@@ -3,7 +3,6 @@ import { randomBytes } from 'crypto'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { isAdmin } from '@/access/roles'
-import { posljiPozdrav } from '@/lib/pozdrav'
 
 function err(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message }, { status })
@@ -30,10 +29,10 @@ export async function POST(req: Request) {
   })
   if (obstoj.totalDocs > 0) return err('Uporabnik s tem e-naslovom že obstaja.')
 
-  // Ustvari račun z naključnim (neznanim) geslom.
-  let created: { id: string | number }
+  // Ustvari račun z naključnim (neznanim) geslom. Pozdravno e-pošto s povezavo za nastavitev
+  // gesla pošlje afterChange hook na uporabniku (velja za vsak način ustvarjanja – samodejno).
   try {
-    created = (await payload.create({
+    await payload.create({
       collection: 'users',
       data: {
         email,
@@ -42,21 +41,10 @@ export async function POST(req: Request) {
         vloga: ['neclan'], // začasno; administrator določi pravo vlogo pozneje
       },
       overrideAccess: true,
-    })) as { id: string | number }
+    })
   } catch (e) {
     console.error('Napaka pri ustvarjanju uporabnika:', e)
     return err('Uporabnika ni bilo mogoče ustvariti.', 500)
-  }
-
-  // Povabilo = pozdravno sporočilo: pošlji takoj in označi kot poslano.
-  try {
-    await posljiPozdrav(payload, created.id)
-  } catch (e) {
-    console.error('Pozdravno sporočilo ob povabilu ni bilo poslano:', e)
-    return NextResponse.json({
-      ok: true,
-      opozorilo: 'Uporabnik je ustvarjen, pozdravnega sporočila pa ni bilo mogoče poslati. Pošlji ga ročno z gumbom na zapisu.',
-    })
   }
 
   return NextResponse.json({ ok: true })
