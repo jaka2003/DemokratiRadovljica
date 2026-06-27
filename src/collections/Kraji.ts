@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { slugify } from '../lib/slug'
 
 // Kraji občine Radovljica (spec. razdelek 5) – urejivo v administraciji.
@@ -9,7 +9,8 @@ export const Kraji: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'objavljeno', 'vrstniRed'],
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Kraji občine, prikazani na strani »Občina« in na zemljevidu. Vsak kraj ima svojo podstran z opisom, fotografijo, temami in pobudami iz tega kraja.',
   },

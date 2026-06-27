@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { POBUDA_KATEGORIJE } from '../lib/pobude'
 import { ikonaOptions } from '../lib/ikone'
 import { slugify } from '../lib/slug'
@@ -34,7 +34,8 @@ export const ProgramskaPodrocja: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'objavljeno', 'vrstniRed'],
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Področja programa, prikazana na javni strani »Program«. Vsako področje ima svojo podstran (uvod, ukrepi, fotografije). Uredi besedila, vrstni red ali skrij področje (odkljukaj »Objavljeno«).',
   },

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly, VLOGE } from '../access/roles'
+import { adminOnly, VLOGE, skritoRazenAdmin } from '../access/roles'
 
 // Lastne (custom) skupine za klepet ekipe. Administrator jih ustvarja v adminu in določi člane
 // (po vlogah in/ali poimensko). Pojavijo se kot sobe v »Klepet ekipe«. Sporočila se hranijo v
@@ -10,7 +10,8 @@ export const KlepetSkupine: CollectionConfig = {
   admin: {
     useAsTitle: 'naziv',
     defaultColumns: ['naziv', 'ikona', 'vsiClani', 'objavljeno'],
-    group: 'Kampanja',
+    group: 'Sistem',
+    hidden: skritoRazenAdmin,
     description:
       'Lastne skupine (sobe) za klepet ekipe. Določi člane po vlogah in/ali poimensko – skupina se prikaže v »Klepet ekipe«.',
   },

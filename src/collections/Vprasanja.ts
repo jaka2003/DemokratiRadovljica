@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly, adminOrUrednik } from '../access/roles'
+import { adminOnly, adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { VPRASANJE_STATUSI } from '../lib/vprasanja'
 
 // Vprašanja občanov (javni Q&A). Občani jih oddajo na strani »/vprasanja«; ekipa odgovori in
@@ -10,7 +10,8 @@ export const Vprasanja: CollectionConfig = {
   admin: {
     useAsTitle: 'vprasanje',
     defaultColumns: ['vprasanje', 'status', 'objavljeno', 'createdAt'],
-    group: 'Pobude in sporočila',
+    group: 'Obravnava',
+    hidden: skritoRazenUrednik,
     description:
       'Vprašanja, ki jih občani oddajo na strani »Vprašanja občanov«. Napiši odgovor in ga objavi (zavihek »Odgovor«), da se prikaže javno. E-naslov občana je zaseben.',
   },

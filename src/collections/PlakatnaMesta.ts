@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly, adminFieldOnly, ownerOrAdmin } from '../access/roles'
+import { adminOnly, adminFieldOnly, ownerOrAdmin, skritoRazenUrednik } from '../access/roles'
 import { KRAJI } from '../lib/pobude'
 
 export const PLAKAT_STATUSI = [
@@ -17,7 +17,8 @@ export const PlakatnaMesta: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kraj', 'status', 'predlagatelj', 'createdAt'],
-    group: 'Pobude in sporočila',
+    group: 'Obravnava',
+    hidden: skritoRazenUrednik,
     description:
       'Predlogi lokacij za plakate, ki jih prijavljeni (kandidati/člani) oddajo na interni strani »Predlagaj plakatno mesto«. Tukaj jih pregleduješ, si ogledaš lokacijo in fotografije ter nastaviš status.',
   },

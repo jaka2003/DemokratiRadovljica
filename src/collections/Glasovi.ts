@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOnly, skritoRazenAdmin } from '../access/roles'
 import { GLAS_OPCIJE } from '../lib/seje'
 
 // Revizijski zapis glasov dopisnih sej (kdo, kdaj, kaj). Ustvarja jih sistem ob glasovanju.
@@ -9,9 +9,9 @@ export const Glasovi: CollectionConfig = {
   admin: {
     useAsTitle: 'id',
     defaultColumns: ['seja', 'uporabnik', 'glas', 'glasovanoOb'],
-    group: 'Kampanja',
+    group: 'Sistem',
     description: 'Evidenca oddanih glasov na dopisnih sejah – samo za vpogled. Glasove oddajo udeleženci v sistemu.',
-    hidden: false,
+    hidden: skritoRazenAdmin,
   },
   access: {
     read: adminOnly,

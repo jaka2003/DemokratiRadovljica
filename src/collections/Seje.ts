@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly, VLOGE } from '../access/roles'
+import { adminOnly, VLOGE, skritoRazenAdmin } from '../access/roles'
 import { SEJA_STATUSI } from '../lib/seje'
 
 // Dopisne (korespondenčne) seje z elektronskim glasovanjem.
@@ -9,7 +9,8 @@ export const Seje: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'stevilka', 'status', 'rokGlasovanja'],
-    group: 'Kampanja',
+    group: 'Sistem',
+    hidden: skritoRazenAdmin,
     description:
       'Dopisne (korespondenčne) seje z elektronskim glasovanjem. Ustvari sejo, dodaj točke in udeležence, pošlji vabilo ter spremljaj rezultate.',
   },

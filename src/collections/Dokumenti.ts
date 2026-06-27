@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { ownerOrAdmin, adminOnly, isAdmin } from '../access/roles'
+import { ownerOrAdmin, adminOnly, isAdmin, skritoRazenAdmin } from '../access/roles'
 
 // Dokumenti kandidatov (spec. razdelek 9 – nalaganje zahtevanih dokumentov).
 export const Dokumenti: CollectionConfig = {
@@ -8,7 +8,8 @@ export const Dokumenti: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status'],
-    group: 'Uporabniki in kandidati',
+    group: 'Ljudje in kampanja',
+    hidden: skritoRazenAdmin,
     description: 'Dokumenti kandidatov (npr. soglasja, potrdila). Kandidat vidi in nalaga samo svoje.',
   },
   access: {

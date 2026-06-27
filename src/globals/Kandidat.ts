@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { splitToList } from '../lib/prefill'
 import { ikonaOptions } from '../lib/ikone'
 
@@ -9,7 +9,8 @@ export const Kandidat: GlobalConfig = {
   slug: 'kandidat',
   label: 'Kandidat za župana (javna stran)',
   admin: {
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Podatki kandidata za župana – prikažejo se na strani »Lokalne volitve« (zgornji blok) in na podstrani /lokalne-volitve/zupan. Dokler ni odkljukano »Objavi«, je kandidat skrit. Listo kandidatov za svetnike urejaš v rubriki »Kandidati za svetnike«.',
   },

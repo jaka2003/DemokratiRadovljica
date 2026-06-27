@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 
 // Člani lokalne ekipe Demokrati Radovljica (spec. razdelek 4).
 export const Ekipa: CollectionConfig = {
@@ -8,7 +8,8 @@ export const Ekipa: CollectionConfig = {
   admin: {
     useAsTitle: 'ime',
     defaultColumns: ['ime', 'funkcija', 'objavljeno', 'vrstniRed'],
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Člani lokalne ekipe, prikazani na strani »Demokrati Radovljica«. Dodaj osebo, naloži fotografijo in vpiši funkcijo.',
   },

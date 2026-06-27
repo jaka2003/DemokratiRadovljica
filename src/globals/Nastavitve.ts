@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isAdmin } from '../access/roles'
+import { isAdmin, skritoRazenUrednik } from '../access/roles'
 import { ikonaOptions } from '../lib/ikone'
 
 // Globalne nastavitve strani – kontakt, družbena omrežja, poslanstvo, vrednote.
@@ -7,7 +7,8 @@ export const Nastavitve: GlobalConfig = {
   slug: 'nastavitve',
   label: 'Nastavitve strani',
   admin: {
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Splošne nastavitve: poslanstvo, vrednote, kontakt in družbena omrežja. Prikaže se na strani »Demokrati Radovljica« in v nogi strani.',
   },

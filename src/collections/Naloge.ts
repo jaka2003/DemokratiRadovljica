@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { ownerOrAdmin, adminOnly } from '../access/roles'
+import { ownerOrAdmin, adminOnly, skritoRazenAdmin } from '../access/roles'
 
 // Naloge, dodeljene kandidatom (spec. razdelka 9 in 11).
 export const Naloge: CollectionConfig = {
@@ -8,7 +8,8 @@ export const Naloge: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status', 'rok'],
-    group: 'Uporabniki in kandidati',
+    group: 'Ljudje in kampanja',
+    hidden: skritoRazenAdmin,
     description: 'Naloge, ki jih dodeliš kandidatu. Kandidat vidi svoje naloge in lahko spremeni status.',
   },
   access: {

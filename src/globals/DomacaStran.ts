@@ -1,12 +1,13 @@
 import type { GlobalConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 
 // Vsebina domače strani, urejljiva v adminu (spec. 3.1 fotografija, 3.4 koraki).
 export const DomacaStran: GlobalConfig = {
   slug: 'domaca-stran',
   label: 'Domača stran',
   admin: {
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description: 'Besedila in fotografija uvodnega bloka domače strani ter koraki »Kako nastaja program«.',
   },
   access: {

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOnly, skritoRazenAdmin } from '../access/roles'
 import { desifriraj, sifriraj } from '../lib/sifriranje'
 
 // Sporočila internega klepeta ekipe (sobe + zasebno). Ustvarjajo se prek interne strani
@@ -11,7 +11,8 @@ export const Sporocila: CollectionConfig = {
   admin: {
     useAsTitle: 'besedilo',
     defaultColumns: ['avtor', 'vrsta', 'soba', 'besedilo', 'createdAt'],
-    group: 'Kampanja',
+    group: 'Sistem',
+    hidden: skritoRazenAdmin,
     description:
       'Sporočila internega klepeta ekipe. Tu jih administrator lahko pregleda ali izbriše (moderacija). Pišejo se v sistemu na strani »Klepet ekipe«.',
   },

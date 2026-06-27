@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOnly, skritoRazenAdmin } from '../access/roles'
 
 // Evidenca poslanih množičnih e-poštnih sporočil kandidatom (spec. 11.2).
 export const EmailDnevnik: CollectionConfig = {
@@ -8,7 +8,8 @@ export const EmailDnevnik: CollectionConfig = {
   admin: {
     useAsTitle: 'zadeva',
     defaultColumns: ['zadeva', 'filter', 'prejemnikov', 'createdAt'],
-    group: 'Uporabniki in kandidati',
+    group: 'Sistem',
+    hidden: skritoRazenAdmin,
     description: 'Evidenca množičnih e-poštnih sporočil, poslanih kandidatom (zadeva, izbira prejemnikov, število, datum).',
   },
   access: {

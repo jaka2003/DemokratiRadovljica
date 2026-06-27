@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik, VLOGE } from '../access/roles'
+import { adminOrUrednik, VLOGE, skritoRazenAdmin } from '../access/roles'
 
 export const DOGODEK_TIPI = [
   { label: 'Sestanek', value: 'sestanek' },
@@ -22,7 +22,8 @@ export const Dogodki: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'tip', 'zacetek', 'lokacija', 'status'],
-    group: 'Kampanja',
+    group: 'Ljudje in kampanja',
+    hidden: skritoRazenAdmin,
     defaultSort: 'zacetek',
     description:
       'Koledar kampanje – sestanki, slikanja, debate in drugi dogodki. Prijavljeni jih vidijo na strani »Koledar« (povezava v meniju).',

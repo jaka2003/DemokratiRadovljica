@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { slugify } from '../lib/slug'
 
 // Novice / aktualne objave (spec. razdelki 3.7, 4, 5, 6, 7).
@@ -9,7 +9,8 @@ export const Novice: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'datum', 'objavljeno'],
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Aktualne novice in objave. Prikažejo se na strani »Novice«, lahko pa jih povežeš s krajem, programskim področjem ali stranjo kandidata.',
   },

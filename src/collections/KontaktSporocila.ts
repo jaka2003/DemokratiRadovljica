@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOnly, skritoRazenUrednik } from '../access/roles'
 
 // Sporočila iz kontaktnih obrazcev (kandidat, splošni kontakt).
 export const KontaktSporocila: CollectionConfig = {
@@ -8,7 +8,8 @@ export const KontaktSporocila: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'email', 'vir', 'createdAt'],
-    group: 'Pobude in sporočila',
+    group: 'Obravnava',
+    hidden: skritoRazenUrednik,
     description:
       'Sporočila iz kontaktnih obrazcev (npr. s strani kandidata). Samo za pregled – vnašajo jih obiskovalci.',
   },

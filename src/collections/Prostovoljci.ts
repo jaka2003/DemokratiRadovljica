@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly } from '../access/roles'
+import { adminOnly, skritoRazenUrednik } from '../access/roles'
 
 // Prijave za sodelovanje (spec. razdelek 4 – možnost prijave za sodelovanje).
 export const Prostovoljci: CollectionConfig = {
@@ -8,7 +8,8 @@ export const Prostovoljci: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'email', 'kraj', 'status', 'createdAt'],
-    group: 'Pobude in sporočila',
+    group: 'Obravnava',
+    hidden: skritoRazenUrednik,
     description:
       'Prijave občanov, ki se želijo pridružiti ekipi (oddane na strani »Demokrati Radovljica«). Vsebino vnašajo obiskovalci; ti nastaviš »Status«, da sledite obravnavi.',
   },

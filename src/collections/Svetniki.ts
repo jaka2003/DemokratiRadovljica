@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOrUrednik } from '../access/roles'
+import { adminOrUrednik, skritoRazenUrednik } from '../access/roles'
 import { splitToList } from '../lib/prefill'
 import { SPOL_OPCIJE } from '../lib/liste'
 
@@ -21,7 +21,8 @@ export const Svetniki: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'volilnaEnota', 'spol', 'objavljeno', 'vrstniRed'],
-    group: 'Javna vsebina',
+    group: 'Vsebina strani',
+    hidden: skritoRazenUrednik,
     description:
       'Kandidati za občinski svet, prikazani na strani »Lokalne volitve«. Klik na kandidata odpre njegovo podstran s predstavitvijo in obrazcem za sporočilo.',
   },
