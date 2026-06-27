@@ -34,6 +34,13 @@ export const isKandidat = (user: MaybeUser): boolean => KANDIDAT_VLOGE.some((v) 
 // osebnih podatkov občanov ali sistemskih nastavitev.
 export const isUrednik = (user: MaybeUser): boolean => isAdmin(user) || imaVlogo(user, 'urednik')
 
+// admin.hidden helper: skrije zbirko iz levega menija, RAZEN za administratorja.
+// (Zbirka še vedno obstaja in je dostopna prek povezave; le iz menija je skrita za ostale.)
+export const skritoRazenAdmin = ({ user }: { user?: MaybeUser }): boolean => !isAdmin(user)
+
+// admin.hidden helper: skrije zbirko iz levega menija, RAZEN za administratorja in urednika vsebin.
+export const skritoRazenUrednik = ({ user }: { user?: MaybeUser }): boolean => !isUrednik(user)
+
 // Collection access: dostop administratorjem in urednikom vsebin.
 export const adminOrUrednik: Access = ({ req: { user } }) => isUrednik(user)
 

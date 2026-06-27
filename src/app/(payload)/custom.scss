@@ -1,1 +1,150 @@
-/* Prilagoditve Payload admin vmesnika. Trenutno prazno. */
+/* =========================================================
+   Demokrati Radovljica – sodoben videz Payload admina.
+   Barve blagovne znamke: teal #00bbc1, navy #0f004e.
+   (Admin je vedno v svetli temi.)
+   ========================================================= */
+
+:root {
+  /* Sodobna sistemska pisava */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+
+  /* Bolj zaobljeni robovi (sodoben videz) */
+  --style-radius-s: 8px;
+  --style-radius-m: 12px;
+  --style-radius-l: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Gumbi ---------- */
+.btn {
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+.btn--style-primary {
+  background-color: #00bbc1 !important;
+  border-color: #00bbc1 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 187, 193, 0.25);
+}
+.btn--style-primary:hover,
+.btn--style-primary:focus {
+  background-color: #00a4a9 !important;
+  border-color: #00a4a9 !important;
+}
+.btn--style-secondary {
+  border-color: #d8dbe7 !important;
+}
+.btn--style-secondary:hover {
+  border-color: #00bbc1 !important;
+  color: #00807f !important;
+}
+
+/* ---------- Povezave ---------- */
+a {
+  color: #00807f;
+}
+a:hover {
+  color: #006b6d;
+}
+
+/* ---------- Leva navigacija ---------- */
+.nav {
+  padding-top: 6px;
+}
+.nav__link {
+  border-radius: 10px;
+  margin: 1px 10px;
+  padding: 9px 12px;
+  font-weight: 500;
+  transition: background 0.12s, color 0.12s;
+}
+.nav__link:hover {
+  background: rgba(0, 187, 193, 0.1);
+  color: #00807f;
+}
+.nav__link.active,
+.nav__link[aria-current='page'] {
+  background: rgba(0, 187, 193, 0.16);
+  color: #00807f;
+  font-weight: 700;
+}
+.nav-group__label {
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9094a6;
+}
+
+/* ---------- Vnosna polja ---------- */
+.field-type input,
+.field-type textarea,
+.field-type .rs__control,
+.field-type .react-select .rs__control {
+  border-radius: 10px !important;
+  border-color: #e2e5ef !important;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.field-type input:focus,
+.field-type textarea:focus,
+.field-type .rs__control--is-focused {
+  border-color: #00bbc1 !important;
+  box-shadow: 0 0 0 3px rgba(0, 187, 193, 0.16) !important;
+}
+.field-label {
+  font-weight: 600;
+  color: #0f004e;
+}
+
+/* ---------- Kartice (seznam zbirk, dashboard) ---------- */
+.card {
+  border-radius: 14px;
+  border-color: #ecedf4;
+  transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+}
+.card:hover {
+  box-shadow: 0 10px 28px rgba(15, 0, 78, 0.09);
+  border-color: #00bbc1;
+  transform: translateY(-2px);
+}
+
+/* ---------- Tabele / seznami ---------- */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ecedf4;
+}
+.table thead th {
+  background: #f6f7fb;
+  font-weight: 700;
+  color: #5b5f73;
+}
+.table tbody tr:hover {
+  background: rgba(0, 187, 193, 0.05);
+}
+
+/* ---------- Glava dokumenta / step-nav ---------- */
+.step-nav {
+  font-weight: 500;
+}
+.doc-header__title,
+h1 {
+  color: #0f004e;
+}
+
+/* ---------- Pills / statusi ---------- */
+.pill {
+  border-radius: 999px;
+}
+
+/* ---------- Zavihki ---------- */
+.tabs-field__tab-button--active {
+  color: #00807f;
+  border-bottom-color: #00bbc1 !important;
+}
