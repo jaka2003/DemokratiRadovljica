@@ -22,6 +22,11 @@ export const Prostovoljci: CollectionConfig = {
   },
   fields: [
     {
+      name: 'prenesiVUporabnike',
+      type: 'ui',
+      admin: { components: { Field: '/components/admin/PrenesiVUporabnike#PrenesiVUporabnike' } },
+    },
+    {
       type: 'row',
       fields: [
         {

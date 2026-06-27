@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { adminOrSelf, adminOnly, adminFieldOnly, isAdmin, isKandidat, VLOGE } from '../access/roles'
 import { posljiPozdrav } from '../lib/pozdrav'
+import { portalInfoHtml } from '../lib/portal-info'
 
 // Uporabniške vloge / kategorije (uporabnik jih ima lahko več hkrati). Vir: '../access/roles'.
 export const ROLES = VLOGE
@@ -9,6 +10,9 @@ export const ROLES = VLOGE
 const ONBOARDING_NALOGA_NASLOV = 'Dopolni svoj kandidatni profil'
 const ONBOARDING_NALOGA_OPIS =
   'Pozdravljeni! Za začetek dopolnite svoj kandidatni profil: osnovni podatki in kontakt, fotografija, kratka predstavitev, področja sodelovanja, življenjepis in zahtevani dokumenti. Vse uredite v zavihku »Profil in predstavitev«.'
+
+const escapeHtml = (s: unknown) =>
+  String(s ?? '').replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c] as string))
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -112,6 +116,39 @@ export const Users: CollectionConfig = {
             console.error('Onboarding naloga ni bila ustvarjena:', e)
           }
         }, 250)
+        return doc
+      },
+      // Ob SPREMEMBI vloge (statusa) uporabnika obvesti po e-pošti: opis nove vloge in kaj mu
+      // portal omogoča. Ne velja ob ustvarjenju (takrat gre pozdravno sporočilo).
+      ({ req, operation, doc, previousDoc }) => {
+        if (operation !== 'update') return doc
+        const toArr = (v: unknown) => (Array.isArray(v) ? (v as string[]) : v ? [String(v)] : [])
+        const nova = toArr((doc as { vloga?: unknown }).vloga)
+        const stara = toArr((previousDoc as { vloga?: unknown } | undefined)?.vloga)
+        const enako = nova.length === stara.length && nova.every((v) => stara.includes(v))
+        const d = doc as { id: string | number; email?: string; ime?: string }
+        if (enako || !d.email || nova.length === 0) return doc
+        const email = d.email
+        setTimeout(async () => {
+          try {
+            const base = process.env.NEXT_PUBLIC_SERVER_URL || ''
+            const pozdrav = d.ime ? `Pozdravljen/-a, ${escapeHtml(d.ime)},` : 'Pozdravljen/-a,'
+            await req.payload.sendEmail({
+              to: email,
+              subject: 'Posodobitev vaše vloge – Demokrati Radovljica',
+              html: `
+                <p>${pozdrav}</p>
+                <p>v sistemu Demokrati Radovljica smo posodobili vašo vlogo.</p>
+                ${portalInfoHtml(nova)}
+                <p><a href="${base}/admin" style="display:inline-block;background:#00bbc1;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600">Prijava v portal</a></p>
+                <p style="font-size:12px;color:#888">Če gesla še niste nastavili, uporabite povezavo iz pozdravnega sporočila ob registraciji.</p>
+                <p>Lep pozdrav,<br/>Ekipa Demokrati Radovljica</p>
+              `,
+            })
+          } catch (e) {
+            console.error('Obvestilo o spremembi vloge ni bilo poslano:', e)
+          }
+        }, 200)
         return doc
       },
     ],
