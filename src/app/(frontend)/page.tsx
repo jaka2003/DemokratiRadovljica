@@ -19,6 +19,7 @@ export default async function HomePage() {
     .filter((m): m is Media => Boolean(m?.url))
     .map((m) => ({ url: m.url as string, alt: m.alt, width: m.width, height: m.height }))
   const intervalSekunde = (d?.heroInterval as number) || 3
+  const heroPovezava = (d?.heroPovezava as string) || ''
   const koraki = (d?.koraki as { naslov?: string }[]) || []
 
   return (
@@ -31,6 +32,7 @@ export default async function HomePage() {
         tagline={d?.heroTagline as string}
         slike={slike}
         intervalSekunde={intervalSekunde}
+        povezava={heroPovezava}
       />
       <QuickLinks />
       <Identity />

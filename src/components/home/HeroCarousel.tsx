@@ -8,7 +8,15 @@ export type HeroSlide = { url: string; alt?: string; width?: number; height?: nu
 // Moderni hero carousel: nežno prelivanje (crossfade), pike za navigacijo,
 // pavza ob prehodu miške, upošteva nastavitev za zmanjšano gibanje.
 // Slike se prikažejo v CELOTI (object-contain) – nič se ne obreže.
-export function HeroCarousel({ slides, intervalMs = 3000 }: { slides: HeroSlide[]; intervalMs?: number }) {
+export function HeroCarousel({
+  slides,
+  intervalMs = 3000,
+  povezava,
+}: {
+  slides: HeroSlide[]
+  intervalMs?: number
+  povezava?: string
+}) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const n = slides.length
@@ -38,19 +46,29 @@ export function HeroCarousel({ slides, intervalMs = 3000 }: { slides: HeroSlide[
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {slides.map((s, idx) => (
-        <Image
-          key={`${s.url}-${idx}`}
-          src={s.url}
-          alt={s.alt || 'Demokrati Radovljica'}
-          fill
-          priority={idx === 0}
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          className={`object-contain transition-opacity duration-700 ease-in-out ${
-            idx === index ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-      ))}
+      {/* Sloj slik – po želji clickable (povezava). Pike za navigacijo so nad njim (z-10). */}
+      {(() => {
+        const slikePlast = slides.map((s, idx) => (
+          <Image
+            key={`${s.url}-${idx}`}
+            src={s.url}
+            alt={s.alt || 'Demokrati Radovljica'}
+            fill
+            priority={idx === 0}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className={`object-contain transition-opacity duration-700 ease-in-out ${
+              idx === index ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))
+        return povezava ? (
+          <a href={povezava} aria-label="Odpri povezavo" className="absolute inset-0 z-0 block">
+            {slikePlast}
+          </a>
+        ) : (
+          slikePlast
+        )
+      })()}
 
       {n > 1 && (
         <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center">

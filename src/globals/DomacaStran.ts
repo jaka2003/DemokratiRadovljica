@@ -91,6 +91,15 @@ export const DomacaStran: GlobalConfig = {
                 step: 1,
               },
             },
+            {
+              name: 'heroPovezava',
+              label: 'Povezava slike (neobvezno)',
+              type: 'text',
+              admin: {
+                description:
+                  'Če vpišeš povezavo, postane slika v uvodnem bloku clickable in vodi tja. Npr. »/demokrati« (pridružitev), »/pobude«, ali cela povezava »https://…«.',
+              },
+            },
           ],
         },
         {
