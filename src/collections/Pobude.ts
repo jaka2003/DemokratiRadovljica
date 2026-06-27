@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { adminOnly, skritoRazenUrednik } from '../access/roles'
+import { adminOnly } from '../access/roles'
 import { POBUDA_KATEGORIJE, POBUDA_STATUSI, KRAJI } from '../lib/pobude'
 
 // Pobude občanov (spec. 3.6 in 11.3).
@@ -11,8 +11,7 @@ export const Pobude: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kategorija', 'kraj', 'status', 'javnoObjavljeno', 'createdAt'],
-    group: 'Obravnava',
-    hidden: skritoRazenUrednik,
+    group: 'Pobude in sporočila',
     description:
       'Pobude, ki jih občani oddajo na strani »Pobude in zemljevid«. Tukaj jih pregledaš, nastaviš status in odločiš, ali se anonimizirano prikažejo na javnem zemljevidu (zavihek »Obravnava«).',
   },

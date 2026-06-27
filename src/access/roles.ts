@@ -58,11 +58,3 @@ export const ownerOrAdmin =
 
 // Field access: urejanje le administratorjem.
 export const adminFieldOnly: FieldAccess = ({ req: { user } }) => isAdmin(user)
-
-// Skrivanje zbirke/globala iz LEVEGA MENIJA administracije glede na vlogo.
-// POMEMBNO: vpliva SAMO na prikaz v meniju – NE spreminja dostopa (read/create/update/delete)
-// in NE vpliva na javno spletno stran. Uporabnik, ki zbirko sme brati, do nje še vedno pride.
-// »skritoRazenUrednik« → v meniju vidijo le administrator in urednik vsebin.
-// »skritoRazenAdmin«   → v meniju vidi le administrator.
-export const skritoRazenUrednik = ({ user }: { user?: MaybeUser }): boolean => !isUrednik(user)
-export const skritoRazenAdmin = ({ user }: { user?: MaybeUser }): boolean => !isAdmin(user)
