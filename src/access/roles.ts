@@ -34,12 +34,13 @@ export const isKandidat = (user: MaybeUser): boolean => KANDIDAT_VLOGE.some((v) 
 // osebnih podatkov občanov ali sistemskih nastavitev.
 export const isUrednik = (user: MaybeUser): boolean => isAdmin(user) || imaVlogo(user, 'urednik')
 
-// admin.hidden helper: skrije zbirko iz levega menija, RAZEN za administratorja.
-// (Zbirka še vedno obstaja in je dostopna prek povezave; le iz menija je skrita za ostale.)
-export const skritoRazenAdmin = ({ user }: { user?: MaybeUser }): boolean => !isAdmin(user)
-
-// admin.hidden helper: skrije zbirko iz levega menija, RAZEN za administratorja in urednika vsebin.
-export const skritoRazenUrednik = ({ user }: { user?: MaybeUser }): boolean => !isUrednik(user)
+// Skrivanje zbirk iz menija je ZAENKRAT IZKLOPLJENO (na željo: »ne vidim stvari, ki jih rabim«).
+// Oba helperja zato nič ne skrivata – vse zbirke so vidne vsem, ki imajo dostop. Če bomo
+// kdaj želeli skriti le posamezne tehnične zbirke, to naredimo ciljano in preverimo.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const skritoRazenAdmin = (_args?: { user?: MaybeUser }): boolean => false
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const skritoRazenUrednik = (_args?: { user?: MaybeUser }): boolean => false
 
 // Collection access: dostop administratorjem in urednikom vsebin.
 export const adminOrUrednik: Access = ({ req: { user } }) => isUrednik(user)
