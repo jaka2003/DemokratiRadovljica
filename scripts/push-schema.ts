@@ -37,6 +37,16 @@ if (uri.startsWith('postgres')) {
     )
     await client.query(`DROP TABLE IF EXISTS "sporocila_kandidatom" CASCADE`)
 
+    // Odstranjena zbirka "deljive-objave": vnaprej počisti ostanke (FK, stolpec, tabela),
+    // sicer push pade na DROP CONSTRAINT (drizzle ga generira brez IF EXISTS). Idempotentno.
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_deljive_objave_fk"`,
+    )
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP COLUMN IF EXISTS "deljive_objave_id" CASCADE`,
+    )
+    await client.query(`DROP TABLE IF EXISTS "deljive_objave" CASCADE`)
+
     await client.end()
   } catch (e) {
     console.warn('Priprava vloga (pred push) preskočena: ' + (e as Error).message)
