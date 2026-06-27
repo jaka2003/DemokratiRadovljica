@@ -5,18 +5,31 @@ import { useAuth } from '@payloadcms/ui'
 
 type Dogodek = { naslov: string; tip: string; zacetek: string; lokacija: string }
 type Novica = { naslov: string; slug: string }
+type Naloga = { naslov: string; status: string; rok: string }
 type Podatki = {
   ok: boolean
   jaz: { id: number; ime: string }
   kraj: string
   dogodki: Dogodek[]
   novice: Novica[]
+  naloge: Naloga[]
 }
+
+const STATUS_NALOGE: Record<string, string> = { odprta: 'Odprta', v_teku: 'V teku', zakljucena: 'Zaključena' }
 
 const datum = (iso: string) => {
   if (!iso) return ''
   try {
     return new Date(iso).toLocaleString('sl-SI', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  } catch {
+    return ''
+  }
+}
+
+const datumDan = (iso: string) => {
+  if (!iso) return ''
+  try {
+    return new Date(iso).toLocaleDateString('sl-SI', { day: 'numeric', month: 'short' })
   } catch {
     return ''
   }
@@ -65,6 +78,27 @@ export const ClanPlosca = () => {
         Dobrodošli v ekipi Demokrati Radovljica. Skupaj pripravljamo program Uspešna Radovljica 2026–2034.
         {kraj ? ` Vaš kraj: ${kraj}.` : ''}
       </p>
+
+      {/* Moje naloge */}
+      {d && d.naloge && d.naloge.length > 0 && (
+        <div style={{ ...box, marginBottom: 16, borderColor: '#ffe0a6', background: '#fffdf6' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <p style={{ ...naslovKartice, margin: 0 }}>📋 Moje naloge</p>
+            <a href="/admin/collections/naloge" style={{ fontSize: 12.5, color: '#00807f', fontWeight: 600, textDecoration: 'none' }}>
+              Odpri in spremeni status →
+            </a>
+          </div>
+          {d.naloge.map((n, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '6px 0', borderBottom: '1px solid #f1f2f6', fontSize: 13 }}>
+              <span style={{ color: '#0f004e' }}>{n.naslov}</span>
+              <span style={{ color: '#5b5f73', whiteSpace: 'nowrap' }}>
+                {STATUS_NALOGE[n.status] || n.status}
+                {n.rok ? ` · ${datumDan(n.rok)}` : ''}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Aktualno + Dogodki */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12, marginBottom: 16 }}>

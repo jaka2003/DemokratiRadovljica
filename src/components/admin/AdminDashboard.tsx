@@ -333,6 +333,7 @@ const AdminPlosca = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {[
             { t: '👥 Pregled kandidatov', href: '/interno/kandidati-pregled' },
+            { t: '🗒️ Dodeli naloge', href: '/interno/naloge' },
             { t: '📋 Preveri liste', href: '/interno/liste' },
             { t: '➕ Dodaj kandidata', href: '/admin/collections/users/create' },
             { t: '📰 Objavi novico', href: '/admin/collections/novice/create' },

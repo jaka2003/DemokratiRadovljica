@@ -10,7 +10,8 @@ export const Naloge: CollectionConfig = {
     defaultColumns: ['naslov', 'kandidat', 'status', 'rok'],
     group: 'Ljudje in kampanja',
     hidden: skritoRazenAdmin,
-    description: 'Naloge, ki jih dodeliš kandidatu. Kandidat vidi svoje naloge in lahko spremeni status.',
+    description:
+      'Naloge, dodeljene osebam (kandidatom, članom …). Vsak vidi svoje naloge in lahko spremeni status. Skupinsko dodeljevanje: »Dodeli naloge« na nadzorni plošči.',
   },
   access: {
     read: ownerOrAdmin('kandidat'),
@@ -20,7 +21,7 @@ export const Naloge: CollectionConfig = {
   },
   fields: [
     { name: 'naslov', label: 'Naloga', type: 'text', required: true },
-    { name: 'kandidat', label: 'Kandidat', type: 'relationship', relationTo: 'users', required: true },
+    { name: 'kandidat', label: 'Dodeljeno osebi', type: 'relationship', relationTo: 'users', required: true },
     { name: 'opis', label: 'Opis', type: 'textarea' },
     {
       type: 'row',
