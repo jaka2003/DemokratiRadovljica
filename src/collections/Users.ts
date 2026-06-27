@@ -65,48 +65,10 @@ export const Users: CollectionConfig = {
         }, 100)
       },
     ],
-    // Ob ustvarjenju uporabnika pošljemo pozdravno e-pošto s povezavo za nastavitev gesla
-    // in dopolnitev profila. Odloženo (setTimeout) ZUNAJ transakcije, da ne pride do zaklepa
-    // vrstice na PostgreSQL (forgotPassword posodobi isto vrstico).
+    // Pozdravno e-pošto pošljemo ROČNO prek gumba na zapisu uporabnika (ne več samodejno).
+    // Glej lib/pozdrav.ts, /interno/poslji-pozdrav in komponento PozdravniMail.
+    // Povabilo prek »Povabi uporabnika« jo pošlje takoj (v /interno/povabi).
     afterChange: [
-      ({ req, operation, doc }) => {
-        if (operation !== 'create') return doc
-        const d = doc as { email?: string; ime?: string }
-        if (!d.email) return doc
-        const email = d.email
-        setTimeout(async () => {
-          try {
-            // Prvi (bootstrap) uporabnik si geslo nastavi sam ob registraciji – brez pošte.
-            const { totalDocs } = await req.payload.count({ collection: 'users' })
-            if (totalDocs <= 1) return
-            const token = (await req.payload.forgotPassword({
-              collection: 'users',
-              data: { email },
-              disableEmail: true,
-            })) as unknown as string
-            const base = process.env.NEXT_PUBLIC_SERVER_URL || ''
-            const link = `${base}/admin/reset/${token}`
-            const esc = (s: unknown) =>
-              String(s ?? '').replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c] as string))
-            const pozdrav = d.ime ? `Pozdravljen/-a, ${esc(d.ime)},` : 'Pozdravljen/-a,'
-            await req.payload.sendEmail({
-              to: email,
-              subject: 'Dobrodošli – Demokrati Radovljica',
-              html: `
-                <p>${pozdrav}</p>
-                <p>vaš račun v sistemu <strong>Demokrati Radovljica</strong> je pripravljen. Za začetek nastavite geslo in dopolnite svoj profil:</p>
-                <p><a href="${link}" style="display:inline-block;background:#00bbc1;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600">Nastavi geslo</a></p>
-                <p>Po prijavi v profilu izpolnite osebne podatke. Vlogo (kategorijo) vam določi administrator.</p>
-                <p style="font-size:12px;color:#888">Če gumb ne deluje, odprite povezavo: ${link}</p>
-                <p>Lep pozdrav,<br/>Ekipa Demokrati Radovljica</p>
-              `,
-            })
-          } catch (e) {
-            console.error('Pozdravna e-pošta ni bila poslana:', e)
-          }
-        }, 200)
-        return doc
-      },
       // Ob dodelitvi kandidatske vloge samodejno ustvari prvo nalogo: dopolni profil.
       // Zavarovano proti podvajanju (preverimo, ali naloga s tem naslovom že obstaja).
       ({ req, doc }) => {
@@ -210,6 +172,18 @@ export const Users: CollectionConfig = {
         {
           label: 'Status (interno)',
           fields: [
+            {
+              name: 'pozdravniMail',
+              type: 'ui',
+              admin: { components: { Field: '/components/admin/PozdravniMail#PozdravniMail' } },
+            },
+            {
+              name: 'pozdravPoslanOb',
+              label: 'Pozdravno sporočilo poslano',
+              type: 'date',
+              access: { update: adminFieldOnly },
+              admin: { hidden: true },
+            },
             {
               name: 'vloga',
               label: 'Vloge / kategorije (izbereš lahko več)',

@@ -1,5 +1,6 @@
 import { AiGenerator as AiGenerator_4ed5e2d5614eae5b1583d1ae55fa5407 } from '../../../components/admin/AiGenerator'
 import { PotrebniDokumenti as PotrebniDokumenti_89027071c6a35ecc135a61ac74188ec2 } from '../../../components/admin/PotrebniDokumenti'
+import { PozdravniMail as PozdravniMail_fbff845d6881642a49b287677782f284 } from '../../../components/admin/PozdravniMail'
 import { DaNeCell as DaNeCell_56e8daa14966605ba15fc03449543198 } from '../../../components/admin/DaNeCell'
 import { SvetnikAutofill as SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5 } from '../../../components/admin/SvetnikAutofill'
 import { PosljiVabilo as PosljiVabilo_35d62e19b5831341e688584fb57c422b } from '../../../components/admin/PosljiVabilo'
@@ -13,6 +14,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 export const importMap = {
   "/components/admin/AiGenerator#AiGenerator": AiGenerator_4ed5e2d5614eae5b1583d1ae55fa5407,
   "/components/admin/PotrebniDokumenti#PotrebniDokumenti": PotrebniDokumenti_89027071c6a35ecc135a61ac74188ec2,
+  "/components/admin/PozdravniMail#PozdravniMail": PozdravniMail_fbff845d6881642a49b287677782f284,
   "/components/admin/DaNeCell#DaNeCell": DaNeCell_56e8daa14966605ba15fc03449543198,
   "/components/admin/SvetnikAutofill#SvetnikAutofill": SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5,
   "/components/admin/PosljiVabilo#PosljiVabilo": PosljiVabilo_35d62e19b5831341e688584fb57c422b,
