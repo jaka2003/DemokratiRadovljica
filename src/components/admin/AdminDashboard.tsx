@@ -35,14 +35,14 @@ type Stats = {
   sporocila: number
 }
 
-const CARDS: { key: keyof Stats; label: string }[] = [
-  { key: 'kandidati', label: 'Kandidati' },
-  { key: 'profilDokoncan', label: 'Potrjeni profili' },
-  { key: 'brezDokumentov', label: 'Brez dokumentov' },
-  { key: 'novePobude', label: 'Nove pobude' },
-  { key: 'odprtePobude', label: 'Odprte pobude' },
-  { key: 'prostovoljci', label: 'Prijave za sodelovanje' },
-  { key: 'sporocila', label: 'Kontaktna sporočila' },
+const CARDS: { key: keyof Stats; label: string; href: string }[] = [
+  { key: 'kandidati', label: 'Kandidati', href: '/admin/collections/users' },
+  { key: 'profilDokoncan', label: 'Potrjeni profili', href: '/admin/collections/users' },
+  { key: 'brezDokumentov', label: 'Brez dokumentov', href: '/admin/collections/users' },
+  { key: 'novePobude', label: 'Nove pobude', href: '/admin/collections/pobude' },
+  { key: 'odprtePobude', label: 'Odprte pobude', href: '/admin/collections/pobude' },
+  { key: 'prostovoljci', label: 'Prijave za sodelovanje', href: '/admin/collections/prostovoljci' },
+  { key: 'sporocila', label: 'Kontaktna sporočila', href: '/admin/collections/kontakt-sporocila' },
 ]
 
 type Seznami = {
@@ -351,10 +351,14 @@ const AdminPlosca = () => {
       {/* Statistika */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
         {CARDS.map((c) => (
-          <div key={c.key} style={box}>
+          <a
+            key={c.key}
+            href={c.href}
+            style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}
+          >
             <div style={{ fontSize: 26, fontWeight: 800, color: '#0f004e' }}>{stats ? stats[c.key] : '–'}</div>
             <div style={{ fontSize: 12, color: '#5b5f73' }}>{c.label}</div>
-          </div>
+          </a>
         ))}
       </div>
 
@@ -582,11 +586,11 @@ const AdminPlosca = () => {
         )}
       </details>
 
-      {/* Seznami zadnjih aktivnosti */}
+      {/* Seznami zadnjih aktivnosti (vsaka kartica je povezava na svojo zbirko) */}
       {seznami && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12, marginTop: 16 }}>
-          <div style={box}>
-            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Zadnje prijave kandidatov</h3>
+          <a href="/admin/collections/users" style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14, color: '#0f004e' }}>Zadnje prijave kandidatov →</h3>
             {seznami.zadnjiKandidati.length ? (
               seznami.zadnjiKandidati.map((k, i) => (
                 <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
@@ -596,9 +600,9 @@ const AdminPlosca = () => {
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni podatkov.</p>
             )}
-          </div>
-          <div style={box}>
-            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Zadnje pobude</h3>
+          </a>
+          <a href="/admin/collections/pobude" style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14, color: '#0f004e' }}>Zadnje pobude →</h3>
             {seznami.zadnjePobude.length ? (
               seznami.zadnjePobude.map((p, i) => (
                 <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
@@ -608,9 +612,9 @@ const AdminPlosca = () => {
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni podatkov.</p>
             )}
-          </div>
-          <div style={box}>
-            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Zadnja sporočila</h3>
+          </a>
+          <a href="/admin/collections/kontakt-sporocila" style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14, color: '#0f004e' }}>Zadnja sporočila →</h3>
             {seznami.zadnjaSporocila.length ? (
               seznami.zadnjaSporocila.map((s, i) => (
                 <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
@@ -620,9 +624,9 @@ const AdminPlosca = () => {
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni podatkov.</p>
             )}
-          </div>
-          <div style={box}>
-            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Čakajoče naloge</h3>
+          </a>
+          <a href="/admin/collections/naloge" style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14, color: '#0f004e' }}>Čakajoče naloge →</h3>
             {seznami.cakajoceNaloge.length ? (
               seznami.cakajoceNaloge.map((n, i) => (
                 <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
@@ -632,9 +636,9 @@ const AdminPlosca = () => {
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni nalog.</p>
             )}
-          </div>
-          <div style={box}>
-            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>Naslednji dogodki</h3>
+          </a>
+          <a href="/admin/collections/dogodki" style={{ ...box, display: 'block', textDecoration: 'none', cursor: 'pointer' }}>
+            <h3 style={{ fontWeight: 700, marginBottom: 8, fontSize: 14, color: '#0f004e' }}>Naslednji dogodki →</h3>
             {seznami.prihajajociDogodki.length ? (
               seznami.prihajajociDogodki.map((dg, i) => (
                 <div key={i} style={{ fontSize: 13, padding: '3px 0', color: '#0f004e' }}>
@@ -650,7 +654,7 @@ const AdminPlosca = () => {
             ) : (
               <p style={{ fontSize: 12, color: '#5b5f73' }}>Ni dogodkov.</p>
             )}
-          </div>
+          </a>
         </div>
       )}
     </div>
