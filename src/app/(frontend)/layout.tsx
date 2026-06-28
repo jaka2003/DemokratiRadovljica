@@ -9,6 +9,7 @@ import config from '@payload-config'
 import './globals.css'
 import { Header } from '@/components/site/Header'
 import { Footer } from '@/components/site/Footer'
+import { ProgramBot } from '@/components/site/ProgramBot'
 import { getNastavitve } from '@/lib/queries'
 
 const inter = Inter({
@@ -119,6 +120,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <ProgramBot />
       </body>
     </html>
   )
