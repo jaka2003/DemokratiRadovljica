@@ -20,7 +20,7 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: 'ime',
-    defaultColumns: ['ime', 'email', 'vloga', 'statusProfila'],
+    defaultColumns: ['ime', 'email', 'vloga', 'zadnjaPrijava', 'statusProfila'],
     group: 'Ljudje in kampanja',
     description:
       'Vsi uporabniki sistema in kandidati. Tukaj dodaš kandidata, mu določiš vlogo in pregleduješ profil. Kandidat se prijavi z e-pošto in geslom ter ureja samo svoj profil. Statusna polja (zavihek »Status«) ureja le administrator.',
@@ -238,6 +238,11 @@ export const Users: CollectionConfig = {
               admin: { hidden: true },
             },
             {
+              name: 'racunStatus',
+              type: 'ui',
+              admin: { components: { Field: '/components/admin/RacunStatus#RacunStatus' } },
+            },
+            {
               name: 'vloga',
               label: 'Vloge / kategorije (izbereš lahko več)',
               type: 'select',
@@ -317,10 +322,10 @@ export const Users: CollectionConfig = {
                 },
                 {
                   name: 'zadnjaPrijava',
-                  label: 'Zadnja prijava v sistem',
+                  label: 'Zadnja prijava (aktivacija računa)',
                   type: 'date',
                   access: { update: adminFieldOnly },
-                  admin: { width: '50%', readOnly: true },
+                  admin: { width: '50%', readOnly: true, components: { Cell: '/components/admin/RacunCell#RacunCell' } },
                 },
               ],
             },
