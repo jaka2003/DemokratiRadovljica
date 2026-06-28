@@ -14,6 +14,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pobude } from './collections/Pobude'
 import { Vprasanja } from './collections/Vprasanja'
+import { PristopneIzjave } from './collections/PristopneIzjave'
 import { ProgramskaPodrocja } from './collections/ProgramskaPodrocja'
 import { Kraji } from './collections/Kraji'
 import { Ekipa } from './collections/Ekipa'
@@ -102,6 +103,7 @@ export default buildConfig({
     Media,
     Pobude,
     Vprasanja,
+    PristopneIzjave,
     ProgramskaPodrocja,
     Kraji,
     Ekipa,
