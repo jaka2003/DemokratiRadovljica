@@ -53,11 +53,11 @@ export default async function PodrocjePage({ params }: { params: Promise<{ slug:
           </span>
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">{p.naslov}</h1>
-            {p.kratekOpis && <p className="mt-2 text-lg text-muted">{p.kratekOpis}</p>}
+            {p.kratekOpis && <p className="mt-2 whitespace-pre-line text-lg text-muted">{p.kratekOpis}</p>}
           </div>
         </div>
 
-        {p.uvod && <p className="mt-8 text-base leading-relaxed text-navy/90">{p.uvod}</p>}
+        {p.uvod && <p className="mt-8 whitespace-pre-line text-base leading-relaxed text-navy/90">{p.uvod}</p>}
 
         {/* Konkretni ukrepi */}
         {p.ukrepi && p.ukrepi.length > 0 && (
