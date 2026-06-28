@@ -31,7 +31,7 @@ type Stats = {
   novePobude: number
   odprtePobude: number
   neodgovorjenaVprasanja: number
-  prostovoljci: number
+  pristopneIzjave: number
   sporocila: number
 }
 
@@ -41,7 +41,7 @@ const CARDS: { key: keyof Stats; label: string; href: string }[] = [
   { key: 'brezDokumentov', label: 'Brez dokumentov', href: '/admin/collections/users' },
   { key: 'novePobude', label: 'Nove pobude', href: '/admin/collections/pobude' },
   { key: 'odprtePobude', label: 'Odprte pobude', href: '/admin/collections/pobude' },
-  { key: 'prostovoljci', label: 'Prijave za sodelovanje', href: '/admin/collections/prostovoljci' },
+  { key: 'pristopneIzjave', label: 'Pristopne izjave', href: '/admin/collections/pristopne-izjave' },
   { key: 'sporocila', label: 'Kontaktna sporočila', href: '/admin/collections/kontakt-sporocila' },
 ]
 
@@ -412,14 +412,17 @@ const AdminPlosca = () => {
       </details>
 
       {/* Izvoz */}
-      <div style={{ ...box, marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
-          <h3 style={{ fontWeight: 700, margin: 0 }}>Izvoz kandidatov</h3>
-          <p style={{ fontSize: 12, color: '#5b5f73', margin: '4px 0 0' }}>Seznam kandidatov v CSV (Excel).</p>
+      <div style={{ ...box, marginTop: 16 }}>
+        <h3 style={{ fontWeight: 700, margin: '0 0 2px' }}>Izvoz podatkov (CSV / Excel)</h3>
+        <p style={{ fontSize: 12, color: '#5b5f73', margin: '0 0 10px' }}>Prenesi seznam v razpredelnici.</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          <a href="/interno/kandidati-csv" className="btn btn--style-secondary btn--size-small" download>
+            ⬇ Kandidati
+          </a>
+          <a href="/interno/pristopne-csv" className="btn btn--style-secondary btn--size-small" download>
+            ⬇ Pristopne izjave
+          </a>
         </div>
-        <a href="/interno/kandidati-csv" className="btn btn--style-secondary btn--size-small" download>
-          ⬇ Izvozi (CSV)
-        </a>
       </div>
 
       {/* Pošiljanje e-pošte (zložljivo) */}

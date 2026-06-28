@@ -47,6 +47,15 @@ if (uri.startsWith('postgres')) {
     )
     await client.query(`DROP TABLE IF EXISTS "deljive_objave" CASCADE`)
 
+    // Odstranjena zbirka "prostovoljci" (Prijave za sodelovanje): počisti ostanke pred push.
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_prostovoljci_fk"`,
+    )
+    await client.query(
+      `ALTER TABLE IF EXISTS "payload_locked_documents_rels" DROP COLUMN IF EXISTS "prostovoljci_id" CASCADE`,
+    )
+    await client.query(`DROP TABLE IF EXISTS "prostovoljci" CASCADE`)
+
     await client.end()
   } catch (e) {
     console.warn('Priprava vloga (pred push) preskočena: ' + (e as Error).message)

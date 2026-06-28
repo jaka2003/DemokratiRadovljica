@@ -18,7 +18,6 @@ import { PristopneIzjave } from './collections/PristopneIzjave'
 import { ProgramskaPodrocja } from './collections/ProgramskaPodrocja'
 import { Kraji } from './collections/Kraji'
 import { Ekipa } from './collections/Ekipa'
-import { Prostovoljci } from './collections/Prostovoljci'
 import { Dokumenti } from './collections/Dokumenti'
 import { Naloge } from './collections/Naloge'
 import { KontaktSporocila } from './collections/KontaktSporocila'
@@ -107,7 +106,6 @@ export default buildConfig({
     ProgramskaPodrocja,
     Kraji,
     Ekipa,
-    Prostovoljci,
     Dokumenti,
     Naloge,
     KontaktSporocila,

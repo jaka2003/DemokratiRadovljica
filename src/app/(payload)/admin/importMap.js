@@ -2,7 +2,6 @@ import { AiGenerator as AiGenerator_4ed5e2d5614eae5b1583d1ae55fa5407 } from '../
 import { PotrebniDokumenti as PotrebniDokumenti_89027071c6a35ecc135a61ac74188ec2 } from '../../../components/admin/PotrebniDokumenti'
 import { UporabnikuEmail as UporabnikuEmail_c45d62fb55ab59679dc945310d9e64a8 } from '../../../components/admin/UporabnikuEmail'
 import { DaNeCell as DaNeCell_56e8daa14966605ba15fc03449543198 } from '../../../components/admin/DaNeCell'
-import { PrenesiVUporabnike as PrenesiVUporabnike_33a8d29b926124d8e58da1b048dd5f56 } from '../../../components/admin/PrenesiVUporabnike'
 import { SvetnikAutofill as SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5 } from '../../../components/admin/SvetnikAutofill'
 import { PosljiVabilo as PosljiVabilo_35d62e19b5831341e688584fb57c422b } from '../../../components/admin/PosljiVabilo'
 import { SejaPosiljanje as SejaPosiljanje_5340cf0a558659c4943846e4ef417204 } from '../../../components/admin/SejaPosiljanje'
@@ -17,7 +16,6 @@ export const importMap = {
   "/components/admin/PotrebniDokumenti#PotrebniDokumenti": PotrebniDokumenti_89027071c6a35ecc135a61ac74188ec2,
   "/components/admin/UporabnikuEmail#UporabnikuEmail": UporabnikuEmail_c45d62fb55ab59679dc945310d9e64a8,
   "/components/admin/DaNeCell#DaNeCell": DaNeCell_56e8daa14966605ba15fc03449543198,
-  "/components/admin/PrenesiVUporabnike#PrenesiVUporabnike": PrenesiVUporabnike_33a8d29b926124d8e58da1b048dd5f56,
   "/components/admin/SvetnikAutofill#SvetnikAutofill": SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5,
   "/components/admin/PosljiVabilo#PosljiVabilo": PosljiVabilo_35d62e19b5831341e688584fb57c422b,
   "/components/admin/SejaPosiljanje#SejaPosiljanje": SejaPosiljanje_5340cf0a558659c4943846e4ef417204,

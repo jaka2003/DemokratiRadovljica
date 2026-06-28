@@ -22,7 +22,7 @@ export async function GET(req: Request) {
     novePobude,
     odprtePobude,
     neodgovorjenaVprasanja,
-    prostovoljci,
+    pristopneIzjave,
     sporocila,
   ] = await Promise.all([
     count('users', kand),
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     count('pobude', { status: { equals: 'nova' } }),
     count('pobude', { status: { in: ['nova', 'v_pregledu', 'ogled_terena'] } }),
     count('vprasanja', { status: { in: ['novo', 'v_obravnavi'] } }),
-    count('prostovoljci'),
+    count('pristopne-izjave'),
     count('kontakt-sporocila'),
   ])
 
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
       novePobude,
       odprtePobude,
       neodgovorjenaVprasanja,
-      prostovoljci,
+      pristopneIzjave,
       sporocila,
     },
     seznami: {
