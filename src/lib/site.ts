@@ -49,7 +49,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Mladi demokrati', href: '/mladi-demokrati' },
   { label: 'Pobude in zemljevid', href: '/pobude' },
   { label: 'Vprašanja', href: '/vprasanja' },
-  { label: 'Pridruži se', href: '/pristop' },
+  { label: 'Pridruži se', href: '/demokrati#pridruzi-se' },
 ]
 
 export const HERO = {
@@ -178,7 +178,7 @@ export const PARTICIPATE = {
   title: 'Sodeluj pri programu',
   subtitle: 'Skupaj gradimo občino, v kateri se dobro živi vsem generacijam.',
   cards: [
-    { title: 'Pridruži se', subtitle: 'Postani član – pristopna izjava.', icon: 'userPlus' as IconName, href: '/pristop' },
+    { title: 'Pridruži se', subtitle: 'Postani član – pristopna izjava.', icon: 'userPlus' as IconName, href: '/demokrati#pridruzi-se' },
     { title: 'Pošlji pobudo', subtitle: 'Tvoj predlog šteje.', icon: 'mapPin' as IconName, href: '/pobude' },
     { title: 'Spremljaj aktualno', subtitle: 'Novice, dogodki in obvestila.', icon: 'bell' as IconName, href: '/novice' },
   ],

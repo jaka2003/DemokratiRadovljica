@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Users } from 'lucide-react'
 import { Container } from '@/components/site/Container'
 import { Icon } from '@/lib/icons'
 import type { IconName } from '@/lib/site'
-import SimpleForm from '@/components/forms/SimpleForm'
+import { PristopForm } from '@/components/pristop/PristopForm'
 import { getNastavitve, getEkipa } from '@/lib/queries'
 import { focalPos } from '@/lib/media'
 
@@ -100,59 +100,46 @@ export default async function DemokratiPage() {
           </div>
         )}
 
-        {/* Kontakt + družbena omrežja + prijava */}
-        <div className="mt-16 grid gap-8 lg:grid-cols-2">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-navy">Kontakt</h2>
-            <ul className="mt-5 space-y-3 text-sm text-navy/85">
-              {n.email ? (
-                <li className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-teal" strokeWidth={2} />
-                  <a href={`mailto:${n.email}`} className="hover:text-teal">{String(n.email)}</a>
-                </li>
-              ) : null}
-              {n.telefon ? (
-                <li className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-teal" strokeWidth={2} /> {String(n.telefon)}
-                </li>
-              ) : null}
-              {n.naslov ? (
-                <li className="flex items-center gap-3">
-                  <MapPin className="h-4 w-4 text-teal" strokeWidth={2} /> {String(n.naslov)}
-                </li>
-              ) : null}
-            </ul>
-            {omrezja.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-3">
-                {omrezja.map((o, i) => (
-                  <a key={i} href={o.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line px-4 py-2 text-sm font-medium capitalize text-navy transition-colors hover:border-teal hover:text-teal">
-                    {o.platforma}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-navy">Pridruži se</h2>
-            <p className="mt-2 text-sm text-muted">Postani del ekipe. Pusti svoje podatke in oglasimo se ti.</p>
-            <div className="mt-5">
-              <SimpleForm
-                action="/demokrati/prijava"
-                submitLabel="Pošlji prijavo"
-                successTitle="Hvala za prijavo!"
-                successText="Kmalu se ti oglasimo."
-                gdprLabel="Soglašam z obdelavo osebnih podatkov za namen sodelovanja."
-                fields={[
-                  { name: 'imePriimek', label: 'Ime in priimek', required: true },
-                  { name: 'email', label: 'E-pošta', type: 'email', required: true },
-                  { name: 'telefon', label: 'Telefon', type: 'tel' },
-                  { name: 'kraj', label: 'Kraj' },
-                  { name: 'podrocja', label: 'Področja sodelovanja', full: true },
-                  { name: 'sporocilo', label: 'Sporočilo', type: 'textarea' },
-                ]}
-              />
+        {/* Kontakt + družbena omrežja */}
+        <div className="mx-auto mt-16 max-w-2xl">
+          <h2 className="text-2xl font-bold tracking-tight text-navy">Kontakt</h2>
+          <ul className="mt-5 space-y-3 text-sm text-navy/85">
+            {n.email ? (
+              <li className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-teal" strokeWidth={2} />
+                <a href={`mailto:${n.email}`} className="hover:text-teal">{String(n.email)}</a>
+              </li>
+            ) : null}
+            {n.telefon ? (
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-teal" strokeWidth={2} /> {String(n.telefon)}
+              </li>
+            ) : null}
+            {n.naslov ? (
+              <li className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 text-teal" strokeWidth={2} /> {String(n.naslov)}
+              </li>
+            ) : null}
+          </ul>
+          {omrezja.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {omrezja.map((o, i) => (
+                <a key={i} href={o.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line px-4 py-2 text-sm font-medium capitalize text-navy transition-colors hover:border-teal hover:text-teal">
+                  {o.platforma}
+                </a>
+              ))}
             </div>
+          )}
+        </div>
+
+        {/* Pridruži se – pristopna izjava */}
+        <div id="pridruzi-se" className="mt-16 scroll-mt-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-navy">Pridruži se</h2>
+            <p className="mt-2 text-muted">Postani član Demokratov Radovljica – izpolni pristopno izjavo.</p>
+          </div>
+          <div className="mx-auto mt-8 max-w-2xl">
+            <PristopForm />
           </div>
         </div>
       </Container>
