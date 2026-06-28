@@ -10,6 +10,7 @@ import './globals.css'
 import { Header } from '@/components/site/Header'
 import { Footer } from '@/components/site/Footer'
 import { ProgramBot } from '@/components/site/ProgramBot'
+import { PiskotkiObvestilo } from '@/components/site/PiskotkiObvestilo'
 import { getNastavitve } from '@/lib/queries'
 
 const inter = Inter({
@@ -121,6 +122,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <main className="flex-1">{children}</main>
         <Footer />
         <ProgramBot />
+        <PiskotkiObvestilo />
       </body>
     </html>
   )
