@@ -53,7 +53,7 @@ export function Hero({
               {title}
             </h1>
             <p className="mt-5 text-xl font-semibold text-navy/90">{subtitle}</p>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted">{description}</p>
+            <p className="mt-4 max-w-xl whitespace-pre-line text-base leading-relaxed text-muted">{description}</p>
 
             <p className="mt-6 text-base font-medium text-navy">{emphasis}</p>
             <p className="mt-1 text-base font-semibold text-teal-700">{slogan}</p>

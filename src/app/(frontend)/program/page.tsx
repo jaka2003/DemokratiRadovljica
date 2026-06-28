@@ -41,7 +41,7 @@ export default async function ProgramPage() {
                 <Icon name={p.ikona as IconName} className="h-6 w-6" />
               </span>
               <h2 className="mt-4 text-lg font-bold text-navy">{p.naslov}</h2>
-              {p.kratekOpis && <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted">{p.kratekOpis}</p>}
+              {p.kratekOpis && <p className="mt-1.5 flex-1 whitespace-pre-line text-sm leading-relaxed text-muted">{p.kratekOpis}</p>}
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-700">
                 Več
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />

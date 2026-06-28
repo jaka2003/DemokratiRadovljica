@@ -48,13 +48,13 @@ export default async function DemokratiPage() {
           {n.poslanstvo ? (
             <div className="rounded-[var(--radius-card)] bg-sand p-7">
               <h2 className="text-lg font-bold text-navy">Poslanstvo</h2>
-              <p className="mt-2 text-sm leading-relaxed text-navy/80">{String(n.poslanstvo)}</p>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-navy/80">{String(n.poslanstvo)}</p>
             </div>
           ) : null}
           {n.nacinDela ? (
             <div className="rounded-[var(--radius-card)] bg-sand p-7">
               <h2 className="text-lg font-bold text-navy">Način dela</h2>
-              <p className="mt-2 text-sm leading-relaxed text-navy/80">{String(n.nacinDela)}</p>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-navy/80">{String(n.nacinDela)}</p>
             </div>
           ) : null}
         </div>
@@ -92,7 +92,7 @@ export default async function DemokratiPage() {
                   <div className="p-5">
                     <h3 className="font-bold text-navy">{c.ime}</h3>
                     {c.funkcija && <p className="text-sm text-teal-700">{c.funkcija}</p>}
-                    {c.opis && <p className="mt-2 text-sm text-muted">{c.opis}</p>}
+                    {c.opis && <p className="mt-2 whitespace-pre-line text-sm text-muted">{c.opis}</p>}
                   </div>
                 </div>
               ))}

@@ -46,7 +46,7 @@ export default async function KrajPage({ params }: { params: Promise<{ slug: str
       </div>
 
       <Container className="max-w-4xl py-10 lg:py-14">
-        {k.opis && <p className="text-lg leading-relaxed text-navy/90">{k.opis}</p>}
+        {k.opis && <p className="whitespace-pre-line text-lg leading-relaxed text-navy/90">{k.opis}</p>}
 
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           {/* Aktualne teme */}
