@@ -22,6 +22,7 @@ export const Svetniki: CollectionConfig = {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'volilnaEnota', 'spol', 'objavljeno', 'vrstniRed'],
     listSearchableFields: ['imePriimek', 'kraj', 'poklic', 'volilnaEnota'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Vsebina strani',
     hidden: skritoRazenUrednik,
     description:

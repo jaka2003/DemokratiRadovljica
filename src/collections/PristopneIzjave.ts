@@ -10,6 +10,7 @@ export const PristopneIzjave: CollectionConfig = {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'email', 'stalnoMesto', 'status', 'createdAt'],
     listSearchableFields: ['imePriimek', 'email', 'stalnoMesto', 'poklic'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Obravnava',
     hidden: skritoRazenUrednik,
     description:

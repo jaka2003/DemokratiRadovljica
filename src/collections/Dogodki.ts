@@ -23,6 +23,7 @@ export const Dogodki: CollectionConfig = {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'tip', 'zacetek', 'lokacija', 'status'],
     listSearchableFields: ['naslov', 'lokacija', 'opis'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Ljudje in kampanja',
     hidden: skritoRazenAdmin,
     defaultSort: 'zacetek',

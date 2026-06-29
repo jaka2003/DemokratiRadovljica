@@ -10,6 +10,7 @@ export const Novice: CollectionConfig = {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'datum', 'objavljeno'],
     listSearchableFields: ['naslov'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Vsebina strani',
     hidden: skritoRazenUrednik,
     description:

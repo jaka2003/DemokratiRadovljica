@@ -12,6 +12,7 @@ export const Pobude: CollectionConfig = {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kategorija', 'kraj', 'status', 'javnoObjavljeno', 'createdAt'],
     listSearchableFields: ['naslov', 'kraj', 'imePriimek', 'opis'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Pobude in sporočila',
     description:
       'Pobude, ki jih občani oddajo na strani »Pobude in zemljevid«. Tukaj jih pregledaš, nastaviš status in odločiš, ali se anonimizirano prikažejo na javnem zemljevidu (zavihek »Obravnava«).',

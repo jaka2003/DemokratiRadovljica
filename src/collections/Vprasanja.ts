@@ -11,6 +11,7 @@ export const Vprasanja: CollectionConfig = {
     useAsTitle: 'vprasanje',
     defaultColumns: ['vprasanje', 'status', 'objavljeno', 'createdAt'],
     listSearchableFields: ['vprasanje', 'imeObcana', 'odgovor'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Obravnava',
     hidden: skritoRazenUrednik,
     description:

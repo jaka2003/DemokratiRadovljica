@@ -9,6 +9,7 @@ export const Naloge: CollectionConfig = {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status', 'rok'],
     listSearchableFields: ['naslov', 'opis'],
+    components: { beforeListTable: ['/components/admin/HitriFiltri#HitriFiltri'] },
     group: 'Ljudje in kampanja',
     hidden: skritoRazenAdmin,
     description:
