@@ -9,6 +9,7 @@ export const Novice: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'datum', 'objavljeno'],
+    listSearchableFields: ['naslov'],
     group: 'Vsebina strani',
     hidden: skritoRazenUrednik,
     description:

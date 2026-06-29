@@ -9,6 +9,7 @@ export const PristopneIzjave: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'email', 'stalnoMesto', 'status', 'createdAt'],
+    listSearchableFields: ['imePriimek', 'email', 'stalnoMesto', 'poklic'],
     group: 'Obravnava',
     hidden: skritoRazenUrednik,
     description:

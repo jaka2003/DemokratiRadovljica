@@ -8,6 +8,7 @@ export const KontaktSporocila: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'email', 'vir', 'createdAt'],
+    listSearchableFields: ['imePriimek', 'email', 'sporocilo'],
     group: 'Obravnava',
     hidden: skritoRazenUrednik,
     description:

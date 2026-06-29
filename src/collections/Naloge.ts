@@ -8,6 +8,7 @@ export const Naloge: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'kandidat', 'status', 'rok'],
+    listSearchableFields: ['naslov', 'opis'],
     group: 'Ljudje in kampanja',
     hidden: skritoRazenAdmin,
     description:

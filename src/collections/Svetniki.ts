@@ -21,6 +21,7 @@ export const Svetniki: CollectionConfig = {
   admin: {
     useAsTitle: 'imePriimek',
     defaultColumns: ['imePriimek', 'volilnaEnota', 'spol', 'objavljeno', 'vrstniRed'],
+    listSearchableFields: ['imePriimek', 'kraj', 'poklic', 'volilnaEnota'],
     group: 'Vsebina strani',
     hidden: skritoRazenUrednik,
     description:

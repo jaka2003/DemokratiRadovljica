@@ -65,6 +65,32 @@ const AdminPlosca = () => {
   const [inviteOk, setInviteOk] = useState(false)
   const [inviting, setInviting] = useState(false)
 
+  // Skupinsko ponovno pošiljanje povezave za geslo (neaktivirani računi)
+  const [resendBusy, setResendBusy] = useState(false)
+  const [resendMsg, setResendMsg] = useState('')
+  const [resendOk, setResendOk] = useState(false)
+  const posljiVsemNeaktiviranim = async () => {
+    if (!window.confirm('Vsem uporabnikom, ki še niso aktivirali računa (niso nastavili gesla), pošljem povezavo za nastavitev gesla?')) return
+    setResendBusy(true)
+    setResendMsg('')
+    try {
+      const res = await fetch('/interno/ponovna-registracija-vsi', { method: 'POST', credentials: 'include' })
+      const json = await res.json()
+      if (json.ok) {
+        setResendOk(true)
+        setResendMsg(`✓ Povezava poslana ${json.count} neaktiviranim uporabnikom.`)
+      } else {
+        setResendOk(false)
+        setResendMsg(json.error || 'Napaka pri pošiljanju.')
+      }
+    } catch {
+      setResendOk(false)
+      setResendMsg('Povezava ni uspela.')
+    } finally {
+      setResendBusy(false)
+    }
+  }
+
   const povabi = async () => {
     setInviting(true)
     setInviteMsg('')
@@ -410,6 +436,33 @@ const AdminPlosca = () => {
           </div>
         )}
       </details>
+
+      {/* Neaktivirani računi – skupinsko pošiljanje povezave za geslo */}
+      <div style={{ ...box, marginTop: 16 }}>
+        <h3 style={{ fontWeight: 700, margin: '0 0 2px' }}>Neaktivirani računi</h3>
+        <p style={{ fontSize: 12.5, color: '#5b5f73', margin: '0 0 12px' }}>
+          Vsem uporabnikom, ki še niso nastavili gesla (se niso prijavili), ponovno pošlji povezavo za nastavitev gesla.
+        </p>
+        <button type="button" disabled={resendBusy} onClick={posljiVsemNeaktiviranim} className="btn btn--style-secondary btn--size-small">
+          {resendBusy ? 'Pošiljam …' : '✉️ Pošlji vsem neaktiviranim'}
+        </button>
+        {resendMsg && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: '8px 12px',
+              borderRadius: 8,
+              fontSize: 13,
+              fontWeight: 600,
+              background: resendOk ? '#e8f8ee' : '#fdecee',
+              color: resendOk ? '#157a43' : '#b00020',
+              border: `1px solid ${resendOk ? '#bfe8cd' : '#f3c2c8'}`,
+            }}
+          >
+            {resendMsg}
+          </div>
+        )}
+      </div>
 
       {/* Izvoz */}
       <div style={{ ...box, marginTop: 16 }}>

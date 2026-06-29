@@ -10,6 +10,7 @@ export const Vprasanja: CollectionConfig = {
   admin: {
     useAsTitle: 'vprasanje',
     defaultColumns: ['vprasanje', 'status', 'objavljeno', 'createdAt'],
+    listSearchableFields: ['vprasanje', 'imeObcana', 'odgovor'],
     group: 'Obravnava',
     hidden: skritoRazenUrednik,
     description:

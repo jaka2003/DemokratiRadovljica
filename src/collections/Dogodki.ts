@@ -22,6 +22,7 @@ export const Dogodki: CollectionConfig = {
   admin: {
     useAsTitle: 'naslov',
     defaultColumns: ['naslov', 'tip', 'zacetek', 'lokacija', 'status'],
+    listSearchableFields: ['naslov', 'lokacija', 'opis'],
     group: 'Ljudje in kampanja',
     hidden: skritoRazenAdmin,
     defaultSort: 'zacetek',
