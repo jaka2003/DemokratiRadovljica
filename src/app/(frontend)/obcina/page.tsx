@@ -58,7 +58,14 @@ export default async function ObcinaPage() {
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <h3 className="text-lg font-bold text-navy">{k.naslov}</h3>
-                {k.opis && <p className="mt-1.5 flex-1 whitespace-pre-line text-sm leading-relaxed text-muted">{k.opis}</p>}
+                {k.opis && (
+                  <p className="mt-1.5 line-clamp-4 flex-1 text-sm leading-relaxed text-muted">
+                    {(() => {
+                      const t = String(k.opis).replace(/\s+/g, ' ').trim()
+                      return t.length > 170 ? `${t.slice(0, 170).trimEnd()}…` : t
+                    })()}
+                  </p>
+                )}
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-700">
                   Več o kraju
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
