@@ -17,10 +17,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: n?.naslov || 'Novica',
     description: n?.povzetek,
+    alternates: { canonical: `/novice/${slug}` },
     openGraph: {
       title: n?.naslov || 'Novica',
       description: n?.povzetek || undefined,
       type: 'article',
+      url: `/novice/${slug}`,
       images: slika ? [{ url: slika }] : undefined,
     },
   }

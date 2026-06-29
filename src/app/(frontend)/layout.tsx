@@ -45,7 +45,6 @@ export const metadata: Metadata = {
   ],
   applicationName: 'Demokrati Radovljica',
   authors: [{ name: 'Demokrati Radovljica' }],
-  alternates: { canonical: '/' },
   robots: {
     index: true,
     follow: true,
@@ -57,7 +56,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'sl_SI',
-    url: serverUrl,
     siteName: 'Demokrati Radovljica',
     title: 'Demokrati Radovljica – Uspešna Radovljica 2026–2034',
     description:

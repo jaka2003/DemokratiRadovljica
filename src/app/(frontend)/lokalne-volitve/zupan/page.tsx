@@ -8,11 +8,27 @@ import { Icon } from '@/lib/icons'
 import type { IconName } from '@/lib/site'
 import SimpleForm from '@/components/forms/SimpleForm'
 import { NoviceMini } from '@/components/site/NoviceMini'
+import { ShareButtons } from '@/components/site/ShareButtons'
 import { getKandidat, getNastavitve, getNoviceKandidat } from '@/lib/queries'
 import { focalPos } from '@/lib/media'
 
-export const metadata = { title: 'Kandidat za župana' }
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata() {
+  const k = await getKandidat()
+  const naslov = k?.imePriimek ? `${k.imePriimek} – kandidat za župana` : 'Kandidat za župana'
+  const slika = (k?.fotografija as { url?: string })?.url
+  return {
+    title: naslov,
+    description: (k?.kratekOpis as string) || undefined,
+    alternates: { canonical: '/lokalne-volitve/zupan' },
+    openGraph: {
+      title: naslov,
+      url: '/lokalne-volitve/zupan',
+      images: slika ? [{ url: slika }] : undefined,
+    },
+  }
+}
 
 type Vrednota = { label: string; ikona: string }
 
@@ -112,6 +128,11 @@ export default async function ZupanPage() {
         )}
 
         <NoviceMini novice={objave} naslov="Aktualne objave" />
+
+        {/* Deljenje */}
+        <div className="mt-10 border-t border-line pt-6">
+          <ShareButtons title={k.imePriimek ? `${k.imePriimek} – kandidat za župana` : 'Kandidat za župana'} />
+        </div>
 
         <div className="mt-12">
           <h2 className="text-xl font-bold text-navy">Stopi v stik s kandidatom</h2>

@@ -6,6 +6,7 @@ import { Container } from '@/components/site/Container'
 import { Button } from '@/components/ui/Button'
 import { getKrajBySlug, getPobudeByKraj, getNoviceByKraj } from '@/lib/queries'
 import { NoviceMini } from '@/components/site/NoviceMini'
+import { ShareButtons } from '@/components/site/ShareButtons'
 import { statusInfo } from '@/lib/pobude'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const k = await getKrajBySlug(slug)
   if (!k) return { title: 'Kraj' }
-  return { title: k.naslov, description: k.opis }
+  return {
+    title: k.naslov,
+    description: k.opis,
+    alternates: { canonical: `/obcina/${slug}` },
+    openGraph: { title: k.naslov, description: k.opis || undefined, url: `/obcina/${slug}` },
+  }
 }
 
 export default async function KrajPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -105,6 +111,11 @@ export default async function KrajPage({ params }: { params: Promise<{ slug: str
 
         {/* Aktualne novice kraja */}
         <NoviceMini novice={novice} naslov="Aktualne novice" />
+
+        {/* Deljenje */}
+        <div className="mt-10 border-t border-line pt-6">
+          <ShareButtons title={k.naslov} />
+        </div>
 
         {/* CTA */}
         <div className="mt-12 flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-navy p-8 text-white sm:flex-row sm:items-center sm:justify-between">

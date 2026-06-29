@@ -9,6 +9,12 @@ import { getDomacaStran } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
+// Domača stran: lasten canonical in og:url (sicer podstrani ne podedujejo napačnega doma).
+export const metadata = {
+  alternates: { canonical: '/' },
+  openGraph: { url: '/' },
+}
+
 export default async function HomePage() {
   const d = await getDomacaStran()
   type Media = { url?: string; alt?: string; width?: number; height?: number }

@@ -22,9 +22,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: p.naslov,
     description: p.kratekOpis,
+    alternates: { canonical: `/program/${slug}` },
     openGraph: {
       title: p.naslov,
       description: p.kratekOpis || undefined,
+      url: `/program/${slug}`,
       images: share.slikaUrl ? [{ url: share.slikaUrl }] : undefined,
     },
   }

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, User, Check, Send, MapPin } from 'lucide-react'
 import { Container } from '@/components/site/Container'
 import { Button } from '@/components/ui/Button'
+import { ShareButtons } from '@/components/site/ShareButtons'
 import SimpleForm from '@/components/forms/SimpleForm'
 import { getSvetnikBySlug } from '@/lib/queries'
 import { focalPos } from '@/lib/media'
@@ -14,7 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const s = await getSvetnikBySlug(slug)
   if (!s) return { title: 'Kandidat za svetnika' }
-  return { title: `${s.imePriimek} – kandidat za svetnika`, description: s.kratekOpis }
+  const slika = (s.fotografija as { url?: string })?.url
+  const naslov = `${s.imePriimek} – kandidat za svetnika`
+  return {
+    title: naslov,
+    description: s.kratekOpis,
+    alternates: { canonical: `/lokalne-volitve/${slug}` },
+    openGraph: {
+      title: naslov,
+      description: (s.kratekOpis as string) || undefined,
+      url: `/lokalne-volitve/${slug}`,
+      images: slika ? [{ url: slika }] : undefined,
+    },
+  }
 }
 
 export default async function SvetnikPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -79,6 +92,11 @@ export default async function SvetnikPage({ params }: { params: Promise<{ slug: 
             </ul>
           </div>
         )}
+
+        {/* Deljenje */}
+        <div className="mt-10 border-t border-line pt-6">
+          <ShareButtons title={`${s.imePriimek} – kandidat za svetnika`} />
+        </div>
 
         {/* Pobuda CTA */}
         <div className="mt-12 flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-navy p-8 text-white sm:flex-row sm:items-center sm:justify-between">
