@@ -32,61 +32,86 @@ export default async function KrajPage({ params }: { params: Promise<{ slug: str
   const novice = await getNoviceByKraj(k.id)
   const teme = (k.aktualneTeme ?? []).filter((t) => t.besedilo)
   const projekti = (k.projekti ?? []).filter((p) => p.besedilo)
+  const odstavki = String(k.opis || '')
+    .split(/\n{2,}/)
+    .map((s) => s.trim())
+    .filter(Boolean)
 
   return (
     <article>
       {/* Naslovna fotografija */}
-      <div className="relative h-56 w-full overflow-hidden bg-cloud sm:h-72 lg:h-80">
+      <div className="relative h-64 w-full overflow-hidden bg-cloud sm:h-80 lg:h-[26rem]">
         {k.naslovnaFotografija?.url ? (
           <Image src={k.naslovnaFotografija.url} alt={k.naslovnaFotografija.alt || k.naslov} fill priority className="object-cover" sizes="100vw" />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-700 to-teal-700" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent" />
-        <Container className="relative flex h-full flex-col justify-end pb-6">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        <Container className="relative flex h-full flex-col justify-end pb-8">
           <Link href="/obcina" className="mb-3 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-white/80 transition-colors hover:text-teal">
             <ArrowLeft className="h-4 w-4" strokeWidth={2} /> Vsi kraji
           </Link>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white">{k.naslov}</h1>
+          <span className="mb-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-teal px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            <MapPin className="h-3.5 w-3.5" strokeWidth={2.2} /> Kraj občine Radovljica
+          </span>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">{k.naslov}</h1>
         </Container>
       </div>
 
       <Container className="max-w-4xl py-10 lg:py-14">
-        {k.opis && <p className="whitespace-pre-line text-lg leading-relaxed text-navy/90">{k.opis}</p>}
-
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
-          {/* Aktualne teme */}
-          {teme.length > 0 && (
-            <div>
-              <h2 className="flex items-center gap-2 text-xl font-bold text-navy">
-                <Sparkles className="h-5 w-5 text-teal" strokeWidth={2} /> Aktualne teme
-              </h2>
-              <ul className="mt-4 space-y-2.5">
-                {teme.map((t, i) => (
-                  <li key={i} className="rounded-lg border border-line bg-white px-4 py-3 text-sm text-navy/90 shadow-card">
-                    {t.besedilo}
-                  </li>
+        {/* Opis – prvi odstavek poudarjen (lead), ostalo mehkeje */}
+        {odstavki.length > 0 && (
+          <div className="max-w-3xl">
+            <p className="text-xl font-medium leading-relaxed text-navy sm:text-[1.4rem] sm:leading-[1.6]">{odstavki[0]}</p>
+            {odstavki.length > 1 && (
+              <div className="mt-4 space-y-4">
+                {odstavki.slice(1).map((o, i) => (
+                  <p key={i} className="text-base leading-relaxed text-muted">
+                    {o}
+                  </p>
                 ))}
-              </ul>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+        )}
 
-          {/* Projekti */}
-          {projekti.length > 0 && (
-            <div>
-              <h2 className="flex items-center gap-2 text-xl font-bold text-navy">
-                <ListChecks className="h-5 w-5 text-teal" strokeWidth={2} /> Projekti in usmeritve
-              </h2>
-              <ul className="mt-4 space-y-2.5">
-                {projekti.map((p, i) => (
-                  <li key={i} className="rounded-lg border border-line bg-white px-4 py-3 text-sm text-navy/90 shadow-card">
-                    {p.besedilo}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        {(teme.length > 0 || projekti.length > 0) && (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2">
+            {/* Aktualne teme */}
+            {teme.length > 0 && (
+              <div className="rounded-[var(--radius-card)] border border-line bg-white p-6 shadow-card">
+                <h2 className="flex items-center gap-2 text-lg font-bold text-navy">
+                  <Sparkles className="h-5 w-5 text-teal" strokeWidth={2} /> Aktualne teme
+                </h2>
+                <ul className="mt-4 space-y-2.5">
+                  {teme.map((t, i) => (
+                    <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-navy/85">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
+                      {t.besedilo}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Projekti */}
+            {projekti.length > 0 && (
+              <div className="rounded-[var(--radius-card)] border border-line bg-white p-6 shadow-card">
+                <h2 className="flex items-center gap-2 text-lg font-bold text-navy">
+                  <ListChecks className="h-5 w-5 text-teal" strokeWidth={2} /> Projekti in usmeritve
+                </h2>
+                <ul className="mt-4 space-y-2.5">
+                  {projekti.map((p, i) => (
+                    <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-navy/85">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
+                      {p.besedilo}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Pobude iz tega kraja */}
         <div className="mt-12">
