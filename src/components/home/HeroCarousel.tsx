@@ -72,7 +72,7 @@ export function HeroCarousel({
 
       {n > 1 && (
         <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center">
-          <div className="flex items-center gap-2 rounded-full bg-white/65 px-3 py-1.5 shadow-sm backdrop-blur">
+          <div className="flex items-center gap-1 rounded-full bg-white/65 px-2 py-1 shadow-sm backdrop-blur">
             {slides.map((_, idx) => (
               <button
                 key={idx}
@@ -80,10 +80,14 @@ export function HeroCarousel({
                 aria-label={`Pokaži sliko ${idx + 1}`}
                 aria-current={idx === index}
                 onClick={() => setIndex(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  idx === index ? 'w-6 bg-navy' : 'w-2 bg-navy/30 hover:bg-navy/55'
-                }`}
-              />
+                className="flex h-6 w-6 items-center justify-center"
+              >
+                <span
+                  className={`block h-2 rounded-full transition-all duration-300 ${
+                    idx === index ? 'w-6 bg-navy' : 'w-2 bg-navy/30'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

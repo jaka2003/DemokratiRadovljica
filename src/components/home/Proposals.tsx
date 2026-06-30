@@ -25,7 +25,7 @@ export function Proposals() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cloud text-navy transition-colors group-hover:bg-teal/10 group-hover:text-teal">
                   <Icon name={p.icon} className="h-5 w-5" />
                 </span>
-                <span className="text-2xl font-extrabold text-line transition-colors group-hover:text-teal/30">
+                <span className="text-2xl font-extrabold text-[#83879d] transition-colors group-hover:text-teal-700">
                   {String(p.number).padStart(2, '0')}
                 </span>
               </div>
