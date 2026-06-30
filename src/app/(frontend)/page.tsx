@@ -5,7 +5,8 @@ import { ProgramSteps } from '@/components/home/ProgramSteps'
 import { Proposals } from '@/components/home/Proposals'
 import { PobudePreview } from '@/components/home/PobudePreview'
 import { Participate } from '@/components/home/Participate'
-import { getDomacaStran } from '@/lib/queries'
+import { NoviceHome } from '@/components/home/NoviceHome'
+import { getDomacaStran, getNovice } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,7 +17,7 @@ export const metadata = {
 }
 
 export default async function HomePage() {
-  const d = await getDomacaStran()
+  const [d, novice] = await Promise.all([getDomacaStran(), getNovice(3)])
   type Media = { url?: string; alt?: string; width?: number; height?: number }
   const glavna = d?.heroFoto as Media | undefined
   const dodatne = (d?.heroSlike as Media[] | undefined) || []
@@ -41,6 +42,7 @@ export default async function HomePage() {
         povezava={heroPovezava}
       />
       <QuickLinks />
+      <NoviceHome novice={novice} />
       <Identity />
       <ProgramSteps koraki={koraki} />
       <Proposals />

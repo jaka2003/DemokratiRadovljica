@@ -18,7 +18,7 @@ export function Header() {
         </Link>
 
         {/* Navigacija desktop (od xl naprej, da nikoli ne prekipi) */}
-        <nav className="hidden items-center gap-5 xl:flex">
+        <nav className="hidden items-center gap-4 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.href}

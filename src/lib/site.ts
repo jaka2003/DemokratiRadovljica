@@ -43,6 +43,7 @@ export const SITE = {
 
 export const NAV: { label: string; href: string }[] = [
   { label: 'Domov', href: '/' },
+  { label: 'Novice', href: '/novice' },
   { label: 'Občina', href: '/obcina' },
   { label: 'Lokalne volitve', href: '/lokalne-volitve' },
   { label: 'Program', href: '/program' },
