@@ -34,6 +34,7 @@ export async function GET(req: Request) {
     overrideAccess: true,
   })
   const naloge = (nalogeRes.docs as Record<string, unknown>[]).map((n) => ({
+    id: n.id as string | number,
     naslov: String(n.naslov || ''),
     status: String(n.status || 'odprta'),
     rok: n.rok ? String(n.rok) : '',

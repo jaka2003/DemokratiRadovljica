@@ -105,10 +105,20 @@ export async function GET(req: Request) {
     },
     taTeden: {
       dogodki: tedenDogodki.docs.map((d) => ({ naslov: d.naslov, zacetek: d.zacetek, lokacija: d.lokacija || '' })),
-      naloge: (tedenNaloge.docs as Record<string, unknown>[]).map((d) => {
-        const k = d.kandidat as { ime?: string; email?: string } | null
-        return { naslov: d.naslov, rok: d.rok, oseba: (k && typeof k === 'object' && (k.ime || k.email)) || '' }
-      }),
+      // Isto nalogo (isti naslov) dodeljeno več osebam prikažemo enkrat, s številom oseb.
+      naloge: (() => {
+        const m = new Map<string, { naslov: string; rok: string; stevilo: number; oseba: string }>()
+        for (const d of tedenNaloge.docs as Record<string, unknown>[]) {
+          const naslov = String(d.naslov || '(brez naslova)').trim()
+          const key = naslov.toLowerCase()
+          const k = d.kandidat as { ime?: string; email?: string } | null
+          const oseba = (k && typeof k === 'object' && (k.ime || k.email)) || ''
+          const obst = m.get(key)
+          if (obst) obst.stevilo++
+          else m.set(key, { naslov, rok: (d.rok as string) || '', stevilo: 1, oseba })
+        }
+        return Array.from(m.values())
+      })(),
     },
   })
 }

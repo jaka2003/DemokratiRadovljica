@@ -55,7 +55,7 @@ type Seznami = {
 
 type TaTeden = {
   dogodki: { naslov: string; zacetek: string; lokacija: string }[]
-  naloge: { naslov: string; rok: string; oseba: string }[]
+  naloge: { naslov: string; rok: string; stevilo: number; oseba: string }[]
 }
 
 const AdminPlosca = () => {
@@ -332,7 +332,11 @@ const AdminPlosca = () => {
                     <a key={i} href="/admin/collections/naloge" style={tedenVrstica}>
                       <span style={{ fontWeight: 500 }}>
                         {n.naslov}
-                        {n.oseba && <span style={{ color: '#5b5f73', fontWeight: 400 }}> · {n.oseba}</span>}
+                        {n.stevilo > 1 ? (
+                          <span style={{ color: '#5b5f73', fontWeight: 400 }}> · {n.stevilo} oseb</span>
+                        ) : n.oseba ? (
+                          <span style={{ color: '#5b5f73', fontWeight: 400 }}> · {n.oseba}</span>
+                        ) : null}
                       </span>
                       <span style={{ color: '#b8860b', whiteSpace: 'nowrap' }}>{dRok(n.rok)}</span>
                     </a>

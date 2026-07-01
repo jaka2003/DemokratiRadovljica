@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@payloadcms/ui'
+import { MojeNaloge, type MojaNaloga } from './MojeNaloge'
 
 type Korak = { kljuc: string; label: string; done: boolean }
-type Naloga = { naslov: string; status: string; rok: string }
+type Naloga = MojaNaloga
 type Dogodek = { naslov: string; tip: string; zacetek: string; lokacija: string }
 type Podatki = {
   ok: boolean
@@ -37,8 +38,6 @@ const datum = (iso: string, sCasom = false) => {
     return ''
   }
 }
-
-const STATUS_NALOGE: Record<string, string> = { odprta: 'Odprta', v_teku: 'V teku', zakljucena: 'Zaključena' }
 
 export const KandidatPlosca = () => {
   const { user } = useAuth()
@@ -143,16 +142,7 @@ export const KandidatPlosca = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12, marginBottom: 16 }}>
         <div style={box}>
           <p style={naslovKartice}>📋 Moje naloge</p>
-          {d && d.naloge.length === 0 && <p style={{ color: '#5b5f73', fontSize: 13, margin: 0 }}>Trenutno nimate odprtih nalog.</p>}
-          {d?.naloge.map((n, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '6px 0', borderBottom: '1px solid #f1f2f6', fontSize: 13 }}>
-              <span style={{ color: '#0f004e' }}>{n.naslov}</span>
-              <span style={{ color: '#5b5f73', whiteSpace: 'nowrap' }}>
-                {STATUS_NALOGE[n.status] || n.status}
-                {n.rok ? ` · ${datum(n.rok)}` : ''}
-              </span>
-            </div>
-          ))}
+          {d ? <MojeNaloge naloge={d.naloge} /> : <p style={{ color: '#5b5f73', fontSize: 13, margin: 0 }}>Nalagam …</p>}
         </div>
 
         <div style={box}>
