@@ -51,13 +51,36 @@ export async function GET(req: Request) {
     ).docs as Record<string, unknown>[]
 
   const zdaj = new Date().toISOString()
-  const [zadnjiKandidati, zadnjePobude, zadnjaSporocila, cakajoceNaloge, prihajajociDogodki] = await Promise.all([
-    list('users', { vloga: { in: [...KANDIDAT_VLOGE] } }, '-createdAt'),
-    list('pobude', undefined, '-createdAt'),
-    list('kontakt-sporocila', undefined, '-createdAt'),
-    list('naloge', { status: { not_equals: 'zakljucena' } }, '-createdAt'),
-    list('dogodki', { and: [{ zacetek: { greater_than_equal: zdaj } }, { status: { not_equals: 'preklicano' } }] }, 'zacetek'),
-  ])
+  // »Ta teden«: od začetka današnjega dne do čez 7 dni (vključno z današnjim rokom/dogodkom).
+  const danZac = new Date()
+  danZac.setHours(0, 0, 0, 0)
+  const tedenSpodnja = danZac.toISOString()
+  const tedenZgornja = new Date(danZac.getTime() + 8 * 864e5).toISOString()
+
+  const [zadnjiKandidati, zadnjePobude, zadnjaSporocila, cakajoceNaloge, prihajajociDogodki, tedenDogodki, tedenNaloge] =
+    await Promise.all([
+      list('users', { vloga: { in: [...KANDIDAT_VLOGE] } }, '-createdAt'),
+      list('pobude', undefined, '-createdAt'),
+      list('kontakt-sporocila', undefined, '-createdAt'),
+      list('naloge', { status: { not_equals: 'zakljucena' } }, '-createdAt'),
+      list('dogodki', { and: [{ zacetek: { greater_than_equal: zdaj } }, { status: { not_equals: 'preklicano' } }] }, 'zacetek'),
+      payload.find({
+        collection: 'dogodki',
+        where: { and: [{ zacetek: { greater_than_equal: tedenSpodnja } }, { zacetek: { less_than: tedenZgornja } }, { status: { not_equals: 'preklicano' } }] },
+        sort: 'zacetek',
+        limit: 25,
+        depth: 0,
+        overrideAccess: true,
+      }),
+      payload.find({
+        collection: 'naloge',
+        where: { and: [{ rok: { greater_than_equal: tedenSpodnja } }, { rok: { less_than: tedenZgornja } }, { status: { not_equals: 'zakljucena' } }] },
+        sort: 'rok',
+        limit: 25,
+        depth: 1,
+        overrideAccess: true,
+      }),
+    ])
 
   return NextResponse.json({
     ok: true,
@@ -79,6 +102,13 @@ export async function GET(req: Request) {
       zadnjaSporocila: zadnjaSporocila.map((d) => ({ ime: d.imePriimek, vir: d.vir })),
       cakajoceNaloge: cakajoceNaloge.map((d) => ({ naslov: d.naslov, status: d.status })),
       prihajajociDogodki: prihajajociDogodki.map((d) => ({ naslov: d.naslov, zacetek: d.zacetek, lokacija: d.lokacija || '' })),
+    },
+    taTeden: {
+      dogodki: tedenDogodki.docs.map((d) => ({ naslov: d.naslov, zacetek: d.zacetek, lokacija: d.lokacija || '' })),
+      naloge: (tedenNaloge.docs as Record<string, unknown>[]).map((d) => {
+        const k = d.kandidat as { ime?: string; email?: string } | null
+        return { naslov: d.naslov, rok: d.rok, oseba: (k && typeof k === 'object' && (k.ime || k.email)) || '' }
+      }),
     },
   })
 }

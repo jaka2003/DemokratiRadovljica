@@ -43,6 +43,11 @@ services:
       # AI modul (Anthropic / Claude)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-opus-4-8}
+      # Zasebna analitika obiska (brezpiškotna) – neobvezno
+      ANALYTICS_UMAMI_SRC: ${ANALYTICS_UMAMI_SRC:-}
+      ANALYTICS_UMAMI_ID: ${ANALYTICS_UMAMI_ID:-}
+      ANALYTICS_PLAUSIBLE_DOMAIN: ${ANALYTICS_PLAUSIBLE_DOMAIN:-}
+      ANALYTICS_PLAUSIBLE_SRC: ${ANALYTICS_PLAUSIBLE_SRC:-}
     volumes:
       - media_data:/app/media
     # Vrat ni treba odpirati navzven – do aplikacije pride Cloudflare Tunnel po notranji mreži.

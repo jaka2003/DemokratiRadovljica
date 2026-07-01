@@ -11,6 +11,7 @@ import { Header } from '@/components/site/Header'
 import { Footer } from '@/components/site/Footer'
 import { ProgramBot } from '@/components/site/ProgramBot'
 import { PiskotkiObvestilo } from '@/components/site/PiskotkiObvestilo'
+import { Analytics } from '@/components/site/Analytics'
 import { getNastavitve } from '@/lib/queries'
 
 const inter = Inter({
@@ -121,6 +122,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <Footer />
         <ProgramBot />
         <PiskotkiObvestilo />
+        <Analytics />
       </body>
     </html>
   )

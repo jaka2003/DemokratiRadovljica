@@ -53,9 +53,15 @@ type Seznami = {
   prihajajociDogodki: { naslov: string; zacetek: string; lokacija: string }[]
 }
 
+type TaTeden = {
+  dogodki: { naslov: string; zacetek: string; lokacija: string }[]
+  naloge: { naslov: string; rok: string; oseba: string }[]
+}
+
 const AdminPlosca = () => {
   const [stats, setStats] = useState<Stats | null>(null)
   const [seznami, setSeznami] = useState<Seznami | null>(null)
+  const [taTeden, setTaTeden] = useState<TaTeden | null>(null)
   const [allowed, setAllowed] = useState(true)
 
   // Vabilo novemu uporabniku
@@ -189,6 +195,7 @@ const AdminPlosca = () => {
         if (d?.ok) {
           setStats(d.stats)
           setSeznami(d.seznami)
+          setTaTeden(d.taTeden)
         }
       })
       .catch(() => {})
@@ -265,9 +272,79 @@ const AdminPlosca = () => {
   const liStyle: React.CSSProperties = { marginBottom: 6, lineHeight: 1.5 }
   const b = (t: string) => <strong style={{ color: '#0f004e' }}>{t}</strong>
 
+  const dtDogodek = (z: string) => {
+    try {
+      return new Date(z).toLocaleString('sl-SI', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+    } catch {
+      return ''
+    }
+  }
+  const dRok = (r: string) => {
+    try {
+      return new Date(r).toLocaleDateString('sl-SI', { weekday: 'short', day: 'numeric', month: 'short' })
+    } catch {
+      return ''
+    }
+  }
+  const tedenVrstica: React.CSSProperties = {
+    fontSize: 13,
+    color: '#0f004e',
+    textDecoration: 'none',
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+    padding: '4px 0',
+    borderBottom: '1px solid #e5edf9',
+  }
+
   return (
     <div style={{ margin: '0 0 2rem' }}>
       <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Nadzorna plošča kampanje</h2>
+
+      {/* Ta teden – dogodki in naloge z rokom v naslednjih 7 dneh */}
+      {taTeden && (taTeden.dogodki.length > 0 || taTeden.naloge.length > 0) && (
+        <div style={{ ...box, marginBottom: 16, borderColor: '#cfe0f5', background: '#f4f8ff' }}>
+          <p style={{ fontWeight: 700, color: '#0f004e', margin: '0 0 10px' }}>📅 Ta teden (naslednjih 7 dni)</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 18 }}>
+            <div>
+              <div style={sectionLabel}>Dogodki</div>
+              {taTeden.dogodki.length ? (
+                <div style={{ display: 'grid' }}>
+                  {taTeden.dogodki.map((dg, i) => (
+                    <a key={i} href="/admin/collections/dogodki" style={tedenVrstica}>
+                      <span style={{ fontWeight: 500 }}>
+                        {dg.naslov}
+                        {dg.lokacija && <span style={{ color: '#5b5f73', fontWeight: 400 }}> · {dg.lokacija}</span>}
+                      </span>
+                      <span style={{ color: '#3157a5', whiteSpace: 'nowrap' }}>{dtDogodek(dg.zacetek)}</span>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 12, color: '#5b5f73', margin: 0 }}>Ni dogodkov ta teden.</p>
+              )}
+            </div>
+            <div>
+              <div style={sectionLabel}>Naloge z rokom</div>
+              {taTeden.naloge.length ? (
+                <div style={{ display: 'grid' }}>
+                  {taTeden.naloge.map((n, i) => (
+                    <a key={i} href="/admin/collections/naloge" style={tedenVrstica}>
+                      <span style={{ fontWeight: 500 }}>
+                        {n.naslov}
+                        {n.oseba && <span style={{ color: '#5b5f73', fontWeight: 400 }}> · {n.oseba}</span>}
+                      </span>
+                      <span style={{ color: '#b8860b', whiteSpace: 'nowrap' }}>{dRok(n.rok)}</span>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 12, color: '#5b5f73', margin: 0 }}>Ni nalog z rokom ta teden.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Navodila za uporabo – privzeto zaprto, odpre se ob kliku. */}
       <details
