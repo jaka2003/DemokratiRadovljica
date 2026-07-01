@@ -43,9 +43,10 @@ services:
       # AI modul (Anthropic / Claude)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-claude-opus-4-8}
-      # Zasebna analitika obiska (brezpiškotna) – neobvezno
-      ANALYTICS_UMAMI_SRC: ${ANALYTICS_UMAMI_SRC:-}
-      ANALYTICS_UMAMI_ID: ${ANALYTICS_UMAMI_ID:-}
+      # Zasebna analitika obiska (Umami, brezpiškotna). Website-id je javen (viden v strani),
+      # zato je vgrajen kot privzetek; po želji ga prepišeš v .env.
+      ANALYTICS_UMAMI_SRC: ${ANALYTICS_UMAMI_SRC:-https://cloud.umami.is/script.js}
+      ANALYTICS_UMAMI_ID: ${ANALYTICS_UMAMI_ID:-e9356b76-1a60-4e6a-ae33-51c2d0476e75}
       ANALYTICS_PLAUSIBLE_DOMAIN: ${ANALYTICS_PLAUSIBLE_DOMAIN:-}
       ANALYTICS_PLAUSIBLE_SRC: ${ANALYTICS_PLAUSIBLE_SRC:-}
     volumes:
