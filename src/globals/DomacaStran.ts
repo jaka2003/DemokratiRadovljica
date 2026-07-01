@@ -71,13 +71,31 @@ export const DomacaStran: GlobalConfig = {
             {
               name: 'heroSlike',
               label: 'Dodatne slike (samodejno menjavanje)',
-              type: 'upload',
-              relationTo: 'media',
-              hasMany: true,
+              type: 'array',
+              labels: { singular: 'Slika', plural: 'Slike' },
+              minRows: 0,
               admin: {
                 description:
-                  'Neobvezno: naloži več slik. Če je skupaj več kot ena, se na domači strani nežno menjajo (carousel). Vrstni red lahko premešaš z vlečenjem; prva je vedno »Glavna slika« zgoraj.',
+                  'Neobvezno: dodaj več slik. Skupaj z glavno se na domači strani nežno menjajo (carousel). Vsaka slika ima lahko svojo povezavo – ko obiskovalec klikne prav to sliko, ga odpelje tja. Vrstni red premešaš z vlečenjem; glavna slika je vedno prva.',
               },
+              fields: [
+                {
+                  name: 'slika',
+                  label: 'Slika',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                {
+                  name: 'povezava',
+                  label: 'Povezava te slike (neobvezno)',
+                  type: 'text',
+                  admin: {
+                    description:
+                      'Če vpišeš povezavo, postane prav ta slika clickable. Npr. »/demokrati«, »/pobude« ali cela »https://…«.',
+                  },
+                },
+              ],
             },
             {
               name: 'heroInterval',
@@ -93,11 +111,11 @@ export const DomacaStran: GlobalConfig = {
             },
             {
               name: 'heroPovezava',
-              label: 'Povezava slike (neobvezno)',
+              label: 'Povezava GLAVNE slike (neobvezno)',
               type: 'text',
               admin: {
                 description:
-                  'Če vpišeš povezavo, postane slika v uvodnem bloku clickable in vodi tja. Npr. »/demokrati« (pridružitev), »/pobude«, ali cela povezava »https://…«.',
+                  'Povezava za glavno sliko zgoraj. Če vpišeš, postane glavna slika clickable in vodi tja. Npr. »/demokrati« (pridružitev), »/pobude«, ali cela »https://…«. (Dodatne slike imajo vsaka svojo povezavo.)',
               },
             },
           ],

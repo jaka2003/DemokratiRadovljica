@@ -3,19 +3,18 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 
-export type HeroSlide = { url: string; alt?: string; width?: number; height?: number }
+export type HeroSlide = { url: string; alt?: string; width?: number; height?: number; povezava?: string }
 
 // Moderni hero carousel: nežno prelivanje (crossfade), pike za navigacijo,
 // pavza ob prehodu miške, upošteva nastavitev za zmanjšano gibanje.
 // Slike se prikažejo v CELOTI (object-contain) – nič se ne obreže.
+// Vsaka slika ima lahko svojo povezavo – klik na vidno sliko vodi tja.
 export function HeroCarousel({
   slides,
   intervalMs = 3000,
-  povezava,
 }: {
   slides: HeroSlide[]
   intervalMs?: number
-  povezava?: string
 }) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -46,29 +45,33 @@ export function HeroCarousel({
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Sloj slik – po želji clickable (povezava). Pike za navigacijo so nad njim (z-10). */}
-      {(() => {
-        const slikePlast = slides.map((s, idx) => (
+      {/* Sloj slik – vsaka lahko s svojo povezavo. Neaktivne plasti ne prestrezajo
+          klikov, tako da klik prejme le vidna (aktivna) slika. Pike so nad njim (z-10). */}
+      {slides.map((s, idx) => {
+        const active = idx === index
+        const img = (
           <Image
-            key={`${s.url}-${idx}`}
             src={s.url}
             alt={s.alt || 'Demokrati Radovljica'}
             fill
             priority={idx === 0}
             sizes="(max-width: 1024px) 100vw, 50vw"
             className={`object-contain transition-opacity duration-700 ease-in-out ${
-              idx === index ? 'opacity-100' : 'opacity-0'
+              active ? 'opacity-100' : 'opacity-0'
             }`}
           />
-        ))
-        return povezava ? (
-          <a href={povezava} aria-label="Odpri povezavo" className="absolute inset-0 z-0 block">
-            {slikePlast}
+        )
+        const layer = `absolute inset-0 ${active ? '' : 'pointer-events-none'}`
+        return s.povezava ? (
+          <a key={`${s.url}-${idx}`} href={s.povezava} aria-label={s.alt || 'Odpri povezavo'} className={`${layer} block`}>
+            {img}
           </a>
         ) : (
-          slikePlast
+          <div key={`${s.url}-${idx}`} className={layer}>
+            {img}
+          </div>
         )
-      })()}
+      })}
 
       {n > 1 && (
         <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center">

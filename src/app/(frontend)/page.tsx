@@ -20,13 +20,16 @@ export default async function HomePage() {
   const [d, novice] = await Promise.all([getDomacaStran(), getNovice(3)])
   type Media = { url?: string; alt?: string; width?: number; height?: number }
   const glavna = d?.heroFoto as Media | undefined
-  const dodatne = (d?.heroSlike as Media[] | undefined) || []
-  // Glavna slika je prva, nato dodatne; obdržimo le tiste z naslovom (url).
-  const slike = [glavna, ...dodatne]
-    .filter((m): m is Media => Boolean(m?.url))
-    .map((m) => ({ url: m.url as string, alt: m.alt, width: m.width, height: m.height }))
-  const intervalSekunde = (d?.heroInterval as number) || 3
   const heroPovezava = (d?.heroPovezava as string) || ''
+  const dodatne = (d?.heroSlike as { slika?: Media; povezava?: string }[] | undefined) || []
+  // Glavna slika je prva (z glavno povezavo), nato dodatne (vsaka s svojo povezavo).
+  const slike = [
+    glavna ? { ...glavna, povezava: heroPovezava } : undefined,
+    ...dodatne.map((r) => (r?.slika ? { ...r.slika, povezava: r.povezava || '' } : undefined)),
+  ]
+    .filter((m): m is Media & { povezava: string } => Boolean(m?.url))
+    .map((m) => ({ url: m.url as string, alt: m.alt, width: m.width, height: m.height, povezava: m.povezava || '' }))
+  const intervalSekunde = (d?.heroInterval as number) || 3
   const koraki = (d?.koraki as { naslov?: string }[]) || []
 
   return (
@@ -39,7 +42,6 @@ export default async function HomePage() {
         tagline={d?.heroTagline as string}
         slike={slike}
         intervalSekunde={intervalSekunde}
-        povezava={heroPovezava}
       />
       <QuickLinks />
       <NoviceHome novice={novice} />
