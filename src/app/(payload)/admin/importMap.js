@@ -5,6 +5,7 @@ import { RacunStatus as RacunStatus_68e872515ffb6aa4d6188160eed9a9ea } from '../
 import { RacunCell as RacunCell_6a42aa9f61cc68230e88ae65f3ba5d77 } from '../../../components/admin/RacunCell'
 import { HitriFiltri as HitriFiltri_59f4aed20f2bcc8241cc33caab091108 } from '../../../components/admin/HitriFiltri'
 import { DaNeCell as DaNeCell_56e8daa14966605ba15fc03449543198 } from '../../../components/admin/DaNeCell'
+import { NalogePoOsebah as NalogePoOsebah_10d3a54cd4ae5e8a779d5af080731bea } from '../../../components/admin/NalogePoOsebah'
 import { SvetnikAutofill as SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5 } from '../../../components/admin/SvetnikAutofill'
 import { PosljiVabilo as PosljiVabilo_35d62e19b5831341e688584fb57c422b } from '../../../components/admin/PosljiVabilo'
 import { SejaPosiljanje as SejaPosiljanje_5340cf0a558659c4943846e4ef417204 } from '../../../components/admin/SejaPosiljanje'
@@ -22,6 +23,7 @@ export const importMap = {
   "/components/admin/RacunCell#RacunCell": RacunCell_6a42aa9f61cc68230e88ae65f3ba5d77,
   "/components/admin/HitriFiltri#HitriFiltri": HitriFiltri_59f4aed20f2bcc8241cc33caab091108,
   "/components/admin/DaNeCell#DaNeCell": DaNeCell_56e8daa14966605ba15fc03449543198,
+  "/components/admin/NalogePoOsebah#NalogePoOsebah": NalogePoOsebah_10d3a54cd4ae5e8a779d5af080731bea,
   "/components/admin/SvetnikAutofill#SvetnikAutofill": SvetnikAutofill_d794b357dab2083fae5085dc2ce364d5,
   "/components/admin/PosljiVabilo#PosljiVabilo": PosljiVabilo_35d62e19b5831341e688584fb57c422b,
   "/components/admin/SejaPosiljanje#SejaPosiljanje": SejaPosiljanje_5340cf0a558659c4943846e4ef417204,
