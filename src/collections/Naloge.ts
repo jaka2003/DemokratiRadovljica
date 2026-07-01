@@ -11,7 +11,7 @@ export const Naloge: CollectionConfig = {
     listSearchableFields: ['naslov', 'opis'],
     components: {
       beforeListTable: [
-        '/components/admin/NalogePoOsebah#NalogePoOsebah',
+        '/components/admin/NalogePregled#NalogePregled',
         '/components/admin/HitriFiltri#HitriFiltri',
       ],
     },
