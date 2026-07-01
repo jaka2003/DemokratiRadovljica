@@ -56,6 +56,22 @@ if (uri.startsWith('postgres')) {
     )
     await client.query(`DROP TABLE IF EXISTS "prostovoljci" CASCADE`)
 
+    // Prehod polja "heroSlike" na domači strani: iz "upload hasMany" (shranjeno v
+    // skupni tabeli domaca_stran_rels) v array vrstic {slika, povezava} (nova tabela
+    // domaca_stran_hero_slike). Ker domača stran nima več nobene hasMany relacije,
+    // drizzle ponudi PREIMENOVANJE domaca_stran_rels → nova tabela (interaktivni izbirni
+    // meni, ki ga "yes |" ne more potrditi). Zato osirotelo rels tabelo odstranimo VNAPREJ –
+    // a le ob samem prehodu (dokler nova array tabela še ne obstaja), da je idempotentno
+    // in varno, če bi kdaj v prihodnje dodali novo hasMany relacijo na domačo stran.
+    const heroArr = await client.query(
+      `SELECT 1 FROM information_schema.tables
+       WHERE table_schema = 'public' AND table_name = 'domaca_stran_hero_slike'`,
+    )
+    if (heroArr.rows.length === 0) {
+      await client.query(`DROP TABLE IF EXISTS "domaca_stran_rels" CASCADE`)
+      console.log('Priprava: odstranjena osirotela domaca_stran_rels (prehod heroSlike na array).')
+    }
+
     await client.end()
   } catch (e) {
     console.warn('Priprava vloga (pred push) preskočena: ' + (e as Error).message)
