@@ -75,6 +75,7 @@ export type Novica = {
   datum?: string
   povzetek?: string
   vsebina?: string
+  telo?: unknown
   slika?: { url?: string; alt?: string; width?: number; height?: number }
 }
 
@@ -85,6 +86,7 @@ const noviceSelect = (d: Record<string, unknown>): Novica => ({
   datum: d.datum as string,
   povzetek: d.povzetek as string,
   vsebina: d.vsebina as string,
+  telo: d.telo,
   slika: d.slika as { url?: string; alt?: string; width?: number; height?: number },
 })
 

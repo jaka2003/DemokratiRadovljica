@@ -1,6 +1,23 @@
 import { getPayload } from 'payload'
 import config from '../src/payload.config'
 
+// Pretvori golo besedilo (odstavki ločeni s prazno vrstico) v Lexical richText JSON.
+function besediloVLexical(txt: string) {
+  const odstavek = (s: string) => {
+    const vrstice = s.split('\n')
+    const children: Record<string, unknown>[] = []
+    vrstice.forEach((v, i) => {
+      if (i > 0) children.push({ type: 'linebreak', version: 1 })
+      children.push({ type: 'text', text: v, detail: 0, format: 0, mode: 'normal', style: '', version: 1 })
+    })
+    return { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', textFormat: 0, textStyle: '', children }
+  }
+  const odstavki = txt.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean)
+  return {
+    root: { type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: odstavki.length ? odstavki.map(odstavek) : [odstavek('')] },
+  }
+}
+
 // Enkraten korak za produkcijo: ustvari/uskladi shemo v PostgreSQL in vpiše privzete podatke.
 // Zaganja se prek storitve "migrate" v docker-compose (NODE_ENV=development → Payload push).
 
@@ -79,5 +96,28 @@ if (uri.startsWith('postgres')) {
 }
 
 const payload = await getPayload({ config })
+
+// Migracija: staro golo besedilo novic (vsebina) prenesi v novo oblikovano polje (telo).
+// Idempotentno: le za novice, ki telo še nimajo, a imajo staro vsebino.
+try {
+  const res = await payload.find({
+    collection: 'novice',
+    where: { telo: { exists: false } },
+    limit: 1000,
+    depth: 0,
+    overrideAccess: true,
+  })
+  let preneseno = 0
+  for (const n of res.docs as Record<string, unknown>[]) {
+    const txt = String(n.vsebina || '').trim()
+    if (!txt) continue
+    await payload.update({ collection: 'novice', id: n.id as string, data: { telo: besediloVLexical(txt) }, overrideAccess: true })
+    preneseno++
+  }
+  if (preneseno) payload.logger.info(`Prenesenih ${preneseno} novic v oblikovano polje (telo).`)
+} catch (e) {
+  payload.logger.warn('Migracija novic (telo) preskočena: ' + (e as Error).message)
+}
+
 payload.logger.info('✅ Shema je usklajena, privzeti podatki vpisani.')
 process.exit(0)

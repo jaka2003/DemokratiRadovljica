@@ -67,7 +67,24 @@ export const Novice: CollectionConfig = {
       ],
     },
     { name: 'povzetek', label: 'Kratek povzetek', type: 'textarea' },
-    { name: 'vsebina', label: 'Vsebina', type: 'textarea' },
+    {
+      name: 'telo',
+      label: 'Vsebina',
+      type: 'richText',
+      admin: {
+        description:
+          'Oblikovano besedilo: krepko (bold), ležeče (italic), povezave, naslovi in seznami. Označi besedilo, da se pokaže orodna vrstica; za povezavo označi besedo in klikni ikono verige.',
+      },
+    },
+    {
+      name: 'vsebina',
+      label: 'Vsebina (staro besedilo)',
+      type: 'textarea',
+      admin: {
+        hidden: true,
+        description: 'Zastarelo – vsebina se je samodejno preselila v oblikovano polje »Vsebina« zgoraj.',
+      },
+    },
     {
       type: 'row',
       fields: [

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 import { Container } from '@/components/site/Container'
 import { ShareButtons } from '@/components/site/ShareButtons'
 import { getNovicaBySlug } from '@/lib/queries'
@@ -70,7 +71,13 @@ export default async function NovicaPage({ params }: { params: Promise<{ slug: s
           ))}
 
         {n.povzetek && <p className="mt-8 text-lg font-medium leading-relaxed text-navy/90">{n.povzetek}</p>}
-        {n.vsebina && <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-navy/85">{n.vsebina}</div>}
+        {n.telo ? (
+          <div className="mt-6 text-base leading-relaxed text-navy/85 [&_a]:font-medium [&_a]:text-teal-700 [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-teal [&_blockquote]:pl-4 [&_blockquote]:italic [&_em]:italic [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-navy [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-navy [&_li]:mb-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-4 [&_strong]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6">
+            <RichText data={n.telo as never} />
+          </div>
+        ) : (
+          n.vsebina && <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-navy/85">{n.vsebina}</div>
+        )}
 
         <div className="mt-10 border-t border-line pt-6">
           <ShareButtons title={String(n.naslov || 'Novica')} hashtags={share.hashtagi} />
