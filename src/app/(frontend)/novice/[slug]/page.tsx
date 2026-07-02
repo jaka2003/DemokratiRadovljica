@@ -50,11 +50,24 @@ export default async function NovicaPage({ params }: { params: Promise<{ slug: s
         {n.datum && <p className="mt-6 text-sm font-medium text-teal-700">{datum(n.datum)}</p>}
         <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-navy">{n.naslov}</h1>
 
-        {n.slika?.url && (
-          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] border border-line">
-            <Image src={n.slika.url} alt={n.slika.alt || n.naslov} fill priority className="object-cover" sizes="100vw" />
-          </div>
-        )}
+        {n.slika?.url &&
+          (n.slika.width && n.slika.height ? (
+            // Naravna velikost – plakati in grafike se prikažejo v celoti, brez obrezovanja.
+            <Image
+              src={n.slika.url}
+              alt={n.slika.alt || n.naslov}
+              width={n.slika.width}
+              height={n.slika.height}
+              priority
+              quality={90}
+              className="mt-8 h-auto w-full rounded-[var(--radius-card)] border border-line"
+              sizes="(max-width: 768px) 100vw, 736px"
+            />
+          ) : (
+            <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] border border-line bg-cloud">
+              <Image src={n.slika.url} alt={n.slika.alt || n.naslov} fill priority quality={90} className="object-contain" sizes="(max-width: 768px) 100vw, 736px" />
+            </div>
+          ))}
 
         {n.povzetek && <p className="mt-8 text-lg font-medium leading-relaxed text-navy/90">{n.povzetek}</p>}
         {n.vsebina && <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-navy/85">{n.vsebina}</div>}

@@ -42,7 +42,7 @@ export function NoviceHome({ novice }: { novice: Novica[] }) {
             >
               <div className="relative aspect-[16/9] bg-cloud">
                 {n.slika?.url ? (
-                  <Image src={n.slika.url} alt={n.slika.alt || n.naslov} fill className="object-cover" sizes="(max-width:640px) 100vw, 33vw" />
+                  <Image src={n.slika.url} alt={n.slika.alt || n.naslov} fill quality={90} className="object-contain" sizes="(max-width:640px) 100vw, 480px" />
                 ) : (
                   <div className="flex h-full items-center justify-center text-navy/20">
                     <Newspaper className="h-8 w-8" strokeWidth={1.5} />
