@@ -86,6 +86,9 @@ const organizationJsonLd = {
 export const dynamic = 'force-dynamic'
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  // Nonce iz middleware – za inline JSON-LD skripto (CSP brez 'unsafe-inline' na skriptah).
+  const nonce = (await headers()).get('x-nonce') ?? undefined
+
   // Predkampanjski zaklep: če je vklopljen, neprijavljene obiskovalce brez gesla
   // preusmerimo na vstopni zaslon (/zaklenjeno), da se stran sploh ne izriše.
   // Preverbo ovijemo v try/catch (ob nedosegljivi bazi ne zaklepamo);
@@ -115,7 +118,8 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       <body className="flex min-h-screen flex-col font-sans">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, '\\u003c') }}
         />
         <Header />
         <main className="flex-1">{children}</main>

@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { MessageCircleQuestion, MessagesSquare } from 'lucide-react'
@@ -41,6 +42,7 @@ export default async function VprasanjaPage() {
   })
   const vprasanja = (res.docs as Vprasanje[]).filter((v) => (v.odgovor || '').trim().length > 0)
 
+  const nonce = (await headers()).get('x-nonce') ?? undefined
   const faqLd =
     vprasanja.length > 0
       ? {
@@ -63,7 +65,7 @@ export default async function VprasanjaPage() {
   return (
     <section className="py-12 lg:py-16">
       {faqLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+        <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd).replace(/</g, '\\u003c') }} />
       )}
       <Container>
         <div className="mx-auto max-w-2xl text-center">
